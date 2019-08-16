@@ -1,0 +1,10 @@
+{
+  "android": {
+    "release": {
+      "keystore": "my-release-key.keystore",
+      "alias": "my-key-alias",
+      "storePassword": "jsasdw1991",
+      "password": "jsasdw1991"
+    }
+  }
+}

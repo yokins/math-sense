@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-16 13:58:40
- * @LastEditTime: 2019-08-19 09:24:05
+ * @LastEditTime: 2019-08-19 10:17:20
  * @LastEditors: 施永坚（yokins）
  */
 import 'normalize.css'
@@ -16,7 +16,12 @@ import App from './layouts/app.vue'
 import router from './router'
 import store from './store'
 import FastClick from 'fastclick'
+import util from './configs/util'
+import api from './configs/api'
+
 Vue.use(Vant)
+Vue.prototype.$util = util
+Vue.prototype.$api = api
 
 Vue.config.productionTip = false
 

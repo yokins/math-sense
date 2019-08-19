@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-16 14:46:47
- * @LastEditTime: 2019-08-19 09:51:33
+ * @LastEditTime: 2019-08-19 10:26:55
  * @LastEditors: 施永坚（yokins）
  -->
 <template>
@@ -30,13 +30,14 @@
       </van-cell-group>
 
       <van-cell-group>
-        <van-button class="submit" round block type="info" size="small" :disabled="disabledSubmit">登录</van-button>
+        <van-button class="submit" round block type="info" size="small" :disabled="disabledSubmit" @click="submit">登录</van-button>
       </van-cell-group>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   data() {
     return {
@@ -74,6 +75,7 @@ export default {
   },
 
   methods: {
+    ...mapActions(['set_current_user']),
     /**
      * @description: 修改密码框的类型
      * @param {type}
@@ -81,6 +83,17 @@ export default {
      */
     onChangePasswordType() {
       this.isText = !this.isText
+    },
+    /**
+     * @description: 登录
+     * @param {type}
+     * @return:
+     */
+    submit() {
+      this.$api.login({ login: this.account, password: this.password }).then(res => {
+        this.set_current_user(res.user)
+        this.$router.push({ name: 'home' })
+      })
     }
   }
 }

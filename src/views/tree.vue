@@ -3,17 +3,14 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:46:59
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-19 14:58:31
+ * @LastEditTime: 2019-08-19 15:32:12
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
   <div class="page tree" id="tree">
-    <van-nav-bar
-      title="成长树"
-      left-text="返回"
-      left-arrow
-      @click-left="onClickLeft"
-    />
+    <van-nav-bar fixed :z-index="1000" title="成长树" left-arrow @click-left="onClickLeft" />
+
+    
   </div>
 </template>
 
@@ -22,19 +19,18 @@ export default {
   methods: {
     /**
      * @description: 返回
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     onClickLeft() {
       this.$router.go(-1)
     },
     /**
      * @description: 提交
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
-    onClickRight() {
-    }
+    onClickRight() {}
   }
 }
 </script>

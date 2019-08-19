@@ -3,11 +3,11 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-19 11:17:45
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-19 13:56:05
+ * @LastEditTime: 2019-08-19 15:37:30
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
-  <div class="homework-item">
+  <div class="homework-item" @click="to_homework">
     <div class="line">
       <div class="title">方程式的加减运算方程式的加减运算方程式的加减运算方程式的加减运算方程式的加减运算方程式的加减运算方程式的加减运算方程式的加减运算</div>
       <span class="status">待完成</span>
@@ -20,7 +20,18 @@
 </template>
 
 <script>
-export default {}
+export default {
+  methods: {
+    /**
+     * @description: 根据状态跳转到该练习的页面
+     * @param {type} 
+     * @return: 
+     */  
+    to_homework() {
+      this.$router.push({ name: 'homework_start', params: { homework_id: 1 } })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

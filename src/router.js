@@ -2,7 +2,7 @@
  * @Author: yokins·shi(施永坚)
  * @Description: 改革春风吹满地，搬起砖来不吃力
  * @Date: 2019-08-16 13:58:40
- * @LastEditTime: 2019-08-16 17:00:28
+ * @LastEditTime: 2019-08-19 15:37:10
  */
 import Vue from 'vue'
 import store from './store'
@@ -65,32 +65,32 @@ const router = new Router({
     },
     {
       path: '/homework/:homework_id/start',
-      name: 'homework/:homework_id/start',
+      name: 'homework_start',
       component: homework_start
     },
     {
       path: '/homework/:homework_id/judge',
-      name: 'homework/:homework_id/judge',
+      name: 'homework_judge',
       component: homework_judge
     },
     {
       path: '/homework/:homework_id/loading',
-      name: 'homework/:homework_id/loading',
+      name: 'homework_loading',
       component: homework_loading
     },
     {
       path: '/homework/:homework_id/result',
-      name: 'homework/:homework_id/result',
+      name: 'homework_result',
       component: homework_result
     },
     {
       path: '/homework/:homework_id/question/:question_id/do',
-      name: 'homework/:homework_id/question/:question_id/do',
+      name: 'homework_question_do',
       component: question_do
     },
     {
       path: '/homework/:homework_id/question/:question_id/show',
-      name: 'homework/:homework_id/question/:question_id/show',
+      name: 'homework_question_show',
       component: question_show
     }
   ]

@@ -104,7 +104,7 @@
     <!-- 自动隐藏启动页面 -->
     <preference name="AutoHideSplashScreen" value="true" />
     <!-- 显示启动页面的时间长度 -->
-    <preference name="SplashScreenDelay" value="3000" />
+    <preference name="SplashScreenDelay" value="2000" />
     <!-- 是否显示淡入淡出效果FadeSplashScreen(默认为：true) -->
     <preference name="FadeSplashScreen" value="true"/>
     <!-- 淡入淡出效果的执行时间长度FadeSplashScreenDuration(默认为：500) -->

@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-16 13:58:40
- * @LastEditTime: 2019-08-19 13:42:56
+ * @LastEditTime: 2019-08-19 14:28:23
  * @LastEditors: 施永坚（yokins）
  */
 import 'normalize.css'
@@ -16,10 +16,12 @@ import components from './components'
 import App from './layouts/app.vue'
 import router from './router'
 import store from './store'
-import FastClick from 'fastclick'
+// import FastClick from 'fastclick'
 import util from './configs/util'
 import api from './configs/api'
 import filter from './configs/filter'
+import vueg from 'vueg'
+Vue.use(vueg, router, {})
 
 Vue.use(Vant)
 Object.keys(components).forEach(item => {
@@ -33,15 +35,15 @@ Vue.prototype.$api = api
 
 Vue.config.productionTip = false
 
-if ('addEventListener' in document) {
-  document.addEventListener(
-    'DOMContentLoaded',
-    function() {
-      FastClick.attach(document.body)
-    },
-    false
-  )
-}
+// if ('addEventListener' in document) {
+//   document.addEventListener(
+//     'DOMContentLoaded',
+//     function() {
+//       FastClick.attach(document.body)
+//     },
+//     false
+//   )
+// }
 
 document.addEventListener(
   'deviceready',

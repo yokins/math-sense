@@ -2,9 +2,10 @@
  * @Author: yokins·shi(施永坚)
  * @Description: 改革春风吹满地，搬起砖来不吃力
  * @Date: 2019-08-16 13:58:40
- * @LastEditTime: 2019-08-16 15:05:20
+ * @LastEditTime: 2019-08-16 17:00:28
  */
 import Vue from 'vue'
+import store from './store'
 import Router from 'vue-router'
 import home from './views/home.vue'
 import login from './views/login.vue'
@@ -26,16 +27,25 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
+      meta: {
+        need_tabbar: true
+      },
       component: home
     },
     {
       path: '/login',
       name: 'login',
+      meta: {
+        skip_login: true
+      },
       component: login
     },
     {
       path: '/mine',
       name: 'mine',
+      meta: {
+        need_tabbar: true
+      },
       component: mine
     },
     {
@@ -84,6 +94,24 @@ const router = new Router({
       component: question_show
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  if (store.state.current_user) {
+    to.name === 'login'
+      ? next({
+          replace: true,
+          name: 'home'
+        })
+      : next()
+  } else {
+    to.meta.skip_login
+      ? next()
+      : next({
+          replace: true,
+          name: 'login'
+        })
+  }
 })
 
 export default router

@@ -2510,6 +2510,11 @@ cordova-plugin-splashscreen@^5.0.3:
   resolved "https://registry.npm.taobao.org/cordova-plugin-splashscreen/download/cordova-plugin-splashscreen-5.0.3.tgz#02820472771c3e10b43ceedd54b0a1e4674efa6d"
   integrity sha1-AoIEcnccPhC0PO7dVLCh5GdO+m0=
 
+cordova-plugin-statusbar@^2.4.3:
+  version "2.4.3"
+  resolved "https://registry.npm.taobao.org/cordova-plugin-statusbar/download/cordova-plugin-statusbar-2.4.3.tgz#cc557aef66c27484e0f7f045004040d03321f82d"
+  integrity sha1-zFV672bCdITg9/BFAEBA0DMh+C0=
+
 core-js@^2.4.0, core-js@^2.6.5:
   version "2.6.9"
   resolved "https://registry.npm.taobao.org/core-js/download/core-js-2.6.9.tgz#6b4b214620c834152e179323727fc19741b084f2"

@@ -1,5 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.yokins.ms.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.yokins.ms.app" version="1.0.0" 
+    xmlns="http://www.w3.org/ns/widgets" 
+    xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>非常数感</name>
     <description>
         A sample Apache Cordova application that responds to the deviceready event.
@@ -83,6 +85,18 @@
         <splash src="res/splashes/ios/LaunchImage.launchimage/Default-667h.png" width="750" height="1334"/>
         <splash src="res/splashes/ios/LaunchImage.launchimage/Default-736h.png" width="1242" height="2208"/>
         <splash src="res/splashes/ios/LaunchImage.launchimage/Default-Landscape-736h.png" width="2208" height="1242"/>
+        <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
+            <string>需要授权相机权限</string>
+        </edit-config>
+        <edit-config target="NSMicrophoneUsageDescription" file="*-Info.plist" mode="merge">
+            <string>需要授权麦克风权限</string>
+        </edit-config>
+        <edit-config target="NSPhotoLibraryUsageDescription" file="*-Info.plist" mode="merge">
+            <string>需要授权读取图片权限</string>
+        </edit-config>
+        <edit-config target="NSPhotoLibraryAddUsageDescription" file="*-Info.plist" mode="merge">
+            <string>需要授权保存图片权限</string>
+        </edit-config>
     </platform>
     <preference name="WebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />
@@ -99,21 +113,11 @@
     <preference name="ShowSplashScreenSpinner" value="false"/>
     <preference name="KeyboardShrinksView" value="true" />
     <preference name="DisableScrollingWhenKeyboardShrinksView" value="true" />
-    <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
-        <string>需要授权相机权限</string>
-    </edit-config>
-    <edit-config target="NSMicrophoneUsageDescription" file="*-Info.plist" mode="merge">
-        <string>需要授权麦克风权限</string>
-    </edit-config>
-    <edit-config target="NSPhotoLibraryUsageDescription" file="*-Info.plist" mode="merge">
-        <string>需要授权读取图片权限</string>
-    </edit-config>
-    <edit-config target="NSPhotoLibraryAddUsageDescription" file="*-Info.plist" mode="merge">
-        <string>需要授权保存图片权限</string>
-    </edit-config>
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
     <!-- <preference name="AndroidPersistentFileLocation" value="Internal" /> -->
     <preference name="iosPersistentFileLocation" value="Compatibility" />
     <preference name="iosExtraFilesystems" value="library,library-nosync,documents,documents-nosync,cache,bundle,root" />
     <preference name="AndroidExtraFilesystems" value="files,files-external,documents,sdcard,cache,cache-external,assets,root" />
+    <preference name="StatusBarOverlaysWebView" value="false" />
+    <preference name="StatusBarBackgroundColor" value="#3296FA" />
 </widget>

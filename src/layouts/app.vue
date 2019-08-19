@@ -1,0 +1,22 @@
+<!--
+ * @Author: yokins·shi(施永坚)
+ * @Description: 改革春风吹满地，搬起砖来不吃力
+ * @Date: 2019-08-16 16:12:29
+ * @LastEditTime: 2019-08-16 16:57:55
+ -->
+ <template>
+  <div class="app" id="app">
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {}
+  }
+}
+</script>
+
+<style lang="scss" scope>
+</style>

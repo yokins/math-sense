@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-16 14:46:47
- * @LastEditTime: 2019-08-19 13:58:35
+ * @LastEditTime: 2019-08-19 14:52:12
  * @LastEditors: 施永坚（yokins）
  -->
 <template>
@@ -30,7 +30,7 @@
       </van-cell-group>
 
       <van-cell-group>
-        <van-button class="submit" round block type="info" size="small" :disabled="disabledSubmit" @click="submit">登录</van-button>
+        <van-button class="submit" round block type="info" size="small" :disabled="disabledSubmit" @click="submit" :loading="loading" loading-text="加载中...">登录</van-button>
       </van-cell-group>
     </div>
   </div>
@@ -43,7 +43,8 @@ export default {
     return {
       account: '',
       password: '',
-      isText: false
+      isText: false,
+      loading: false
     }
   },
 
@@ -90,9 +91,13 @@ export default {
      * @return:
      */
     submit() {
+      this.loading = true
       this.$api.login({ login: this.account, password: this.password }).then(res => {
+        this.loading = false
         this.set_current_user(res.user)
         this.$router.push({ name: 'home' })
+      }).catch(() => {
+        this.loading = false
       })
     }
   }
@@ -104,6 +109,7 @@ export default {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  background: #fff;
 
   .wm-eye-open {
     font-size: 17px;

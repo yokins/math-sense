@@ -3,14 +3,14 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:43
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-19 16:17:24
+ * @LastEditTime: 2019-08-19 16:36:36
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 
 <template>
   <div class="page homework-start">
     <div class="close-line">
-      <van-icon class-prefix="wm" name="close" style="font-size: 20px;"></van-icon>
+      <van-icon class-prefix="wm" name="close" style="font-size: 20px;" @click="close"></van-icon>
     </div>
 
     <div class="introduce">
@@ -33,14 +33,46 @@
 
     <van-row class="btn-line" gutter="15">
       <van-col span="8">
-        <van-button round block size="small" type="warning">转发打印</van-button>
+        <van-button round block size="small" type="warning" @click="onCopy">复制网址</van-button>
       </van-col>
       <van-col span="16">
-        <van-button round block size="small" type="info">开始练习</van-button>
+        <van-button round block size="small" type="info" @click="next">开始练习</van-button>
       </van-col>
     </van-row>
   </div>
 </template>
+
+<script>
+export default {
+  methods: {
+    /**
+     * @description: 点击复制
+     * @param {type}
+     * @return:
+     */
+    onCopy() {
+      cordova.plugins.clipboard.copy('你好')
+      this.$toast('文件地址已复制，请至浏览器下载！')
+    },
+    /**
+     * @description: 开始练习
+     * @param {type}
+     * @return:
+     */
+    next() {
+      this.$router.replace({ name: 'homework_loading', params: { homework_id: 1 } })
+    },
+    /**
+     * @description: 返回列表
+     * @param {type}
+     * @return:
+     */
+    close() {
+      this.$router.replace({ name: 'home' })
+    }
+  }
+}
+</script>
 
 <style lang="scss" scoped>
 .homework-start {

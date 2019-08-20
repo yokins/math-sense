@@ -2,13 +2,14 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-16 13:58:40
- * @LastEditTime: 2019-08-19 14:28:23
+ * @LastEditTime: 2019-08-20 10:25:22
  * @LastEditors: 施永坚（yokins）
  */
 import 'normalize.css'
 import './assets/styles/iconfonts/iconfont.css'
 import 'vant/lib/index.css'
 import './assets/styles/global.scss'
+// import '@/configs/rem'
 import 'amfe-flexible'
 import Vue from 'vue'
 import Vant from 'vant'

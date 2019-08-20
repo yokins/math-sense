@@ -2,7 +2,7 @@
  * @Author: yokins·shi(施永坚)
  * @Description: 改革春风吹满地，搬起砖来不吃力
  * @Date: 2019-08-16 13:58:40
- * @LastEditTime: 2019-08-19 15:37:10
+ * @LastEditTime: 2019-08-19 16:41:00
  */
 import Vue from 'vue'
 import store from './store'

@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-19 11:17:45
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-19 15:37:30
+ * @LastEditTime: 2019-08-19 16:35:09
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -28,7 +28,7 @@ export default {
      * @return: 
      */  
     to_homework() {
-      this.$router.push({ name: 'homework_start', params: { homework_id: 1 } })
+      this.$router.replace({ name: 'homework_start', params: { homework_id: 1 } })
     }
   }
 }

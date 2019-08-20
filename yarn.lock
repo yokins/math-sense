@@ -2485,6 +2485,11 @@ copy-webpack-plugin@^4.6.0:
     p-limit "^1.0.0"
     serialize-javascript "^1.4.0"
 
+cordova-clipboard@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.npm.taobao.org/cordova-clipboard/download/cordova-clipboard-1.3.0.tgz#0911da4cbdea5df2e3a769f5b3aab00e0be0e679"
+  integrity sha1-CRHaTL3qXfLjp2n1s6qwDgvg5nk=
+
 cordova-plugin-camera@^4.1.0:
   version "4.1.0"
   resolved "https://registry.npm.taobao.org/cordova-plugin-camera/download/cordova-plugin-camera-4.1.0.tgz?cache=0&sync_timestamp=1562860479396&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcordova-plugin-camera%2Fdownload%2Fcordova-plugin-camera-4.1.0.tgz#6474a3e080c4662aa00fd7425705d301c693ddc0"

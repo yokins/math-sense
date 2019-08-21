@@ -3,26 +3,20 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-21 15:22:38
+ * @LastEditTime: 2019-08-21 19:46:52
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
   <div class="page question-do" id="question-do">
     <div class="top">
-      <span class="wm wm-close" style="margin-right: 10px;"></span>
-      <progress-bar :progress="40"></progress-bar>
-      <span style="margin-left: 10px;">1/10</span>
+      <span class="wm wm-close" style="margin-right: 10px;" @click="close"></span>
+      <progress-bar :progress="percent"></progress-bar>
+      <span style="margin-left: 10px;">{{ currentQuestionIndex }}/{{doing_questions.length}}</span>
     </div>
 
-    <div class="question">
-      首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次
-      答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首
-      次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题
-      首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次
-      答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首
-      次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题
-    </div>
+    <div class="question" v-html="question.html"></div>
 
+    <!-- tabs区域 -->
     <div class="tabs" v-show="showTabs">
       <div :class="['tab', showTab('record') ? 'active' : '']" @click="onClickTab('record')">首次答题</div>
       <div
@@ -33,6 +27,7 @@
       <div :class="['tab', showTab('form') ? 'active' : '']" v-else @click="onClickTab('form')">订正答题</div>
       <div :class="['tab', showTab('reason') ? 'active' : '']" v-if="onReason" @click="onClickTab('reason')">错题总结</div>
     </div>
+    <!-- tabs区域 -->
 
     <!-- 做题 -->
     <div class="panel step" v-show="showTab('form')">
@@ -40,7 +35,7 @@
         <span class="tip">在这里写步骤</span>
         <img class="upload" src="../../assets/images/camera.png" alt />
         <span class="clean" @click="cleanStep">清空</span>
-        <draw-panel class="draw-panel" ref="draw"></draw-panel>
+        <draw-panel class="draw-panel" ref="draw" @updateDrawed="updateDrawed"></draw-panel>
       </div>
     </div>
 
@@ -87,7 +82,7 @@
     </div>
     <!-- 原因 -->
 
-    <van-button class="submit" block round size="small" type="info">提交答案</van-button>
+    <van-button class="submit" block round size="small" type="info" @click="submit" :disabled="submitDisabled">提交答案</van-button>
   </div>
 </template>
 
@@ -97,18 +92,23 @@ import 'katex/dist/katex.min.css'
 import katex from 'katex'
 import 'myscript/dist/myscript.min.css'
 import * as MyScriptJS from 'myscript/dist/myscript.esm'
+import { mapState } from 'vuex'
 
 export default {
   data() {
     return {
       active_tab: 'form',
       show_tabs: false,
-      result: ''
+      result: '',
+      step: '',
+      question: {},
+      drawed: false
     }
   },
 
   created() {
-    // this.onTypeInit()
+    this.onTypeInit()
+    this.init(this.$route.params.question_id)
   },
 
   mounted() {
@@ -116,6 +116,34 @@ export default {
   },
 
   computed: {
+    ...mapState(['doing_questions']),
+    /**
+     * @description: 当前题目的序号
+     * @param {type}
+     * @return:
+     */
+    currentQuestionIndex() {
+      const index = this.doing_questions.findIndex(item => {
+        return item.id === parseInt(this.$route.params.question_id)
+      })
+      return index + 1
+    },
+    /**
+     * @description: 当前进度
+     * @param {type}
+     * @return:
+     */
+    percent() {
+      return (this.currentQuestionIndex / this.doing_questions.length) * 100
+    },
+    /**
+     * @description: 禁止提交
+     * @param {type}
+     * @return:
+     */
+    submitDisabled() {
+      return !this.drawed || (!this.drawed && !this.step) || !this.result
+    },
     /**
      * @description: 判断是否显示tabs
      * @param {type}
@@ -135,6 +163,16 @@ export default {
   },
 
   methods: {
+    /**
+     * @description: 获取题目信息
+     * @param {type}
+     * @return:
+     */
+    init(id) {
+      this.$api.get_question({ id: id, homework_id: this.$route.params.homework_id }).then(res => {
+        this.question = res.homework_question.question
+      })
+    },
     /**
      * @description: 手写板初始化，另外附加监听值
      * @param {type}
@@ -220,8 +258,8 @@ export default {
     },
     /**
      * @description: 清空答案
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     cleanResult() {
       this.$refs.editor.editor.clear()
@@ -229,18 +267,45 @@ export default {
     },
     /**
      * @description: 清空步骤
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     cleanStep() {
       this.$refs.draw.clean()
+    },
+    /**
+     * @description:
+     * @param {type}
+     * @return:
+     */
+    close() {
+      this.$router.replace({ name: 'home' })
+    },
+    /**
+     * @description: 提交内容
+     * @param {type}
+     * @return:
+     */
+    submit() {},
+    /**
+     * @description: 更新canvas是不是已经绘画过
+     * @param {type} 
+     * @return: 
+     */
+    updateDrawed(result) {
+      this.drawed = result
     }
   },
 
   watch: {
+    /**
+     * @description: 监控答案，然后显示
+     * @param {type} 
+     * @return: 
+     */
     result(val) {
       const resultElement = this.$refs.result
-      if (val) {
+      if (val && val !== undefined) {
         katex.render(val, resultElement)
       } else {
         resultElement.innerHTML = ''
@@ -251,7 +316,7 @@ export default {
 </script>
 
 
-<style lang="scss" scoped>
+<style lang="scss">
 .question-do {
   height: 100vh;
   width: 100vw;
@@ -281,6 +346,12 @@ export default {
     padding: 10px;
     font-size: 13px;
     color: #474e60;
+    float: left;
+    flex-flow: row wrap;
+    align-items: center;
+    p {
+      margin: 0 !important;
+    }
   }
 
   .tabs {
@@ -382,10 +453,10 @@ export default {
       margin-bottom: 50px;
       .content {
         height: 80px;
-        /*iPad 竖屏*/
-        @media only screen and (min-device-width: 768px) and (orientation: portrait) {
-          height: 50px;
-        }
+        // /*iPad 竖屏*/
+        // @media only screen and (min-device-width: 768px) and (orientation: portrait) {
+        //   height: 80px;
+        // }
       }
     }
   }
@@ -412,7 +483,7 @@ export default {
   }
 
   .result-element {
-    color: #3296FA !important;
+    color: #3296fa !important;
     font-size: 18px;
   }
 }

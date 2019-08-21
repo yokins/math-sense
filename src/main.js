@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-16 13:58:40
- * @LastEditTime: 2019-08-21 14:37:34
+ * @LastEditTime: 2019-08-21 15:37:17
  * @LastEditors: 施永坚（yokins）
  */
 import 'normalize.css'
@@ -29,7 +29,7 @@ Object.keys(components).forEach(item => {
   Vue.component(item, components[item])
 })
 Object.keys(filter).forEach(item => {
-  Vue.component(item, filter[item])
+  Vue.filter(item, filter[item])
 })
 Vue.prototype.$util = util
 Vue.prototype.$api = api

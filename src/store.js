@@ -2,7 +2,7 @@
  * @Author: yokins·shi(施永坚)
  * @Description: 改革春风吹满地，搬起砖来不吃力
  * @Date: 2019-08-16 13:58:40
- * @LastEditTime: 2019-08-19 10:36:14
+ * @LastEditTime: 2019-08-21 19:38:58
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -15,7 +15,35 @@ const types = {
 
 export default new Vuex.Store({
   state: {
-    current_user: util.storage.get('math-sense-current-user')
+    current_user: util.storage.get('math-sense-current-user'),
+    doing_questions: util.storage.get('math-sense-current-doing-questions')
+  },
+
+  getters: {
+    /**
+     * @description: 开始练习时候的状态判断
+     * @param {type} 
+     * @return: 
+     */
+    startPath(state) {
+      const questions = state.doing_questions
+      // todo 检查是否有需要填写原因的题目并且返回第一个id
+      
+      // 检查是否有订正的题目并且返回第一个id
+      const redoQuestion = questions.filter(item => {
+        return item.status === 'redo'
+      })[0]
+      if (redoQuestion) {
+        return { status: 'redo', id: redoQuestion.id }
+      }
+      // 检查是否有状态为init的题目并且返回第一个id
+      const initQuestion = questions.filter(item => {
+        return item.status === 'init'
+      })[0]
+      if (initQuestion) {
+        return { status: 'do', id: initQuestion.id }
+      }
+    }
   },
 
   actions: {
@@ -36,6 +64,24 @@ export default new Vuex.Store({
     clean_current_user({ commit }) {
       util.storage.delete('math-sense-current-user')
       commit(types.SET_STATE, { key: 'current_user', value: null })
+    },
+    /**
+     * @description: 设置当前练习所做的题目简易信息
+     * @param {type}
+     * @return:
+     */
+    set_doing_question({ commit }, payload) {
+      util.storage.set('math-sense-current-doing-questions', payload)
+      commit(types.SET_STATE, { key: 'doing_question', value: payload })
+    },
+    /**
+     * @description: 删除当前练习所做的题目简易信息
+     * @param {type}
+     * @return:
+     */
+    clean_doing_question({ commit }) {
+      util.storage.delete('math-sense-current-doing-questions')
+      commit(types.SET_STATE, { key: 'doing_question', value: null })
     }
   },
 

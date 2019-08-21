@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:02
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-21 15:29:34
+ * @LastEditTime: 2019-08-21 16:21:15
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
@@ -22,6 +24,10 @@ export default {
 
   created() {
     this.loaded()
+  },
+
+  computed: {
+    ...mapGetters(['startPath'])
   },
 
   methods: {
@@ -41,10 +47,24 @@ export default {
       }, 1000)
       setTimeout(() => {
         clearInterval(countdown)
-        _this.$router.replace({
-          name: 'homework_question_do',
-          params: { homework_id: _this.$route.params.homework_id, question_id: 1 }
-        })
+
+        switch (_this.startPath.status) {
+          case 'do':
+            _this.$router.replace({
+              name: 'homework_question_do',
+              params: { homework_id: _this.$route.params.homework_id, question_id: _this.startPath.id }
+            })
+            break
+          case 'redo':
+            _this.$router.replace({
+              name: 'homework_question_do',
+              params: { homework_id: _this.$route.params.homework_id, question_id: _this.startPath.id },
+              query: { type: 'redo' }
+            })
+            break
+          default:
+            break
+        }
       }, 3500)
     }
   }

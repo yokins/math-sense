@@ -3,11 +3,11 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-21 09:33:55
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-21 15:24:33
+ * @LastEditTime: 2019-08-21 19:45:22
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
-  <canvas id="canvas" @touchstart="touchstart" @touchend="touchend" @touchmove="touchmove"></canvas>
+  <canvas id="draw-canvas" @touchstart="touchstart" @touchend="touchend" @touchmove="touchmove"></canvas>
 </template>
 
 <script>
@@ -31,7 +31,7 @@ export default {
      * @return:
      */
     init() {
-      const canvas = document.getElementById('canvas')
+      const canvas = document.getElementById('draw-canvas')
       const width = canvas.offsetWidth
       const height = canvas.offsetHeight
       canvas.width = width
@@ -48,7 +48,7 @@ export default {
      */
     absolutePoint(event) {
       const touch = event.targetTouches[0]
-      const canvas = document.getElementById('canvas')
+      const canvas = document.getElementById('draw-canvas')
       const react = canvas.getBoundingClientRect()
       this.point = { x: touch.pageX - react.left, y: touch.pageY - react.top }
     },
@@ -69,6 +69,7 @@ export default {
     touchstart(event) {
       this.absolutePoint(event)
       this.ctx.moveTo(this.point.x, this.point.y)
+      this.$emit('updateDrawed', true)
     },
     /**
      * @description: 触摸结束
@@ -91,9 +92,10 @@ export default {
      * @return:
      */
     clean() {
-      const canvas = document.getElementById('canvas')
+      const canvas = document.getElementById('draw-canvas')
       const height = canvas.offsetHeight
       canvas.height = height
+      this.$emit('updateDrawed', false)
     }
   }
 }

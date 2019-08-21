@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 16:37:29
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-19 13:42:29
+ * @LastEditTime: 2019-08-21 15:39:07
  * @Incantation: Buddha Bless Do Not Bugs
  */
 
@@ -15,10 +15,10 @@ export default {
    * @param {type}
    * @return:
    */
-  homeworkStatus(code) {
+  homeworkStatus(key) {
     const obj = basic.homeworkStatus.filter(item => {
-      return item.code === code
-    })
+      return item.key === key
+    })[0]
 
     return obj ? obj.text : '未知状态'
   },
@@ -28,9 +28,9 @@ export default {
    * @param {type}
    * @return:
    */
-  homeworkQuestionStatus(code) {
+  homeworkQuestionStatus(key) {
     const obj = basic.homeworkQuestionStatus.filter(item => {
-      return item.code === code
+      return item.key === key
     })
 
     return obj ? obj.text : '未知状态'

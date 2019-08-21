@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:43
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-19 16:36:36
+ * @LastEditTime: 2019-08-21 16:18:02
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 
@@ -25,8 +25,8 @@
     <div class="img-with-summary">
       <div class="summary">
         练习共
-        <span>12</span> 题，涉及
-        <span>23</span> 个知识点
+        <span>{{homework_question_count}}</span> 题，涉及
+        <span>{{knowledge_count}}</span> 个知识点
       </div>
       <div class="vector"></div>
     </div>
@@ -43,8 +43,32 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
+  data() {
+    return {
+      homework_id: this.$route.params.homework_id,
+      homework_question_count: 0,
+      knowledge_count: 0
+    }
+  },
+  created() {
+    this.init()
+  },
   methods: {
+    ...mapActions(['set_doing_question']),
+    /**
+     * @description: 拉取练习信息
+     * @param {type} 
+     * @return: 
+     */
+    init() {
+      this.$api.get_homework_info(this.homework_id).then(res => {
+        this.homework_question_count = res.homework_question_count
+        this.knowledge_count = res.knowledge_count
+        this.set_doing_question(res.homework_question_ids)
+      })
+    },
     /**
      * @description: 点击复制
      * @param {type}
@@ -60,7 +84,7 @@ export default {
      * @return:
      */
     next() {
-      this.$router.replace({ name: 'homework_loading', params: { homework_id: 1 } })
+      this.$router.replace({ name: 'homework_loading', params: { homework_id: this.homework_id } })
     },
     /**
      * @description: 返回列表

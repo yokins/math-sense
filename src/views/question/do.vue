@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-20 14:09:25
+ * @LastEditTime: 2019-08-21 09:35:30
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -14,40 +14,76 @@
       <span style="margin-left: 10px;">1/10</span>
     </div>
 
-    <div class="question"></div>
+    <div class="question">
+      首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次
+      答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首
+      次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题
+      首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次
+      答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首
+      次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题首次答题
+    </div>
 
-    <div class="tabs">
+    <div class="tabs" v-show="showTabs">
       <div :class="['tab', showTab('record') ? 'active' : '']" @click="onClickTab('record')">首次答题</div>
-      <div :class="['tab', showTab('form') ? 'active' : '']" @click="onClickTab('form')">订正答题</div>
-      <div :class="['tab', showTab('reason') ? 'active' : '']" @click="onClickTab('reason')">错题总结</div>
+      <div
+        :class="['tab', showTab('redo_record') ? 'active' : '']"
+        v-if="onReason"
+        @click="onClickTab('redo_record')"
+      >订正答题</div>
+      <div :class="['tab', showTab('form') ? 'active' : '']" v-else @click="onClickTab('form')">订正答题</div>
+      <div :class="['tab', showTab('reason') ? 'active' : '']" v-if="onReason" @click="onClickTab('reason')">错题总结</div>
     </div>
-
-    <!-- 首次 -->
-    <div class="panel step" v-show="showTab('record')">
-      <div class="content"></div>
-    </div>
-
-    <div class="panel answer" v-show="showTab('record')">
-      <div class="content"></div>
-    </div>
-    <!-- 首次 -->
 
     <!-- 做题 -->
     <div class="panel step" v-show="showTab('form')">
-      <div class="content"></div>
+      <div class="content">
+        <span class="tip">在这里写步骤</span>
+        <img class="upload" src="../../assets/images/camera.png" alt />
+        <span class="clean">清空</span>
+        <!-- <drawing-board id="canvas" ref="canvas"></drawing-board> -->
+        <draw-panel class="draw-panel"></draw-panel>
+      </div>
     </div>
 
     <div class="panel answer" v-show="showTab('form')">
-      <div class="content"></div>
+      <div class="content">
+        <span class="tip">在这里写答案</span>
+        <span class="clean">清空</span>
+        <div ref="editor" id="editor" touch-action="none"></div>
+      </div>
+      <div class="result">
+        {{ '请输入答案，系统自动识别' }}
+        <span ref="result"></span>
+      </div>
     </div>
     <!-- 做题 -->
 
-    <!-- 原因 -->
-    <div class="panel step" v-show="showTab('reason')">
+    <!-- 首次 -->
+    <div class="panel" v-show="showTab('record')">
       <div class="content"></div>
     </div>
 
-    <div class="panel answer" v-show="showTab('reason')">
+    <div class="panel" v-show="showTab('record')">
+      <div class="content"></div>
+    </div>
+    <!-- 首次 -->
+
+    <!-- 订正 -->
+    <div class="panel" v-show="showTab('redo_record')">
+      <div class="content"></div>
+    </div>
+
+    <div class="panel" v-show="showTab('redo_record')">
+      <div class="content"></div>
+    </div>
+    <!-- 订正 -->
+
+    <!-- 原因 -->
+    <div class="panel" v-show="showTab('reason')">
+      <div class="content"></div>
+    </div>
+
+    <div class="panel" v-show="showTab('reason')">
       <div class="content"></div>
     </div>
     <!-- 原因 -->
@@ -57,6 +93,12 @@
 </template>
 
 <script>
+import 'pepjs'
+import 'katex/dist/katex.min.css'
+import katex from 'katex'
+import 'myscript/dist/myscript.min.css'
+import * as MyScriptJS from 'myscript/dist/myscript.esm'
+
 export default {
   data() {
     return {
@@ -66,7 +108,11 @@ export default {
   },
 
   created() {
-    this.onTypeInit()
+    // this.onTypeInit()
+  },
+
+  mounted() {
+    this.initMyscript()
   },
 
   computed: {
@@ -76,11 +122,62 @@ export default {
      * @return:
      */
     showTabs() {
-      return this.active_tab !== 'form'
+      return Boolean(this.$route.query.type)
+    },
+    /**
+     * @description: 判断是否是填写原因
+     * @param {type}
+     * @return:
+     */
+    onReason() {
+      return this.$route.query.type === 'reason'
     }
   },
 
   methods: {
+    /**
+     * @description: 手写板初始化，另外附加监听值
+     * @param {type}
+     * @return:
+     */
+    initMyscript() {
+      const editorElement = this.$refs.editor
+      const resultElement = this.$refs.result
+      MyScriptJS.register(editorElement, {
+        recognitionParams: {
+          type: 'MATH',
+          protocol: 'WEBSOCKET',
+          apiVersion: 'V4',
+          server: {
+            scheme: 'https',
+            host: 'cloud.myscript.com',
+            applicationKey: '3096583b-ab1c-40f7-a814-9a15b709a542',
+            hmacKey: 'e3df8899-4250-40c9-acf4-baadc4ec93a5'
+          },
+          v4: {
+            alwaysConnected: false,
+            math: {
+              mimeTypes: ['application/x-latex', 'image/png'],
+              margin: {
+                bottom: 0,
+                left: 0,
+                right: 0,
+                top: 0
+              }
+            }
+          }
+        }
+      })
+      window.addEventListener('resize', function() {
+        editorElement.editor.resize()
+      })
+      editorElement.addEventListener('exported', function(editor) {
+        const exports = editor.detail.exports
+        if (exports && exports['application/x-latex']) {
+          katex.render(exports['application/x-latex'], resultElement)
+        }
+      })
+    },
     /**
      * @description: 根据tab处理数据初始化
      * @param {type}
@@ -124,7 +221,7 @@ export default {
 </script>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
 .question-do {
   height: 100vh;
   width: 100vw;
@@ -136,7 +233,7 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    height: 30px;
+    padding: 10px;
     background: #fff;
 
     span {
@@ -149,7 +246,11 @@ export default {
     overflow: hidden;
     overflow-y: auto;
     flex: 1;
+    // height: 75px;
     background: #fff;
+    padding: 10px;
+    font-size: 13px;
+    color: #474e60;
   }
 
   .tabs {
@@ -192,27 +293,68 @@ export default {
 
     .content {
       border: 1px dotted #85a8ff;
-      padding: 10px;
       border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+      width: calc(100vw - 40px);
+
+      .tip {
+        font-size: 10px;
+        color: #3296fa;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 1000;
+      }
+
+      .upload {
+        width: 20px;
+        height: 15px;
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        z-index: 1000;
+      }
+
+      .clean {
+        font-size: 13px;
+        color: #767789;
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        z-index: 1000;
+      }
+    }
+
+    .result {
+      height: 50px;
+      font-size: 12px;
+      color: #c1c3cb;
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      justify-content: center;
     }
 
     &.step {
       .content {
-        height: 270px;
+        height: 280px;
 
         /*iPad 竖屏*/
         @media only screen and (min-device-width: 768px) and (orientation: portrait) {
-          height: 135px;
+          height: 150px;
         }
       }
     }
 
     &.answer {
+      padding-bottom: 0;
+      margin-bottom: 50px;
       .content {
         height: 80px;
         /*iPad 竖屏*/
         @media only screen and (min-device-width: 768px) and (orientation: portrait) {
-          height: 40px;
+          height: 50px;
         }
       }
     }
@@ -220,7 +362,23 @@ export default {
 
   .submit {
     width: calc(100% - 20px);
-    margin: 10px;
+    // margin: 10px;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+  }
+
+  #editor {
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+  }
+
+  .draw-panel {
+    height: 100%;
+    width: 100%;
+    z-index: 10;
   }
 }
 </style>

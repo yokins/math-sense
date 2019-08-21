@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:46:35
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-21 15:23:23
+ * @LastEditTime: 2019-08-21 15:27:47
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -30,7 +30,7 @@
         <span>本月已累计答错 {{total_wrong_count}} 题</span>
       </div>
 
-      <homework-item v-for="(item, index) in list" :key="index" :homework="item"></homework-item>
+      <homework-item v-for="(item, index) in 20" :key="index" :homework="item"></homework-item>
     </div>
   </div>
 </template>

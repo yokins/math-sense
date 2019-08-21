@@ -3,12 +3,12 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:46:59
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-19 15:31:06
+ * @LastEditTime: 2019-08-21 15:27:06
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
   <div class="page mistake" id="mistake">
-    <van-nav-bar fixed :z-index="1000" title="意见反馈" left-text="返回" left-arrow @click-left="onClickLeft" />
+    <van-nav-bar fixed :z-index="1000" title="意见反馈" left-arrow @click-left="onClickLeft" />
   </div>
 </template>
 

@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:02
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-20 09:09:27
+ * @LastEditTime: 2019-08-21 15:29:34
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -54,5 +54,24 @@ export default {
 <style lang="scss">
 .homework-loading {
   background: #fff;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  .load-number {
+    width: 180px;
+    height: 180px;
+    border: 5px solid rgba(50, 150, 250, 1);
+    border-radius: 180px;
+    font-size: 100px;
+    color: #3296fa;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+  }
 }
 </style>

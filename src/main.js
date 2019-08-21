@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-16 13:58:40
- * @LastEditTime: 2019-08-20 15:59:49
+ * @LastEditTime: 2019-08-21 14:37:34
  * @LastEditors: 施永坚（yokins）
  */
 import 'normalize.css'
@@ -35,6 +35,11 @@ Vue.prototype.$util = util
 Vue.prototype.$api = api
 
 Vue.config.productionTip = false
+if (process.env.NODE_ENV === 'production') {
+  Vue.config.devtools = false
+} else {
+  Vue.config.devtools = true
+}
 
 // if ('addEventListener' in document) {
 //   document.addEventListener(

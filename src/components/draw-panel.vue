@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-21 09:33:55
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-21 14:05:40
+ * @LastEditTime: 2019-08-21 15:24:33
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -34,12 +34,12 @@ export default {
       const canvas = document.getElementById('canvas')
       const width = canvas.offsetWidth
       const height = canvas.offsetHeight
-      this.ctx = canvas.getContext('2d')
       canvas.width = width
       canvas.height = height
+      this.ctx = canvas.getContext('2d')
+      this.ctx.clearRect(0, 0, width, height)
       this.ctx.strokeStyle = '#474E60'
       this.ctx.lineWidth = 1
-      this.ctx.beginPath()
     },
     /**
      * @description: 获取相对坐标
@@ -57,7 +57,7 @@ export default {
      * @param {type}
      * @return:
      */
-    draw(event) {
+    draw() {
       this.ctx.lineTo(this.point.x, this.point.y)
       this.ctx.stroke()
     },
@@ -75,7 +75,7 @@ export default {
      * @param {type}
      * @return:
      */
-    touchend(event) {},
+    touchend() {},
     /**
      * @description: 触摸移动
      * @param {type}
@@ -84,6 +84,16 @@ export default {
     touchmove(event) {
       this.absolutePoint(event)
       this.draw(event)
+    },
+    /**
+     * @description: 清空画布
+     * @param {type}
+     * @return:
+     */
+    clean() {
+      const canvas = document.getElementById('canvas')
+      const height = canvas.offsetHeight
+      canvas.height = height
     }
   }
 }

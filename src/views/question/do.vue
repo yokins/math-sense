@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-21 09:35:30
+ * @LastEditTime: 2019-08-21 15:22:38
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -39,21 +39,20 @@
       <div class="content">
         <span class="tip">在这里写步骤</span>
         <img class="upload" src="../../assets/images/camera.png" alt />
-        <span class="clean">清空</span>
-        <!-- <drawing-board id="canvas" ref="canvas"></drawing-board> -->
-        <draw-panel class="draw-panel"></draw-panel>
+        <span class="clean" @click="cleanStep">清空</span>
+        <draw-panel class="draw-panel" ref="draw"></draw-panel>
       </div>
     </div>
 
     <div class="panel answer" v-show="showTab('form')">
       <div class="content">
         <span class="tip">在这里写答案</span>
-        <span class="clean">清空</span>
+        <span class="clean" @click="cleanResult">清空</span>
         <div ref="editor" id="editor" touch-action="none"></div>
       </div>
       <div class="result">
-        {{ '请输入答案，系统自动识别' }}
-        <span ref="result"></span>
+        {{ result ? '系统识别您的答案为：' : '请输入答案，系统自动识别' }}
+        <span class="result-element" v-if="result" ref="result"></span>
       </div>
     </div>
     <!-- 做题 -->
@@ -103,7 +102,8 @@ export default {
   data() {
     return {
       active_tab: 'form',
-      show_tabs: false
+      show_tabs: false,
+      result: ''
     }
   },
 
@@ -141,8 +141,8 @@ export default {
      * @return:
      */
     initMyscript() {
+      const _this = this
       const editorElement = this.$refs.editor
-      const resultElement = this.$refs.result
       MyScriptJS.register(editorElement, {
         recognitionParams: {
           type: 'MATH',
@@ -174,7 +174,9 @@ export default {
       editorElement.addEventListener('exported', function(editor) {
         const exports = editor.detail.exports
         if (exports && exports['application/x-latex']) {
-          katex.render(exports['application/x-latex'], resultElement)
+          _this.result = exports['application/x-latex']
+        } else {
+          _this.result = ''
         }
       })
     },
@@ -214,6 +216,34 @@ export default {
     onClickTab(tab_name) {
       if (tab_name !== this.active_tab) {
         this.active_tab = tab_name
+      }
+    },
+    /**
+     * @description: 清空答案
+     * @param {type} 
+     * @return: 
+     */
+    cleanResult() {
+      this.$refs.editor.editor.clear()
+      console.log(this.$refs.editor.editor)
+    },
+    /**
+     * @description: 清空步骤
+     * @param {type} 
+     * @return: 
+     */
+    cleanStep() {
+      this.$refs.draw.clean()
+    }
+  },
+
+  watch: {
+    result(val) {
+      const resultElement = this.$refs.result
+      if (val) {
+        katex.render(val, resultElement)
+      } else {
+        resultElement.innerHTML = ''
       }
     }
   }
@@ -379,6 +409,11 @@ export default {
     height: 100%;
     width: 100%;
     z-index: 10;
+  }
+
+  .result-element {
+    color: #3296FA !important;
+    font-size: 18px;
   }
 }
 </style>

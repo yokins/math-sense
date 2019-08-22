@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-21 19:46:52
+ * @LastEditTime: 2019-08-22 09:41:58
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -33,9 +33,10 @@
     <div class="panel step" v-show="showTab('form')">
       <div class="content">
         <span class="tip">在这里写步骤</span>
-        <img class="upload" src="../../assets/images/camera.png" alt />
+        <img class="upload" src="../../assets/images/camera.png" @click="uploadImg"/>
         <span class="clean" @click="cleanStep">清空</span>
-        <draw-panel class="draw-panel" ref="draw" @updateDrawed="updateDrawed"></draw-panel>
+        <img v-if="step" :src="step" class="step-img" @click="clickStepImg">
+        <draw-panel v-else class="draw-panel" ref="draw" @updateDrawed="updateDrawed"></draw-panel>
       </div>
     </div>
 
@@ -93,6 +94,7 @@ import katex from 'katex'
 import 'myscript/dist/myscript.min.css'
 import * as MyScriptJS from 'myscript/dist/myscript.esm'
 import { mapState } from 'vuex'
+import {ImagePreview} from 'vant'
 
 export default {
   data() {
@@ -100,7 +102,7 @@ export default {
       active_tab: 'form',
       show_tabs: false,
       result: '',
-      step: '',
+      step: 'https://gss0.baidu.com/94o3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/2fdda3cc7cd98d108956d2c3263fb80e7aec9046.jpg',
       question: {},
       drawed: false
     }
@@ -272,6 +274,7 @@ export default {
      */
     cleanStep() {
       this.$refs.draw.clean()
+      this.step = ''
     },
     /**
      * @description:
@@ -289,19 +292,82 @@ export default {
     submit() {},
     /**
      * @description: 更新canvas是不是已经绘画过
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     updateDrawed(result) {
       this.drawed = result
+    },
+    /**
+     * @description: 预览图片
+     * @param {type} 
+     * @return: 
+     */
+    clickStepImg() {
+      ImagePreview([this.step])
+    },
+    /**
+     * @description: 图片拍照、上传
+     * @param {type}
+     * @return:
+     */
+    uploadImg() {
+      const _this = this
+      navigator.camera.getPicture(
+        url => {
+          window.resolveLocalFileSystemURL(
+            url,
+            entry => {
+              entry.file(
+                function(file) {
+                  let reader = new FileReader()
+                  reader.onloadend = function() {
+                    _this.$toast.loading({
+                      mask: true,
+                      message: '上传中...'
+                    })
+                    upload({
+                      base64: this.result,
+                      name: file.name
+                    }).then(res => {
+                      _this.cleanStep()
+                      _this.step = res
+                      _this.$toast.clear()
+                    })
+                  }
+                  reader.readAsArrayBuffer(file)
+                },
+                function(error) {
+                  this.$toast.fail('图片读取失败，请重试！')
+                  console.log('FileEntry.file error: ' + error.code)
+                }
+              )
+            },
+            err => {
+              console.log(err)
+              alert(err)
+            }
+          )
+        },
+        error => {
+          this.$toast.fail('摄像头打开失败，请重试！')
+        },
+        {
+          quality: 50, // 质量
+          sourceType:  Camera.PictureSourceType.CAMERA,	// 图片来源
+          correctOrientation: true, // 如果是横向拍摄的照片，会自动旋转到正确的方向
+          saveToPhotoAlbum: true, // 设备拍照后的图像是否保存的图片库中
+          EncodingType: Camera.EncodingType.PNG
+        }
+      )
     }
   },
 
   watch: {
     /**
      * @description: 监控答案，然后显示
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     result(val) {
       const resultElement = this.$refs.result
@@ -441,9 +507,22 @@ export default {
       .content {
         height: 280px;
 
+        .step-img {
+          margin: 40px 10px 0;
+          width: 130px;
+          height: 180px;
+          border-radius: 10px;
+        }
+
         /*iPad 竖屏*/
         @media only screen and (min-device-width: 768px) and (orientation: portrait) {
           height: 150px;
+
+          .step-img {
+            margin: 30px 10px 0;
+            width: 60px;
+            height: 90px;
+          }
         }
       }
     }

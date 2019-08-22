@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:02
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-21 16:21:15
+ * @LastEditTime: 2019-08-22 17:03:39
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -47,7 +47,6 @@ export default {
       }, 1000)
       setTimeout(() => {
         clearInterval(countdown)
-
         switch (_this.startPath.status) {
           case 'do':
             _this.$router.replace({
@@ -63,6 +62,10 @@ export default {
             })
             break
           default:
+            _this.$router.replace({
+              name: 'homework_judge',
+              params: { homework_id: _this.$route.params.homework_id }
+            })
             break
         }
       }, 3500)

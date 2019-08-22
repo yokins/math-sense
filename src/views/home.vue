@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:46:35
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-21 15:34:33
+ * @LastEditTime: 2019-08-22 17:09:32
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   data() {
     return {
@@ -49,6 +50,7 @@ export default {
   },
 
   methods: {
+    ...mapActions(['clean_doing_question']),
     /**
      * @description: 拉取首页数据
      * @param {type}
@@ -59,6 +61,14 @@ export default {
         this.list = res.homeworks
         this.total_wrong_count = res.total_wrong_count
       })
+    },
+    /**
+     * @description: 清除doing_questions
+     * @param {type}
+     * @return:
+     */
+    cleanData() {
+      this.clean_doing_question()
     }
   }
 }

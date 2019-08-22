@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 16:37:12
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-19 10:17:05
+ * @LastEditTime: 2019-08-22 19:20:13
  * @Incantation: Buddha Bless Do Not Bugs
  */
 import http from './http'
@@ -64,7 +64,7 @@ const api = {
    * @param {type}
    * @return:
    */
-  question_tas() {
+  question_tags() {
     return http.get('tags')
   },
   /**

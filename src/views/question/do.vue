@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-22 09:41:58
+ * @LastEditTime: 2019-08-22 19:56:03
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -33,9 +33,9 @@
     <div class="panel step" v-show="showTab('form')">
       <div class="content">
         <span class="tip">在这里写步骤</span>
-        <img class="upload" src="../../assets/images/camera.png" @click="uploadImg"/>
+        <img class="upload" src="../../assets/images/camera.png" @click="uploadImg" />
         <span class="clean" @click="cleanStep">清空</span>
-        <img v-if="step" :src="step" class="step-img" @click="clickStepImg">
+        <img v-if="step" :src="step" class="step-img" @click="clickStepImg" />
         <draw-panel v-else class="draw-panel" ref="draw" @updateDrawed="updateDrawed"></draw-panel>
       </div>
     </div>
@@ -48,42 +48,113 @@
       </div>
       <div class="result">
         {{ result ? '系统识别您的答案为：' : '请输入答案，系统自动识别' }}
-        <span class="result-element" v-if="result" ref="result"></span>
+        <span class="result-element" v-if="result" ref="result">
+          <vue-mathjax :formula="result"></vue-mathjax>
+        </span>
       </div>
     </div>
     <!-- 做题 -->
 
     <!-- 首次 -->
-    <div class="panel" v-show="showTab('record')">
-      <div class="content"></div>
+    <div class="panel step" v-show="showTab('record')">
+      <div class="content" v-if="answer_1">
+        <span class="tip">您的解题步骤</span>
+        <img
+          v-if="answer_1.attachments[0]"
+          :src="answer_1.attachments[0].url"
+          class="step-img"
+          @click="clickStepImg(answer_1.attachments[0].url)"
+        />
+      </div>
     </div>
 
-    <div class="panel" v-show="showTab('record')">
-      <div class="content"></div>
+    <div class="panel answer" v-show="showTab('record')">
+      <div class="content display" v-if="answer_1 && answer_1.homework_answer_contents[0]">
+        <span class="tip">您的答案</span>
+        <vue-mathjax :formula="answer_1.homework_answer_contents[0].content"></vue-mathjax>
+        <van-icon size="15" v-if="answer_1.homework_answer_contents[0].status === 'wrong'" name="clear" color="#FF7B4D"></van-icon>
+        <van-icon size="15" v-else name="checked" color="#3296fa"></van-icon>
+      </div>
     </div>
     <!-- 首次 -->
 
     <!-- 订正 -->
-    <div class="panel" v-show="showTab('redo_record')">
-      <div class="content"></div>
+    <div class="panel step" v-show="showTab('redo_record')">
+      <div class="content" v-if="answer_2">
+        <span class="tip">您的解题步骤</span>
+        <img
+          v-if="answer_2.attachments[0]"
+          :src="answer_2.attachments[0].url"
+          class="step-img"
+          @click="clickStepImg(answer_2.attachments[0].url)"
+        />
+      </div>
     </div>
 
-    <div class="panel" v-show="showTab('redo_record')">
-      <div class="content"></div>
+    <div class="panel answer" v-show="showTab('redo_record')">
+      <div class="content display" v-if="answer_2 && answer_2.homework_answer_contents[0]">
+        <span class="tip">您的答案</span>
+        <vue-mathjax :formula="answer_2.homework_answer_contents[0].content"></vue-mathjax>
+        <van-icon size="15" v-if="answer_2.homework_answer_contents[0].status === 'wrong'" name="clear" color="#FF7B4D"></van-icon>
+        <van-icon size="15" v-else name="checked" color="#3296fa"></van-icon>
+      </div>
     </div>
     <!-- 订正 -->
 
     <!-- 原因 -->
-    <div class="panel" v-show="showTab('reason')">
-      <div class="content"></div>
+    <div class="panel panel-answer" v-show="showTab('reason')">
+      <div class="content">
+        <span>正确解析</span>
+        <div class="question-analyze" v-if="question.question_analyze" v-html="question.question_analyze.html"></div>
+        <span>正确答案</span>
+        <div class="question-answer" v-if="question.question_answers">
+          <vue-mathjax v-for="(item, index) in question.question_answers" :key="index" :formula="item.content"></vue-mathjax>
+        </div>
+      </div>
     </div>
 
-    <div class="panel" v-show="showTab('reason')">
-      <div class="content"></div>
+    <div class="panel panel-reason" v-show="showTab('reason')">
+      <div class="content">
+        <span>请点击选择你的错误原因</span>
+        <div class="checkboxs">
+          <div v-for="(item, index) in tags" :key="index" :class="['tag', selected_tags.includes(item.id) ? 'selected' : '']" @click="clickTag(item.id)">
+            {{item.content}}
+          </div>
+        </div>
+        <van-field
+          v-if="tags.length > 0 && selected_tags.includes(tags[tags.length - 1].id)"
+          style="font-size: 12px;"
+          v-model="other"
+          type="textarea"
+          placeholder="请输入其他原因"
+          rows="3"
+          autosize
+        />
+      </div>
     </div>
     <!-- 原因 -->
 
-    <van-button class="submit" block round size="small" type="info" @click="submit" :disabled="submitDisabled">提交答案</van-button>
+    <van-button
+      v-if="$route.query.type !== 'reason'"
+      class="submit"
+      block
+      round
+      size="small"
+      type="info"
+      @click="submitAnswer"
+      :disabled="submitDisabled"
+    >提交答案</van-button>
+
+    <van-button
+      v-else
+      class="submit"
+      block
+      round
+      size="small"
+      type="info"
+      @click="submitReason"
+      :disabled="reasonDisabled"
+    >提交答案</van-button>
   </div>
 </template>
 
@@ -93,18 +164,28 @@ import 'katex/dist/katex.min.css'
 import katex from 'katex'
 import 'myscript/dist/myscript.min.css'
 import * as MyScriptJS from 'myscript/dist/myscript.esm'
-import { mapState } from 'vuex'
-import {ImagePreview} from 'vant'
+import { mapState, mapActions } from 'vuex'
+import { ImagePreview } from 'vant'
+import upload from '../../configs/upload'
+import { VueMathjax } from 'vue-mathjax'
 
 export default {
+  components: {
+    'vue-mathjax': VueMathjax
+  },
   data() {
     return {
       active_tab: 'form',
       show_tabs: false,
-      result: '',
-      step: 'https://gss0.baidu.com/94o3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/2fdda3cc7cd98d108956d2c3263fb80e7aec9046.jpg',
       question: {},
-      drawed: false
+      homework_answers: [],
+      drawed: false,
+      result: '',
+      step: '',
+      reason: [],
+      other: '',
+      tags: [],
+      selected_tags: []
     }
   },
 
@@ -114,7 +195,11 @@ export default {
   },
 
   mounted() {
-    this.initMyscript()
+    if (this.$route.query.type !== 'reason') {
+      this.initMyscript()
+    } else {
+      this.initTags()
+    }
   },
 
   computed: {
@@ -147,6 +232,22 @@ export default {
       return !this.drawed || (!this.drawed && !this.step) || !this.result
     },
     /**
+     * @description: 禁止提交原因
+     * @param {type} 
+     * @return: 
+     */
+    reasonDisabled() {
+      if (this.selected_tags.length > 0) {
+        if (this.selected_tags.includes(this.tags[this.tags.length - 1].id) && this.other === '') {
+          return true
+        } else {
+          return false
+        }
+      } else {
+        return true
+      }
+    },
+    /**
      * @description: 判断是否显示tabs
      * @param {type}
      * @return:
@@ -161,10 +262,45 @@ export default {
      */
     onReason() {
       return this.$route.query.type === 'reason'
+    },
+    /**
+     * @description: 首次答题的答案
+     * @param {type}
+     * @return:
+     */
+    answer_1() {
+      if (this.homework_answers) {
+        return this.homework_answers[0]
+      } else {
+        return null
+      }
+    },
+    /**
+     * @description: 二次答题的答案
+     * @param {type}
+     * @return:
+     */
+    answer_2() {
+      if (this.homework_answers) {
+        return this.homework_answers[1]
+      } else {
+        return null
+      }
     }
   },
 
   methods: {
+    ...mapActions(['set_doing_question']),
+        /**
+     * @description: 初始化错误原因
+     * @param {type} 
+     * @return: 
+     */
+    initTags() {
+      this.$api.question_tags().then(res => {
+        this.tags = res.tags
+      })
+    },
     /**
      * @description: 获取题目信息
      * @param {type}
@@ -173,6 +309,7 @@ export default {
     init(id) {
       this.$api.get_question({ id: id, homework_id: this.$route.params.homework_id }).then(res => {
         this.question = res.homework_question.question
+        this.homework_answers = res.homework_question.homework_answers
       })
     },
     /**
@@ -218,6 +355,7 @@ export default {
         } else {
           _this.result = ''
         }
+        console.log(_this.result)
       })
     },
     /**
@@ -265,7 +403,6 @@ export default {
      */
     cleanResult() {
       this.$refs.editor.editor.clear()
-      console.log(this.$refs.editor.editor)
     },
     /**
      * @description: 清空步骤
@@ -273,8 +410,11 @@ export default {
      * @return:
      */
     cleanStep() {
-      this.$refs.draw.clean()
-      this.step = ''
+      if (this.step) {
+        this.step = ''
+      } else {
+        this.$refs.draw.clean()
+      }
     },
     /**
      * @description:
@@ -285,11 +425,123 @@ export default {
       this.$router.replace({ name: 'home' })
     },
     /**
+     * @description: 下一个题目的id
+     * @param {type}
+     * @return:
+     */
+    nextQuestion() {
+      // 找出当前id的index
+      let currentIndex = this.doing_questions.findIndex(item => {
+        return item.id === parseInt(this.$route.params.question_id)
+      })
+
+      let nextIndex = this.doing_questions.findIndex((item, index) => {
+        return item.status === 'init' && index > currentIndex
+      })
+
+      return nextIndex
+    },
+    /**
+     * @description: 下一个重做的题目的id
+     * @param {type}
+     * @return:
+     */
+    nextRedoQuestion() {
+      let currentIndex = this.doing_questions.findIndex(item => {
+        return item.id === parseInt(this.$route.params.question_id)
+      })
+      let nextIndex = this.doing_questions.findIndex((item, index) => {
+        return item.status === 'redo' && !item.is_redo && index > currentIndex
+      })
+
+      return nextIndex
+    },
+    /**
+     * @description: 填写下一个题目的原因
+     * @param {type} 
+     * @return: 
+     */
+    nextReasonQuestion() {
+      let currentIndex = this.doing_questions.findIndex(item => {
+        return item.id === parseInt(this.$route.params.question_id)
+      })
+      let nextIndex = this.doing_questions.findIndex((item, index) => {
+        return item.status === 'wrong' && item.is_redo && item.student_summaries.length <= 0 && index > currentIndex
+      })
+      
+      return nextIndex
+    },
+    /**
      * @description: 提交内容
      * @param {type}
      * @return:
      */
-    submit() {},
+    async submitAnswer() {
+      let url = ''
+
+      if (this.drawed) {
+        const base64 = await this.$refs.draw.exportImg().then(res => {
+          return res
+        })
+        const timestrap = new Date().getTime()
+        url = await upload({ name: timestrap + '.png', base64: base64 }).then(res => {
+          return res
+        })
+      } else if (this.step) {
+        url = this.step
+      }
+
+      let params = {
+        id: this.$route.params.question_id,
+        itype: this.$route.query.type ? this.$route.query.type : 'normal',
+        answer_contents: [this.result],
+        analysis: '',
+        attachments: [
+          {
+            att_type: 'image',
+            url: url,
+            name: new Date().getTime() + '.png'
+          }
+        ]
+      }
+
+      const _this = this
+
+      this.$api
+        .answer_question({
+          id: _this.$route.params.question_id,
+          params: params,
+          homework_id: _this.$route.params.homework_id
+        })
+        .then(res => {
+          const next = _this.$route.query.type
+            ? _this.nextRedoQuestion(_this.$route.params.question_id)
+            : _this.nextQuestion(_this.$route.params.question_id)
+          if (next === -1) {
+            // 更新题目信息
+            this.$api.get_homework_info(this.$route.params.homework_id).then(res => {
+              this.set_doing_question(res.homework_question_ids)
+              const questions = res.homework_question_ids
+              const hadNeedRedoAndNotRedo = questions.some(item => {
+                return item.status === 'wrong' && !item.is_redo
+              })
+              if (hadNeedRedoAndNotRedo) {
+                _this.$router.replace({
+                  name: 'homework_judge',
+                  params: { homework_id: _this.$route.params.homework_id }
+                })
+              } else {
+                _this.$router.replace({
+                  name: 'homework_result',
+                  params: { homework_id: _this.$route.params.homework_id }
+                })
+              }
+            })
+          } else {
+            _this.init(next.id)
+          }
+        })
+    },
     /**
      * @description: 更新canvas是不是已经绘画过
      * @param {type}
@@ -300,11 +552,49 @@ export default {
     },
     /**
      * @description: 预览图片
+     * @param {type}
+     * @return:
+     */
+    clickStepImg(url) {
+      ImagePreview([url ? url : this.step])
+    },
+    /**
+     * @description: 点击选中
      * @param {type} 
      * @return: 
      */
-    clickStepImg() {
-      ImagePreview([this.step])
+    clickTag(result) {
+      if (this.selected_tags.includes(result)) {
+        const index = this.selected_tags.indexOf(result)
+        this.selected_tags.splice(index, 1)
+      } else {
+        this.selected_tags.push(result)
+      }
+      if (!this.selected_tags.includes(this.tags[this.tags.length - 1].id)) {
+        this.other = ''
+      }
+    },
+    /**
+     * @description: 提交原因
+     * @param {type} 
+     * @return: 
+     */
+    submitReason() {
+        let tags = []
+        this.selected_tags.forEach((item, index) => {
+          tags.push({ id: item, content: item === this.tags[this.tags.length - 1].id ? this.other : '' })
+        })
+        this.$api.summary_question({ id: this.$route.params.question_id, params: { id: this.$route.params.question_id, tags: tags } }).then(() => {
+          const next = this.nextReasonQuestion()
+          if (next === -1) {
+            this.$router.replace({
+              name: 'homework_result',
+              params: { homework_id: this.$route.params.homework_id }
+            })
+          } else {
+            this.init(next.id)
+          }
+        })
     },
     /**
      * @description: 图片拍照、上传
@@ -354,30 +644,31 @@ export default {
         },
         {
           quality: 50, // 质量
-          sourceType:  Camera.PictureSourceType.CAMERA,	// 图片来源
+          sourceType: Camera.PictureSourceType.CAMERA, // 图片来源
           correctOrientation: true, // 如果是横向拍摄的照片，会自动旋转到正确的方向
           saveToPhotoAlbum: true, // 设备拍照后的图像是否保存的图片库中
           EncodingType: Camera.EncodingType.PNG
         }
       )
     }
-  },
-
-  watch: {
-    /**
-     * @description: 监控答案，然后显示
-     * @param {type}
-     * @return:
-     */
-    result(val) {
-      const resultElement = this.$refs.result
-      if (val && val !== undefined) {
-        katex.render(val, resultElement)
-      } else {
-        resultElement.innerHTML = ''
-      }
-    }
   }
+
+  // watch: {
+  //   /**
+  //    * @description: 监控答案，然后显示
+  //    * @param {type}
+  //    * @return:
+  //    */
+  //   result(val) {
+  //     const resultElement = this.$refs.result
+  //     console.log(val)
+  //     if (val) {
+  //       katex.render(val.trim(), resultElement)
+  //     } else {
+  //       resultElement.innerHTML = ''
+  //     }
+  //   }
+  // }
 }
 </script>
 
@@ -528,14 +819,102 @@ export default {
     }
 
     &.answer {
-      padding-bottom: 0;
       margin-bottom: 50px;
       .content {
         height: 80px;
+
+        &.display {
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          padding-left: 20px;
+          color: #767789 !important;
+        }
         // /*iPad 竖屏*/
         // @media only screen and (min-device-width: 768px) and (orientation: portrait) {
         //   height: 80px;
         // }
+      }
+    }
+
+    &.panel-answer {
+      .content {
+        height: 160px;
+        overflow-y: auto;
+        display: flex;
+        flex-flow: column nowrap;
+        padding: 10px;
+        width: calc(100% - 20px);
+
+        span {
+          font-size: 11px;
+          color: #474e60;
+        }
+
+        .question-analyze {
+          background: #fff;
+          padding: 10px;
+          font-size: 13px;
+          color: #474e60;
+          float: left;
+          flex-flow: row wrap;
+          align-items: center;
+          p {
+            margin: 0 !important;
+          }
+        }
+
+        /*iPad 竖屏*/
+        @media only screen and (min-device-width: 768px) and (orientation: portrait) {
+          height: 80px;
+
+          .step-img {
+            margin: 30px 10px 0;
+            width: 60px;
+            height: 90px;
+          }
+        }
+      }
+    }
+
+    &.panel-reason {
+      margin-bottom: 50px;
+      .content {
+        min-height: 100px;
+        padding: 10px;
+        width: calc(100% - 20px);
+        display: flex;
+        flex-flow: column nowrap;
+
+        span {
+          font-size: 11px;
+          color: #474e60;
+        }
+
+        .checkboxs {
+          margin-top: 10px;
+          display: flex;
+          flex-flow: row nowrap;
+          .tag {
+            width: 70px;
+            height: 25px;
+            font-size: 11px;
+            color: #767789;
+            background: #F4F5F7;
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border-radius: 3px;
+
+            &.selected {
+              background: #3296fa;
+              color: #fff;
+            }
+          }
+        }
       }
     }
   }

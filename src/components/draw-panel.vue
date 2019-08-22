@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-21 09:33:55
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-21 19:45:22
+ * @LastEditTime: 2019-08-22 10:51:55
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -37,7 +37,9 @@ export default {
       canvas.width = width
       canvas.height = height
       this.ctx = canvas.getContext('2d')
-      this.ctx.clearRect(0, 0, width, height)
+      // this.ctx.clearRect(0, 0, width, height)
+      this.ctx.fillStyle="#fff"
+      this.ctx.fillRect(0, 0, width, height)
       this.ctx.strokeStyle = '#474E60'
       this.ctx.lineWidth = 1
     },
@@ -92,10 +94,21 @@ export default {
      * @return:
      */
     clean() {
-      const canvas = document.getElementById('draw-canvas')
-      const height = canvas.offsetHeight
-      canvas.height = height
+      this.init()
       this.$emit('updateDrawed', false)
+    },
+    /**
+     * @description: 
+     * @param {type} 
+     * @return: 
+     */
+    exportImg() {
+      const canvas = document.getElementById('draw-canvas')
+      return new Promise((resolve) => {
+         canvas.toBlob(function(blob) {
+           resolve(blob)
+        }, 'image/png', 1)
+      })
     }
   }
 }

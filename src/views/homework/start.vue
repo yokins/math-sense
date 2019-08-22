@@ -3,15 +3,18 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:43
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-21 16:18:02
+ * @LastEditTime: 2019-08-22 17:06:42
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 
 <template>
   <div class="page homework-start">
-    <div class="close-line">
+    <van-nav-bar>
+      <van-icon slot="left" class-prefix="wm" name="close" @click="close"></van-icon>
+    </van-nav-bar>
+    <!-- <div class="close-line">
       <van-icon class-prefix="wm" name="close" style="font-size: 20px;" @click="close"></van-icon>
-    </div>
+    </div> -->
 
     <div class="introduce">
       <div class="title">练习马上开始</div>
@@ -43,7 +46,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -54,6 +57,9 @@ export default {
   },
   created() {
     this.init()
+  },
+  computed: {
+    ...mapState(['doing_questions'])
   },
   methods: {
     ...mapActions(['set_doing_question']),
@@ -84,7 +90,23 @@ export default {
      * @return:
      */
     next() {
-      this.$router.replace({ name: 'homework_loading', params: { homework_id: this.homework_id } })
+      // 未做题目
+      console.log(this.doing_questions)
+      const hadInitQuestion = this.doing_questions.some(item => {
+        return item.status === 'init'
+      })
+      // 需要重做但是没做
+      const hadRedoAndNotDoQuestion = this.doing_questions.some(item => {
+        return item.status === 'wrong' && !item.is_redo
+      })
+
+      console.log(hadInitQuestion, hadRedoAndNotDoQuestion)
+
+      if (hadInitQuestion || hadRedoAndNotDoQuestion) {
+        this.$router.replace({ name: 'homework_loading', params: { homework_id: this.homework_id } })
+      } else {
+        this.$router.replace({ name: 'homework_result', params: { homework_id: this.homework_id } })
+      }
     },
     /**
      * @description: 返回列表
@@ -101,9 +123,9 @@ export default {
 <style lang="scss" scoped>
 .homework-start {
   background: #fff;
-  padding: 15px 15px 0;
+  // padding: 0 15px 15px;
   min-height: calc(100vh - 15px);
-  height: calc(100vh - 15px);
+  height: 100vh;
   overflow: hidden;
   display: flex;
   flex-flow: column nowrap;
@@ -116,6 +138,7 @@ export default {
   }
 
   .introduce {
+    padding: 0 15px;
     display: flex;
     flex-flow: column nowrap;
     margin-bottom: 20px;
@@ -154,6 +177,7 @@ export default {
   }
 
   .img-with-summary {
+    padding: 0 15px;
     flex: 1;
     display: flex;
     flex-flow: column nowrap;
@@ -182,7 +206,8 @@ export default {
   }
 
   .btn-line {
-    margin-bottom: 25px;
+    padding: 0 15px;
+    margin-bottom: 15px;
   }
 }
 </style>

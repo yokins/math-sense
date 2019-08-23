@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-22 19:56:03
+ * @LastEditTime: 2019-08-23 14:32:13
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -48,8 +48,7 @@
       </div>
       <div class="result">
         {{ result ? '系统识别您的答案为：' : '请输入答案，系统自动识别' }}
-        <span class="result-element" v-if="result" ref="result">
-          <vue-mathjax :formula="result"></vue-mathjax>
+        <span class="result-element" v-if="result" ref="result" v-katex="result">
         </span>
       </div>
     </div>
@@ -71,7 +70,8 @@
     <div class="panel answer" v-show="showTab('record')">
       <div class="content display" v-if="answer_1 && answer_1.homework_answer_contents[0]">
         <span class="tip">您的答案</span>
-        <vue-mathjax :formula="answer_1.homework_answer_contents[0].content"></vue-mathjax>
+        <!-- <vue-mathjax :formula="answer_1.homework_answer_contents[0].content"></vue-mathjax> -->
+        <div class="katex-answer" v-if="answer_1.homework_answer_contents[0].content" v-katex="answer_1.homework_answer_contents[0].content"></div>
         <van-icon size="15" v-if="answer_1.homework_answer_contents[0].status === 'wrong'" name="clear" color="#FF7B4D"></van-icon>
         <van-icon size="15" v-else name="checked" color="#3296fa"></van-icon>
       </div>
@@ -94,7 +94,8 @@
     <div class="panel answer" v-show="showTab('redo_record')">
       <div class="content display" v-if="answer_2 && answer_2.homework_answer_contents[0]">
         <span class="tip">您的答案</span>
-        <vue-mathjax :formula="answer_2.homework_answer_contents[0].content"></vue-mathjax>
+        <!-- <vue-mathjax :formula="answer_2.homework_answer_contents[0].content"></vue-mathjax> -->
+          <div class="katex-answer" v-if="answer_2.homework_answer_contents[0].content" v-katex="answer_2.homework_answer_contents[0].content"></div>
         <van-icon size="15" v-if="answer_2.homework_answer_contents[0].status === 'wrong'" name="clear" color="#FF7B4D"></van-icon>
         <van-icon size="15" v-else name="checked" color="#3296fa"></van-icon>
       </div>
@@ -108,7 +109,8 @@
         <div class="question-analyze" v-if="question.question_analyze" v-html="question.question_analyze.html"></div>
         <span>正确答案</span>
         <div class="question-answer" v-if="question.question_answers">
-          <vue-mathjax v-for="(item, index) in question.question_answers" :key="index" :formula="item.content"></vue-mathjax>
+          <!-- <vue-mathjax v-for="(item, index) in question.question_answers" :key="index" :formula="item.content"></vue-mathjax> -->
+          <div v-for="(item, index) in question.question_answers" :key="index" class="katex-answer" v-if="item.content" v-katex="item.content"></div>
         </div>
       </div>
     </div>
@@ -117,9 +119,12 @@
       <div class="content">
         <span>请点击选择你的错误原因</span>
         <div class="checkboxs">
-          <div v-for="(item, index) in tags" :key="index" :class="['tag', selected_tags.includes(item.id) ? 'selected' : '']" @click="clickTag(item.id)">
-            {{item.content}}
-          </div>
+          <div
+            v-for="(item, index) in tags"
+            :key="index"
+            :class="['tag', selected_tags.includes(item.id) ? 'selected' : '']"
+            @click="clickTag(item.id)"
+          >{{item.content}}</div>
         </div>
         <van-field
           v-if="tags.length > 0 && selected_tags.includes(tags[tags.length - 1].id)"
@@ -171,7 +176,7 @@ import { VueMathjax } from 'vue-mathjax'
 
 export default {
   components: {
-    'vue-mathjax': VueMathjax
+    'vue-mathjax': VueMathjax,
   },
   data() {
     return {
@@ -233,8 +238,8 @@ export default {
     },
     /**
      * @description: 禁止提交原因
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     reasonDisabled() {
       if (this.selected_tags.length > 0) {
@@ -291,10 +296,10 @@ export default {
 
   methods: {
     ...mapActions(['set_doing_question']),
-        /**
+    /**
      * @description: 初始化错误原因
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     initTags() {
       this.$api.question_tags().then(res => {
@@ -310,6 +315,10 @@ export default {
       this.$api.get_question({ id: id, homework_id: this.$route.params.homework_id }).then(res => {
         this.question = res.homework_question.question
         this.homework_answers = res.homework_question.homework_answers
+        this.result = ''
+        this.step = ''
+        this.other = ''
+        this.selected_tags = []
       })
     },
     /**
@@ -355,7 +364,6 @@ export default {
         } else {
           _this.result = ''
         }
-        console.log(_this.result)
       })
     },
     /**
@@ -435,11 +443,11 @@ export default {
         return item.id === parseInt(this.$route.params.question_id)
       })
 
-      let nextIndex = this.doing_questions.findIndex((item, index) => {
+      let next = this.doing_questions.filter((item, index) => {
         return item.status === 'init' && index > currentIndex
       })
 
-      return nextIndex
+      return next.length > 0 ? next[0] : null
     },
     /**
      * @description: 下一个重做的题目的id
@@ -450,26 +458,26 @@ export default {
       let currentIndex = this.doing_questions.findIndex(item => {
         return item.id === parseInt(this.$route.params.question_id)
       })
-      let nextIndex = this.doing_questions.findIndex((item, index) => {
+      let next = this.doing_questions.filter((item, index) => {
         return item.status === 'redo' && !item.is_redo && index > currentIndex
       })
 
-      return nextIndex
+      return next.length > 0 ? next[0] : null
     },
     /**
      * @description: 填写下一个题目的原因
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     nextReasonQuestion() {
       let currentIndex = this.doing_questions.findIndex(item => {
         return item.id === parseInt(this.$route.params.question_id)
       })
-      let nextIndex = this.doing_questions.findIndex((item, index) => {
+      let next = this.doing_questions.filter((item, index) => {
         return item.status === 'wrong' && item.is_redo && item.student_summaries.length <= 0 && index > currentIndex
       })
-      
-      return nextIndex
+
+      return next.length > 0 ? next[0] : null
     },
     /**
      * @description: 提交内容
@@ -506,7 +514,6 @@ export default {
       }
 
       const _this = this
-
       this.$api
         .answer_question({
           id: _this.$route.params.question_id,
@@ -517,7 +524,7 @@ export default {
           const next = _this.$route.query.type
             ? _this.nextRedoQuestion(_this.$route.params.question_id)
             : _this.nextQuestion(_this.$route.params.question_id)
-          if (next === -1) {
+          if (!next) {
             // 更新题目信息
             this.$api.get_homework_info(this.$route.params.homework_id).then(res => {
               this.set_doing_question(res.homework_question_ids)
@@ -538,7 +545,20 @@ export default {
               }
             })
           } else {
-            _this.init(next.id)
+            _this.cleanResult()
+            _this.cleanStep()
+            if (this.$route.query.type) {
+              _this.$router.replace({
+                name: 'homework_question_do',
+                params: { homework_id: _this.$route.params.homework_id, question_id: next.id },
+                query: { type: 'redo' }
+              })
+            } else {
+              _this.$router.replace({
+                name: 'homework_question_do',
+                params: { homework_id: _this.$route.params.homework_id, question_id: next.id }
+              })
+            }
           }
         })
     },
@@ -560,8 +580,8 @@ export default {
     },
     /**
      * @description: 点击选中
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     clickTag(result) {
       if (this.selected_tags.includes(result)) {
@@ -576,23 +596,32 @@ export default {
     },
     /**
      * @description: 提交原因
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     submitReason() {
-        let tags = []
-        this.selected_tags.forEach((item, index) => {
-          tags.push({ id: item, content: item === this.tags[this.tags.length - 1].id ? this.other : '' })
+      let tags = []
+      this.selected_tags.forEach((item, index) => {
+        tags.push({ id: item, content: item === this.tags[this.tags.length - 1].id ? this.other : '' })
+      })
+      this.$api
+        .summary_question({
+          id: this.$route.params.question_id,
+          params: { id: this.$route.params.question_id, tags: tags }
         })
-        this.$api.summary_question({ id: this.$route.params.question_id, params: { id: this.$route.params.question_id, tags: tags } }).then(() => {
+        .then(() => {
           const next = this.nextReasonQuestion()
-          if (next === -1) {
+          if (!next) {
             this.$router.replace({
               name: 'homework_result',
               params: { homework_id: this.$route.params.homework_id }
             })
           } else {
-            this.init(next.id)
+            this.$router.replace({
+              name: 'homework_question_do',
+              params: { homework_id: this.$route.params.homework_id, question_id: next.id },
+              query: { type: 'reason' }
+            })
           }
         })
     },
@@ -900,7 +929,7 @@ export default {
             height: 25px;
             font-size: 11px;
             color: #767789;
-            background: #F4F5F7;
+            background: #f4f5f7;
             display: flex;
             flex-flow: row nowrap;
             justify-content: center;
@@ -942,7 +971,11 @@ export default {
 
   .result-element {
     color: #3296fa !important;
-    font-size: 18px;
+    font-size: 14px !important;
+  }
+   
+  .katex-answer {
+    font-size: 14px !important;
   }
 }
 </style>

@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-23 14:40:20
+ * @LastEditTime: 2019-08-23 15:08:45
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -110,18 +110,15 @@
 <script>
 import 'pepjs'
 import 'katex/dist/katex.min.css'
-import katex from 'katex'
-import 'myscript/dist/myscript.min.css'
-import * as MyScriptJS from 'myscript/dist/myscript.esm'
+// import katex from 'katex'
+// import 'myscript/dist/myscript.min.css'
+// import * as MyScriptJS from 'myscript/dist/myscript.esm'
 import { mapState, mapActions } from 'vuex'
 import { ImagePreview } from 'vant'
-import upload from '../../configs/upload'
-import { VueMathjax } from 'vue-mathjax'
+// import upload from '../../configs/upload'
+// import { VueMathjax } from 'vue-mathjax'
 
 export default {
-  components: {
-    'vue-mathjax': VueMathjax
-  },
   data() {
     return {
       active_tab: 'record',

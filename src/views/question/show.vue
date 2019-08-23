@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-23 09:45:55
+ * @LastEditTime: 2019-08-23 14:40:20
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -40,7 +40,8 @@
     <div class="panel answer" v-show="showTab('record')">
       <div class="content display" v-if="answer_1 && answer_1.homework_answer_contents[0]">
         <span class="tip">您的答案</span>
-        <vue-mathjax :formula="answer_1.homework_answer_contents[0].content"></vue-mathjax>
+        <!-- <vue-mathjax :formula="answer_1.homework_answer_contents[0].content"></vue-mathjax> -->
+        <div class="katex-answer" v-if="answer_1.homework_answer_contents[0].content" v-katex="answer_1.homework_answer_contents[0].content"></div>
         <van-icon size="15" v-if="answer_1.homework_answer_contents[0].status === 'wrong'" name="clear" color="#FF7B4D"></van-icon>
         <van-icon size="15" v-else name="checked" color="#3296fa"></van-icon>
       </div>
@@ -63,7 +64,8 @@
     <div class="panel answer" v-show="showTab('redo_record')">
       <div class="content display" v-if="answer_2 && answer_2.homework_answer_contents[0]">
         <span class="tip">您的答案</span>
-        <vue-mathjax :formula="answer_2.homework_answer_contents[0].content"></vue-mathjax>
+        <!-- <vue-mathjax :formula="answer_2.homework_answer_contents[0].content"></vue-mathjax> -->
+        <div class="katex-answer" v-if="answer_2.homework_answer_contents[0].content" v-katex="answer_2.homework_answer_contents[0].content"></div>
         <van-icon size="15" v-if="answer_2.homework_answer_contents[0].status === 'wrong'" name="clear" color="#FF7B4D"></van-icon>
         <van-icon size="15" v-else name="checked" color="#3296fa"></van-icon>
       </div>
@@ -77,7 +79,7 @@
         <div class="question-analyze" v-if="question.question_analyze" v-html="question.question_analyze.html"></div>
         <span>正确答案</span>
         <div class="question-answer" v-if="question.question_answers">
-          <vue-mathjax v-for="(item, index) in question.question_answers" :key="index" :formula="item.content"></vue-mathjax>
+          <div v-for="(item, index) in question.question_answers" :key="index" class="katex-answer" v-if="item.content" v-katex="item.content"></div>
         </div>
       </div>
     </div>
@@ -541,7 +543,11 @@ export default {
 
   .result-element {
     color: #3296fa !important;
-    font-size: 18px;
+    font-size: 14px !important;
+  }
+   
+  .katex-answer {
+    font-size: 14px !important;
   }
 }
 </style>

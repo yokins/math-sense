@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:43
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-22 17:06:42
+ * @LastEditTime: 2019-08-23 09:16:38
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 
@@ -14,7 +14,7 @@
     </van-nav-bar>
     <!-- <div class="close-line">
       <van-icon class-prefix="wm" name="close" style="font-size: 20px;" @click="close"></van-icon>
-    </div> -->
+    </div>-->
 
     <div class="introduce">
       <div class="title">练习马上开始</div>
@@ -65,11 +65,11 @@ export default {
     ...mapActions(['set_doing_question']),
     /**
      * @description: 拉取练习信息
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
-    init() {
-      this.$api.get_homework_info(this.homework_id).then(res => {
+    async init() {
+      await this.$api.get_homework_info(this.homework_id).then(res => {
         this.homework_question_count = res.homework_question_count
         this.knowledge_count = res.knowledge_count
         this.set_doing_question(res.homework_question_ids)
@@ -91,7 +91,6 @@ export default {
      */
     next() {
       // 未做题目
-      console.log(this.doing_questions)
       const hadInitQuestion = this.doing_questions.some(item => {
         return item.status === 'init'
       })
@@ -99,9 +98,6 @@ export default {
       const hadRedoAndNotDoQuestion = this.doing_questions.some(item => {
         return item.status === 'wrong' && !item.is_redo
       })
-
-      console.log(hadInitQuestion, hadRedoAndNotDoQuestion)
-
       if (hadInitQuestion || hadRedoAndNotDoQuestion) {
         this.$router.replace({ name: 'homework_loading', params: { homework_id: this.homework_id } })
       } else {

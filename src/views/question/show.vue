@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-22 20:23:56
+ * @LastEditTime: 2019-08-23 09:45:55
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -86,12 +86,9 @@
       <div class="content">
         <span>你总结的错误原因</span>
         <div class="checkboxs">
-          <div
-            v-for="(item, index) in student_summaries"
-            :key="index"
-            :class="['tag', 'selected']"
-          >{{item.tag.content}}</div>
+          <div v-for="(item, index) in student_summaries" :key="index" :class="['tag', 'selected']">{{item.tag.content}}</div>
         </div>
+        <div class="checkboxs" v-if="student_summaries_content">{{ student_summaries_content }}</div>
       </div>
     </div>
 
@@ -99,12 +96,9 @@
       <div class="content">
         <span>老师总结的错误原因</span>
         <div class="checkboxs">
-          <div
-            v-for="(item, index) in teacher_summaries"
-            :key="index"
-            :class="['tag', 'selected']"
-          >{{item.tag.content}}</div>
+          <div v-for="(item, index) in teacher_summaries" :key="index" :class="['tag', 'selected']">{{item.tag.content}}</div>
         </div>
+        <div class="checkboxs" v-if="teacher_summaries_content">{{ teacher_summaries_content }}</div>
       </div>
     </div>
     <!-- 原因 -->
@@ -175,6 +169,46 @@ export default {
         return this.homework_answers[1]
       } else {
         return null
+      }
+    },
+    /**
+     * @description: 教师评价
+     * @param {type} 
+     * @return: 
+     */
+    teacher_summaries_content() {
+      if (this.teacher_summaries.length > 0) {
+        const list = this.teacher_summaries.filter(item => {
+          return item.content !== ''
+        })
+
+        if (list.length > 0) {
+          return list[0].content
+        } else {
+          return false
+        }
+      } else {
+        return false
+      }
+    },
+    /**
+     * @description: 学生评价
+     * @param {type} 
+     * @return: 
+     */
+    student_summaries_content() {
+      if (this.student_summaries.length > 0) {
+        const list = this.student_summaries.filter(item => {
+          return item.content !== ''
+        })
+
+        if (list.length > 0) {
+          return list[0].content
+        } else {
+          return false
+        }
+      } else {
+        return false
       }
     }
   },
@@ -459,6 +493,7 @@ export default {
           margin-top: 10px;
           display: flex;
           flex-flow: row nowrap;
+          font-size: 11px;
           .tag {
             width: 70px;
             height: 25px;
@@ -474,7 +509,7 @@ export default {
             border-radius: 3px;
 
             &.selected {
-              background: #FF7B4D;
+              background: #ff7b4d;
               color: #fff;
             }
           }

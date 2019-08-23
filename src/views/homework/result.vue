@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:28
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-22 20:03:20
+ * @LastEditTime: 2019-08-23 09:00:13
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -90,7 +90,7 @@
       >{{ questionIndex(item.id, rightQuestions) + 1 }}</div>
     </div>
 
-    <button class="submit" :disabled="can_not_submit" @click="submit">完成练习</button>
+    <button class="submit" v-if="!isShow" :disabled="can_not_submit" @click="submit">完成练习</button>
   </div>
 </template>
 

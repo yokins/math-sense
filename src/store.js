@@ -2,7 +2,7 @@
  * @Author: yokins·shi(施永坚)
  * @Description: 改革春风吹满地，搬起砖来不吃力
  * @Date: 2019-08-16 13:58:40
- * @LastEditTime: 2019-08-22 17:07:47
+ * @LastEditTime: 2019-08-23 09:17:19
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -29,15 +29,14 @@ export default new Vuex.Store({
       const questions = state.doing_questions ? state.doing_questions : []
       // todo 检查是否有需要填写原因的题目并且返回第一个id
       const hadDoQuestions = questions.some(item => {
-        return item.status === 'redo' || item.status === 'init'
+        return item.status === 'wrong' || item.status === 'init'
       })
       if (!hadDoQuestions) {
         return { status: 'judge' }
       }
-
       // 检查是否有订正的题目并且返回第一个id
       const redoQuestion = questions.filter(item => {
-        return item.status === 'redo'
+        return item.status === 'wrong'
       })[0]
       if (redoQuestion) {
         return { status: 'redo', id: redoQuestion.id }
@@ -78,7 +77,7 @@ export default new Vuex.Store({
      */
     set_doing_question({ commit }, payload) {
       util.storage.set('math-sense-current-doing-questions', payload)
-      commit(types.SET_STATE, { key: 'doing_question', value: payload })
+      commit(types.SET_STATE, { key: 'doing_questions', value: payload })
     },
     /**
      * @description: 删除当前练习所做的题目简易信息
@@ -87,7 +86,7 @@ export default new Vuex.Store({
      */
     clean_doing_question({ commit }) {
       util.storage.delete('math-sense-current-doing-questions')
-      commit(types.SET_STATE, { key: 'doing_question', value: [] })
+      commit(types.SET_STATE, { key: 'doing_questions', value: [] })
     }
   },
 

@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-26 13:50:21
+ * @LastEditTime: 2019-08-26 14:06:48
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -317,6 +317,7 @@ export default {
 
   .tabs {
     padding: 10px 10px 0;
+    margin-bottom: 10px;
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
@@ -357,7 +358,7 @@ export default {
   }
 
   .panel {
-    margin: 10px 10px 0;
+    margin: 0 10px;
     padding: 10px;
     background: #fff;
     border-radius: 5px;

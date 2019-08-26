@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-21 09:33:55
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-22 10:51:55
+ * @LastEditTime: 2019-08-26 14:12:34
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -40,7 +40,7 @@ export default {
       // this.ctx.clearRect(0, 0, width, height)
       this.ctx.fillStyle="#fff"
       this.ctx.fillRect(0, 0, width, height)
-      this.ctx.strokeStyle = '#474E60'
+      this.ctx.strokeStyle = '#000'
       this.ctx.lineWidth = 1
     },
     /**

@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-16 13:58:40
- * @LastEditTime: 2019-08-26 11:02:12
+ * @LastEditTime: 2019-08-26 16:49:08
  * @LastEditors: 施永坚（yokins）
  */
 import 'normalize.css'
@@ -24,9 +24,7 @@ import filter from './configs/filter'
 import vueg from 'vueg'
 import VueKatex from 'vue-katex'
 Vue.use(VueKatex)
-
 Vue.use(vueg, router, {})
-
 Vue.use(Vant)
 Object.keys(components).forEach(item => {
   Vue.component(item, components[item])

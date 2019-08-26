@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-26 14:14:02
+ * @LastEditTime: 2019-08-26 17:00:49
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -1006,13 +1006,15 @@ export default {
 
   #editor {
     height: 100%;
-    width: 100%;
+    width: calc(100% - 40px);
+    margin: 0 20px;
     z-index: 10;
   }
 
   .draw-panel {
     height: 100%;
-    width: 100%;
+    width: calc(100% - 40px);
+    padding: 0 20px;
     z-index: 10;
   }
 

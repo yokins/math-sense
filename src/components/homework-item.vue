@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-19 11:17:45
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-22 20:00:56
+ * @LastEditTime: 2019-08-26 13:52:29
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -46,9 +46,9 @@ export default {
 
 <style lang="scss" scoped>
 .homework-item {
-  width: calc(100% - 30px);
+  width: calc(100% - 20px);
   margin: 15px 0;
-  padding: 15px;
+  padding: 10px;
   background: #fff;
   border-radius: 10px;
 

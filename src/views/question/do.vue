@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-23 14:32:13
+ * @LastEditTime: 2019-08-26 13:45:47
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -29,137 +29,167 @@
     </div>
     <!-- tabs区域 -->
 
-    <!-- 做题 -->
-    <div class="panel step" v-show="showTab('form')">
-      <div class="content">
-        <span class="tip">在这里写步骤</span>
-        <img class="upload" src="../../assets/images/camera.png" @click="uploadImg" />
-        <span class="clean" @click="cleanStep">清空</span>
-        <img v-if="step" :src="step" class="step-img" @click="clickStepImg" />
-        <draw-panel v-else class="draw-panel" ref="draw" @updateDrawed="updateDrawed"></draw-panel>
-      </div>
-    </div>
-
-    <div class="panel answer" v-show="showTab('form')">
-      <div class="content">
-        <span class="tip">在这里写答案</span>
-        <span class="clean" @click="cleanResult">清空</span>
-        <div ref="editor" id="editor" touch-action="none"></div>
-      </div>
-      <div class="result">
-        {{ result ? '系统识别您的答案为：' : '请输入答案，系统自动识别' }}
-        <span class="result-element" v-if="result" ref="result" v-katex="result">
-        </span>
-      </div>
-    </div>
-    <!-- 做题 -->
-
-    <!-- 首次 -->
-    <div class="panel step" v-show="showTab('record')">
-      <div class="content" v-if="answer_1">
-        <span class="tip">您的解题步骤</span>
-        <img
-          v-if="answer_1.attachments[0]"
-          :src="answer_1.attachments[0].url"
-          class="step-img"
-          @click="clickStepImg(answer_1.attachments[0].url)"
-        />
-      </div>
-    </div>
-
-    <div class="panel answer" v-show="showTab('record')">
-      <div class="content display" v-if="answer_1 && answer_1.homework_answer_contents[0]">
-        <span class="tip">您的答案</span>
-        <!-- <vue-mathjax :formula="answer_1.homework_answer_contents[0].content"></vue-mathjax> -->
-        <div class="katex-answer" v-if="answer_1.homework_answer_contents[0].content" v-katex="answer_1.homework_answer_contents[0].content"></div>
-        <van-icon size="15" v-if="answer_1.homework_answer_contents[0].status === 'wrong'" name="clear" color="#FF7B4D"></van-icon>
-        <van-icon size="15" v-else name="checked" color="#3296fa"></van-icon>
-      </div>
-    </div>
-    <!-- 首次 -->
-
-    <!-- 订正 -->
-    <div class="panel step" v-show="showTab('redo_record')">
-      <div class="content" v-if="answer_2">
-        <span class="tip">您的解题步骤</span>
-        <img
-          v-if="answer_2.attachments[0]"
-          :src="answer_2.attachments[0].url"
-          class="step-img"
-          @click="clickStepImg(answer_2.attachments[0].url)"
-        />
-      </div>
-    </div>
-
-    <div class="panel answer" v-show="showTab('redo_record')">
-      <div class="content display" v-if="answer_2 && answer_2.homework_answer_contents[0]">
-        <span class="tip">您的答案</span>
-        <!-- <vue-mathjax :formula="answer_2.homework_answer_contents[0].content"></vue-mathjax> -->
-          <div class="katex-answer" v-if="answer_2.homework_answer_contents[0].content" v-katex="answer_2.homework_answer_contents[0].content"></div>
-        <van-icon size="15" v-if="answer_2.homework_answer_contents[0].status === 'wrong'" name="clear" color="#FF7B4D"></van-icon>
-        <van-icon size="15" v-else name="checked" color="#3296fa"></van-icon>
-      </div>
-    </div>
-    <!-- 订正 -->
-
-    <!-- 原因 -->
-    <div class="panel panel-answer" v-show="showTab('reason')">
-      <div class="content">
-        <span>正确解析</span>
-        <div class="question-analyze" v-if="question.question_analyze" v-html="question.question_analyze.html"></div>
-        <span>正确答案</span>
-        <div class="question-answer" v-if="question.question_answers">
-          <!-- <vue-mathjax v-for="(item, index) in question.question_answers" :key="index" :formula="item.content"></vue-mathjax> -->
-          <div v-for="(item, index) in question.question_answers" :key="index" class="katex-answer" v-if="item.content" v-katex="item.content"></div>
+    <div class="block">
+      <!-- 做题 -->
+      <div class="panel step" v-show="showTab('form')">
+        <div class="content">
+          <span class="tip">在这里写步骤</span>
+          <img class="upload" src="../../assets/images/camera.png" @click="uploadImg" />
+          <span class="clean" @click="cleanStep">清空</span>
+          <img v-if="step" :src="step" class="step-img" @click="clickStepImg" />
+          <draw-panel v-else class="draw-panel" ref="draw" @updateDrawed="updateDrawed"></draw-panel>
         </div>
       </div>
-    </div>
 
-    <div class="panel panel-reason" v-show="showTab('reason')">
-      <div class="content">
-        <span>请点击选择你的错误原因</span>
-        <div class="checkboxs">
+      <div class="panel answer" v-show="showTab('form')">
+        <div class="content">
+          <span class="tip">在这里写答案</span>
+          <span class="clean" @click="cleanResult">清空</span>
+          <div ref="editor" id="editor" touch-action="none"></div>
+        </div>
+        <div class="result">
+          {{ result ? '系统识别您的答案为：' : '请输入答案，系统自动识别' }}
+          <span
+            class="result-element"
+            v-if="result"
+            ref="result"
+            v-katex="result"
+          ></span>
+        </div>
+      </div>
+      <!-- 做题 -->
+
+      <!-- 首次 -->
+      <div class="panel step" v-show="showTab('record')">
+        <div class="content" v-if="answer_1">
+          <span class="tip">您的解题步骤</span>
+          <img
+            v-if="answer_1.attachments[0]"
+            :src="answer_1.attachments[0].url"
+            class="step-img"
+            @click="clickStepImg(answer_1.attachments[0].url)"
+          />
+        </div>
+      </div>
+
+      <div class="panel answer" v-show="showTab('record')">
+        <div class="content display" v-if="answer_1 && answer_1.homework_answer_contents[0]">
+          <span class="tip">您的答案</span>
+          <!-- <vue-mathjax :formula="answer_1.homework_answer_contents[0].content"></vue-mathjax> -->
           <div
-            v-for="(item, index) in tags"
-            :key="index"
-            :class="['tag', selected_tags.includes(item.id) ? 'selected' : '']"
-            @click="clickTag(item.id)"
-          >{{item.content}}</div>
+            class="katex-answer"
+            v-if="answer_1.homework_answer_contents[0].content"
+            v-katex="answer_1.homework_answer_contents[0].content"
+          ></div>
+          <van-icon
+            size="15"
+            v-if="answer_1.homework_answer_contents[0].status === 'wrong'"
+            name="clear"
+            color="#FF7B4D"
+          ></van-icon>
+          <van-icon size="15" v-else name="checked" color="#3296fa"></van-icon>
         </div>
-        <van-field
-          v-if="tags.length > 0 && selected_tags.includes(tags[tags.length - 1].id)"
-          style="font-size: 12px;"
-          v-model="other"
-          type="textarea"
-          placeholder="请输入其他原因"
-          rows="3"
-          autosize
-        />
       </div>
+      <!-- 首次 -->
+
+      <!-- 订正 -->
+      <div class="panel step" v-show="showTab('redo_record')">
+        <div class="content" v-if="answer_2">
+          <span class="tip">您的解题步骤</span>
+          <img
+            v-if="answer_2.attachments[0]"
+            :src="answer_2.attachments[0].url"
+            class="step-img"
+            @click="clickStepImg(answer_2.attachments[0].url)"
+          />
+        </div>
+      </div>
+
+      <div class="panel answer" v-show="showTab('redo_record')">
+        <div class="content display" v-if="answer_2 && answer_2.homework_answer_contents[0]">
+          <span class="tip">您的答案</span>
+          <!-- <vue-mathjax :formula="answer_2.homework_answer_contents[0].content"></vue-mathjax> -->
+          <div
+            class="katex-answer"
+            v-if="answer_2.homework_answer_contents[0].content"
+            v-katex="answer_2.homework_answer_contents[0].content"
+          ></div>
+          <van-icon
+            size="15"
+            v-if="answer_2.homework_answer_contents[0].status === 'wrong'"
+            name="clear"
+            color="#FF7B4D"
+          ></van-icon>
+          <van-icon size="15" v-else name="checked" color="#3296fa"></van-icon>
+        </div>
+      </div>
+      <!-- 订正 -->
+
+      <!-- 原因 -->
+      <div class="panel panel-answer" v-show="showTab('reason')">
+        <div class="content">
+          <span>正确解析</span>
+          <div class="question-analyze" v-if="question.question_analyze" v-html="question.question_analyze.html"></div>
+          <span>正确答案</span>
+          <div class="question-answer" v-if="question.question_answers && question.question_answers[0]">
+            <!-- <vue-mathjax v-for="(item, index) in question.question_answers" :key="index" :formula="item.content"></vue-mathjax> -->
+            <div
+              v-for="(item, index) in question.question_answers[0].question_answer_contents"
+              :key="index"
+            >
+              <div class="katex-answer" v-katex="item.content"></div>
+              <span v-if="question.question_answers[0].question_answer_contents.length - 1 !== index"> 、</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-reason" v-show="showTab('reason')">
+        <div class="content">
+          <span>请点击选择你的错误原因</span>
+          <div class="checkboxs">
+            <div
+              v-for="(item, index) in tags"
+              :key="index"
+              :class="['tag', selected_tags.includes(item.id) ? 'selected' : '']"
+              @click="clickTag(item.id)"
+            >{{item.content}}</div>
+          </div>
+          <van-field
+            v-if="tags.length > 0 && selected_tags.includes(tags[tags.length - 1].id)"
+            style="font-size: 12px;"
+            v-model="other"
+            type="textarea"
+            placeholder="请输入其他原因"
+            rows="3"
+            autosize
+          />
+        </div>
+      </div>
+      <!-- 原因 -->
+
+      <van-button
+        v-if="$route.query.type !== 'reason' && showTab('form')"
+        class="submit"
+        block
+        round
+        size="small"
+        type="info"
+        @click="submitAnswer"
+        :disabled="submitDisabled"
+      >提交答案</van-button>
+
+      <van-button
+        v-if="$route.query.type === 'reason' && showTab('reason')"
+        class="submit"
+        block
+        round
+        size="small"
+        type="info"
+        @click="submitReason"
+        :disabled="reasonDisabled"
+      >提交答案</van-button>
     </div>
-    <!-- 原因 -->
-
-    <van-button
-      v-if="$route.query.type !== 'reason'"
-      class="submit"
-      block
-      round
-      size="small"
-      type="info"
-      @click="submitAnswer"
-      :disabled="submitDisabled"
-    >提交答案</van-button>
-
-    <van-button
-      v-else
-      class="submit"
-      block
-      round
-      size="small"
-      type="info"
-      @click="submitReason"
-      :disabled="reasonDisabled"
-    >提交答案</van-button>
   </div>
 </template>
 
@@ -176,7 +206,7 @@ import { VueMathjax } from 'vue-mathjax'
 
 export default {
   components: {
-    'vue-mathjax': VueMathjax,
+    'vue-mathjax': VueMathjax
   },
   data() {
     return {
@@ -726,8 +756,9 @@ export default {
     display: block;
     overflow: hidden;
     overflow-y: auto;
-    flex: 1;
+    // flex: 1;
     // height: 75px;
+    max-height: 300px;
     background: #fff;
     padding: 10px;
     font-size: 13px;
@@ -742,6 +773,7 @@ export default {
 
   .tabs {
     padding: 10px 10px 0;
+    margin-bottom: 10px;
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
@@ -772,8 +804,16 @@ export default {
     }
   }
 
+  .block {
+    flex: 1;
+    // padding: 10px;
+    display: block;
+    overflow: hidden;
+    overflow-y: auto;
+  }
+
   .panel {
-    margin: 10px 10px 0;
+    margin: 0 10px;
     padding: 10px;
     background: #fff;
     border-radius: 5px;
@@ -824,7 +864,9 @@ export default {
     }
 
     &.step {
+      margin-bottom: 10px;
       .content {
+        width: 100%;
         height: 280px;
 
         .step-img {
@@ -848,15 +890,18 @@ export default {
     }
 
     &.answer {
-      margin-bottom: 50px;
+      // margin-bottom: 50px;
+      margin-bottom: 10px;
       .content {
         height: 80px;
+        width: 100%;
 
         &.display {
           display: flex;
           flex-flow: row nowrap;
           align-items: center;
           padding-left: 20px;
+          width: calc(100% - 20px);
           color: #767789 !important;
         }
         // /*iPad 竖屏*/
@@ -867,6 +912,7 @@ export default {
     }
 
     &.panel-answer {
+      margin-bottom: 10px;
       .content {
         height: 160px;
         overflow-y: auto;
@@ -907,7 +953,7 @@ export default {
     }
 
     &.panel-reason {
-      margin-bottom: 50px;
+      margin-bottom: 10px;
       .content {
         min-height: 100px;
         padding: 10px;
@@ -950,11 +996,12 @@ export default {
 
   .submit {
     width: calc(100% - 20px);
+    margin: 0 10px 10px;
     // margin: 10px;
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
+    // position: absolute;
+    // bottom: 10px;
+    // left: 10px;
+    // right: 10px;
   }
 
   #editor {
@@ -973,9 +1020,17 @@ export default {
     color: #3296fa !important;
     font-size: 14px !important;
   }
-   
+
   .katex-answer {
     font-size: 14px !important;
+  }
+
+  .question-answer {
+    display: flex;
+    padding: 10px 10px 0;
+    >div{
+      display: flex;
+    }
   }
 }
 </style>

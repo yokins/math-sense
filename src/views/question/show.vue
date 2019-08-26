@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-23 15:08:45
+ * @LastEditTime: 2019-08-26 13:50:21
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -24,6 +24,7 @@
     </div>
     <!-- tabs区域 -->
 
+    <div class="block">
     <!-- 首次 -->
     <div class="panel step" v-show="showTab('record')">
       <div class="content" v-if="answer_1">
@@ -78,8 +79,15 @@
         <span>正确解析</span>
         <div class="question-analyze" v-if="question.question_analyze" v-html="question.question_analyze.html"></div>
         <span>正确答案</span>
-        <div class="question-answer" v-if="question.question_answers">
-          <div v-for="(item, index) in question.question_answers" :key="index" class="katex-answer" v-if="item.content" v-katex="item.content"></div>
+        <div class="question-answer" v-if="question.question_answers && question.question_answers[0]">
+          <!-- <vue-mathjax v-for="(item, index) in question.question_answers" :key="index" :formula="item.content"></vue-mathjax> -->
+          <div
+            v-for="(item, index) in question.question_answers[0].question_answer_contents"
+            :key="index"
+          >
+            <div class="katex-answer" v-katex="item.content"></div>
+            <span v-if="question.question_answers[0].question_answer_contents.length - 1 !== index"> 、</span>
+          </div>
         </div>
       </div>
     </div>
@@ -104,6 +112,7 @@
       </div>
     </div>
     <!-- 原因 -->
+    </div>
   </div>
 </template>
 
@@ -291,7 +300,8 @@ export default {
     display: block;
     overflow: hidden;
     overflow-y: auto;
-    flex: 1;
+    max-height: 300px;
+    // flex: 1;
     // height: 75px;
     background: #fff;
     padding: 10px;
@@ -335,6 +345,15 @@ export default {
         border-bottom-right-radius: 12px;
       }
     }
+  }
+
+
+  .block {
+    flex: 1;
+    // padding: 10px;
+    display: block;
+    overflow: hidden;
+    overflow-y: auto;
   }
 
   .panel {
@@ -389,6 +408,7 @@ export default {
     }
 
     &.step {
+      margin-bottom: 10px;
       .content {
         height: 280px;
 
@@ -413,7 +433,7 @@ export default {
     }
 
     &.answer {
-      margin-bottom: 50px;
+      margin-bottom: 10px;
       .content {
         height: 80px;
 
@@ -422,6 +442,7 @@ export default {
           flex-flow: row nowrap;
           align-items: center;
           padding-left: 20px;
+          width: calc(100% - 20px);
           color: #767789 !important;
         }
         // /*iPad 竖屏*/
@@ -439,6 +460,7 @@ export default {
         flex-flow: column nowrap;
         padding: 10px;
         width: calc(100% - 20px);
+        margin-bottom: 10px;
 
         span {
           font-size: 11px;
@@ -482,6 +504,7 @@ export default {
         width: calc(100% - 20px);
         display: flex;
         flex-flow: column nowrap;
+        margin-bottom: 10px;
 
         span {
           font-size: 11px;
@@ -519,11 +542,13 @@ export default {
 
   .submit {
     width: calc(100% - 20px);
-    // margin: 10px;
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
+    margin: 0 10px 10px;
+
+    // // margin: 10px;
+    // position: absolute;
+    // bottom: 10px;
+    // left: 10px;
+    // right: 10px;
   }
 
   #editor {
@@ -545,6 +570,14 @@ export default {
    
   .katex-answer {
     font-size: 14px !important;
+  }
+
+  .question-answer {
+    display: flex;
+    padding: 10px 10px 0;
+    >div{
+      display: flex;
+    }
   }
 }
 </style>

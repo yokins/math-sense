@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:46:35
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-23 14:32:44
+ * @LastEditTime: 2019-08-26 10:46:35
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -76,7 +76,7 @@ export default {
 
 <style lang="scss">
 .home {
-  min-height: calc(100% - 50px);
+  min-height: calc(100vh - 50px);
   padding-bottom: 50px;
   .banner {
     padding: 10px 30px 0 15px;

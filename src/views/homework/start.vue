@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:43
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-27 16:30:12
+ * @LastEditTime: 2019-08-27 16:40:56
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 
@@ -36,7 +36,11 @@
 
     <van-row class="btn-line" gutter="15">
       <van-col span="8">
-        <van-button round block size="small" type="warning" @click="onCopy">复制网址</van-button>
+        <!-- <van-button round block size="small" type="warning" @click="onCopy">复制网址</van-button> -->
+
+        <a href="weixin://" class="action-callweixin">
+          <van-button round block size="small" type="warning">打开微信</van-button>
+        </a>
       </van-col>
       <van-col span="16">
         <van-button round block size="small" type="info" @click="next">开始练习</van-button>

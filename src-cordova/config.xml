@@ -20,6 +20,9 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+    <access launch-external="yes" origin="weixin:*" />
+    <allow-navigation href="*" />
+    <allow-intent href="*" />
     <platform name="android">
         <allow-intent href="market:*" />
         <icon src="res/icons/android/mipmap-ldpi/ic_launcher.png" density="ldpi" />

@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:05
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-27 16:31:17
+ * @LastEditTime: 2019-08-27 16:49:19
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -137,7 +137,7 @@ export default {
     to_question(item) {
       this.$router.push({
         name: 'homework_question_show',
-        params: { homework_id: item.id, question_id: item.homework_id }
+        params: { homework_id: item.homework_id, question_id: item.id }
       })
     },
     /**

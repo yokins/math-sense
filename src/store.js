@@ -2,7 +2,7 @@
  * @Author: yokins·shi(施永坚)
  * @Description: 改革春风吹满地，搬起砖来不吃力
  * @Date: 2019-08-16 13:58:40
- * @LastEditTime: 2019-08-23 09:17:19
+ * @LastEditTime: 2019-08-27 09:07:06
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -27,26 +27,29 @@ export default new Vuex.Store({
      */
     startPath(state) {
       const questions = state.doing_questions ? state.doing_questions : []
-      // todo 检查是否有需要填写原因的题目并且返回第一个id
-      const hadDoQuestions = questions.some(item => {
-        return item.status === 'wrong' || item.status === 'init'
-      })
-      if (!hadDoQuestions) {
-        return { status: 'judge' }
-      }
-      // 检查是否有订正的题目并且返回第一个id
-      const redoQuestion = questions.filter(item => {
-        return item.status === 'wrong'
-      })[0]
-      if (redoQuestion) {
-        return { status: 'redo', id: redoQuestion.id }
-      }
+
       // 检查是否有状态为init的题目并且返回第一个id
       const initQuestion = questions.filter(item => {
         return item.status === 'init'
       })[0]
       if (initQuestion) {
         return { status: 'do', id: initQuestion.id }
+      }
+
+      // 检查是否有订正的题目并且返回第一个id
+      const redoQuestion = questions.filter(item => {
+        return item.status === 'wrong' && !item.is_redo
+      })[0]
+      if (redoQuestion) {
+        return { status: 'redo', id: redoQuestion.id }
+      }
+
+      // 检查是否有需要填写原因的题目并且返回第一个id
+      const hadDoQuestions = questions.some(item => {
+        return item.status === 'wrong' || item.status === 'init'
+      })
+      if (!hadDoQuestions) {
+        return { status: 'judge' }
       }
     }
   },

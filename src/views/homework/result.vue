@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:28
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-23 09:00:13
+ * @LastEditTime: 2019-08-27 09:15:37
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -212,9 +212,11 @@ export default {
 @import '../../assets/styles/biu.scss';
 
 .result {
-  height: 100vh;
+  padding-bottom: 70px;
+  min-height: calc(100vh - 70px);
   width: 100vw;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   background: #fff;
 
   .img {
@@ -338,7 +340,7 @@ export default {
   }
 
   .submit {
-    position: absolute;
+    position: fixed;
     bottom: 15px;
     margin: 0 15px;
     width: calc(100% - 30px);

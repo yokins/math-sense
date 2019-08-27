@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-26 17:00:49
+ * @LastEditTime: 2019-08-27 09:25:08
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -29,9 +29,9 @@
     </div>
     <!-- tabs区域 -->
 
-    <div class="block">
+    <div class="block" id="block-panel">
       <!-- 做题 -->
-      <div class="panel step" v-show="showTab('form')">
+      <div class="panel step" @touchstart="lockBlock" @touchend="unlockBlock" v-show="showTab('form')">
         <div class="content">
           <span class="tip">在这里写步骤</span>
           <img class="upload" src="../../assets/images/camera.png" @click="uploadImg" />
@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      <div class="panel answer" v-show="showTab('form')">
+      <div class="panel answer" @touchstart="lockBlock" @touchend="unlockBlock" v-show="showTab('form')">
         <div class="content">
           <span class="tip">在这里写答案</span>
           <span class="clean" @click="cleanResult">清空</span>
@@ -489,7 +489,7 @@ export default {
         return item.id === parseInt(this.$route.params.question_id)
       })
       let next = this.doing_questions.filter((item, index) => {
-        return item.status === 'redo' && !item.is_redo && index > currentIndex
+        return item.status === 'wrong' && !item.is_redo && index > currentIndex
       })
 
       return next.length > 0 ? next[0] : null
@@ -554,6 +554,7 @@ export default {
           const next = _this.$route.query.type
             ? _this.nextRedoQuestion(_this.$route.params.question_id)
             : _this.nextQuestion(_this.$route.params.question_id)
+
           if (!next) {
             // 更新题目信息
             this.$api.get_homework_info(this.$route.params.homework_id).then(res => {
@@ -589,7 +590,10 @@ export default {
                 params: { homework_id: _this.$route.params.homework_id, question_id: next.id }
               })
             }
+
+            this.init(next.id)
           }
+
         })
     },
     /**
@@ -652,6 +656,7 @@ export default {
               params: { homework_id: this.$route.params.homework_id, question_id: next.id },
               query: { type: 'reason' }
             })
+            this.init(next.id)
           }
         })
     },
@@ -709,6 +714,24 @@ export default {
           EncodingType: Camera.EncodingType.PNG
         }
       )
+    },
+    /**
+     * @description: 锁住block区域
+     * @param {type} 
+     * @return: 
+     */
+    lockBlock() {
+      const a = document.getElementById('block-panel')
+      a.style.overflowY = 'hidden'
+    },
+    /**
+     * @description: 解锁block区域
+     * @param {type} 
+     * @return: 
+     */
+    unlockBlock() {
+      const a = document.getElementById('block-panel')
+      a.style.overflowY = 'auto'
     }
   }
 

@@ -3,12 +3,12 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-07-31 13:12:48
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-23 09:34:36
+ * @LastEditTime: 2019-08-27 16:31:22
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
   <div class="page tree">
-    <van-nav-bar :z-index="1000" title="成长树" left-arrow @click-left="onClickLeft" />
+    <van-nav-bar :border="false" :z-index="1000" title="成长树" left-arrow @click-left="onClickLeft" />
 
     <van-list class="tree-list" v-model="load_loading" :finished="load_finished" finished-text="没有更多了" @load="onLoad">
       <div class="tree-item" v-for="(item, index) in list" :key="index" @click="to_tree_show(item)">

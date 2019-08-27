@@ -3,12 +3,12 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:05
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-23 09:33:28
+ * @LastEditTime: 2019-08-27 16:31:17
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
   <div class="page mistake">
-    <van-nav-bar :z-index="1000" title="错题本" left-arrow @click-left="onClickLeft" />
+    <van-nav-bar :border="false" :z-index="1000" title="错题本" left-arrow @click-left="onClickLeft" />
 
     <div class="select-category">
       选择知识点分类

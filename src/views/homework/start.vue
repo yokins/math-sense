@@ -3,13 +3,13 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:43
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-23 09:16:38
+ * @LastEditTime: 2019-08-27 16:30:12
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 
 <template>
   <div class="page homework-start">
-    <van-nav-bar>
+    <van-nav-bar :border="false">
       <van-icon slot="left" class-prefix="wm" name="close" @click="close"></van-icon>
     </van-nav-bar>
     <!-- <div class="close-line">

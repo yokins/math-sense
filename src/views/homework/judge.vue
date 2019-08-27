@@ -3,12 +3,12 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:33
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-22 15:53:28
+ * @LastEditTime: 2019-08-27 16:30:36
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
   <div class="homework-judge" id="homework-judge">
-    <van-nav-bar>
+    <van-nav-bar :border="false">
       <van-icon slot="left" class-prefix="wm" name="close" @click="close"></van-icon>
     </van-nav-bar>
 

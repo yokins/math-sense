@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:28
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-28 16:46:52
+ * @LastEditTime: 2019-08-28 17:06:27
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -74,11 +74,12 @@
     <div class="wrong-item" v-for="(item, index) in wrongQuestions" :key="index" @click="toReason(item)">
       <div class="index">{{ questionIndex(item.id, wrongQuestions) + 1 }}</div>
       <div class="text" v-if="isShow">
-        <van-icon name="arrow"></van-icon>
+        <span class="reason-span">{{ showReason(item.student_summaries) }}</span>
+        <van-icon style="margin-right: 10px;" name="arrow"></van-icon>
       </div>
       <div class="text" v-else>
         {{ item.student_summaries.length > 0 ? '已选择原因' : '请总结错误原因' }}
-        <van-icon name="arrow"></van-icon>
+        <van-icon style="margin-right: 10px;" name="arrow"></van-icon>
       </div>
     </div>
 
@@ -141,8 +142,8 @@ export default {
     },
     /**
      * @description: 是否是显示情况
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     isShow() {
       return this.$route.query.type === 'show'
@@ -157,8 +158,8 @@ export default {
     ...mapActions(['set_doing_question']),
     /**
      * @description: 点击返回
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     onClickLeft() {
       this.$router.go(-1)
@@ -215,6 +216,23 @@ export default {
           params: { homework_id: this.$route.params.homework_id, question_id: item.id }
         })
       }
+    },
+    /**
+     * @description: 显示原因
+     * @param {type} 
+     * @return: 
+     */
+    showReason(reasons) {
+      let desc = ''
+      reasons.forEach((item, index) => {
+        const symbol = reasons.length - 1 === index ? '' : '、'
+        if (item.content) {
+          desc = desc + item.content + symbol
+        } else {
+          desc = desc + item.tag.content + symbol
+        }
+      })
+      return desc
     }
   }
 }
@@ -366,6 +384,16 @@ export default {
     &:disabled {
       background: rgba(179, 179, 179, 1);
     }
+  }
+
+
+  .reason-span {
+    display: inline-block;
+    width: 150px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: right;
   }
 }
 </style>

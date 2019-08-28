@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:43
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-27 16:40:56
+ * @LastEditTime: 2019-08-28 09:32:03
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 
@@ -38,9 +38,11 @@
       <van-col span="8">
         <!-- <van-button round block size="small" type="warning" @click="onCopy">复制网址</van-button> -->
 
-        <a href="weixin://" class="action-callweixin">
+        <!-- <a href="weixin://" class="action-callweixin">
           <van-button round block size="small" type="warning">打开微信</van-button>
-        </a>
+        </a> -->
+
+        <van-button round block size="small" type="warning" @click="shareOption">分享</van-button>
       </van-col>
       <van-col span="16">
         <van-button round block size="small" type="info" @click="next">开始练习</van-button>
@@ -54,6 +56,7 @@ import { mapActions, mapState } from 'vuex'
 export default {
   data() {
     return {
+      batch_id: 0,
       homework_id: this.$route.params.homework_id,
       homework_question_count: 0,
       knowledge_count: 0
@@ -77,6 +80,7 @@ export default {
         this.homework_question_count = res.homework_question_count
         this.knowledge_count = res.knowledge_count
         this.set_doing_question(res.homework_question_ids)
+        this.batch_id = res.batch_id
       })
     },
     /**
@@ -115,6 +119,27 @@ export default {
      */
     close() {
       this.$router.replace({ name: 'home' })
+    },
+    /**
+     * @description: 分享
+     * @param {type} 
+     * @return: 
+     */
+    shareOption() {
+      var options = {
+        message: '练习下载链接', // 分享的内容
+        url: `http://sg-test.wfl-ischool.cn/#/training/index?id=${this.batch_id}`,//外链
+      }
+
+      var onSuccess = function(result) {
+        // alert(JSON.stringify(result))
+      }
+
+      var onError = function(error) {
+        // alert(JSON.stringify(error))
+      }
+
+      window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError)
     }
   }
 }

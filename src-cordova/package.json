@@ -19,6 +19,7 @@
     "cordova-ios": "^5.0.1",
     "cordova-osx": "^5.0.0",
     "cordova-plugin-statusbar": "^2.4.3",
+    "cordova-plugin-x-socialsharing": "^5.4.7",
     "es6-promise-plugin": "^4.2.2"
   },
   "devDependencies": {
@@ -46,7 +47,12 @@
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
       "cordova-plugin-statusbar": {},
-      "cordova-clipboard": {}
+      "cordova-clipboard": {},
+      "cordova-plugin-x-socialsharing": {
+        "ANDROID_SUPPORT_V4_VERSION": "24.1.1+",
+        "PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION": "This app requires photo library access to function properly.",
+        "PHOTO_LIBRARY_USAGE_DESCRIPTION": "This app requires photo library access to function properly."
+      }
     },
     "platforms": [
       "android",

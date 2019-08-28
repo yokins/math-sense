@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-16 13:58:40
- * @LastEditTime: 2019-08-26 16:49:08
+ * @LastEditTime: 2019-08-28 08:58:40
  * @LastEditors: 施永坚（yokins）
  */
 import 'normalize.css'
@@ -23,6 +23,7 @@ import api from './configs/api'
 import filter from './configs/filter'
 import vueg from 'vueg'
 import VueKatex from 'vue-katex'
+import './configs/SocialSharing'
 Vue.use(VueKatex)
 Vue.use(vueg, router, {})
 Vue.use(Vant)

@@ -2525,6 +2525,11 @@ cordova-plugin-statusbar@^2.4.3:
   resolved "https://registry.npm.taobao.org/cordova-plugin-statusbar/download/cordova-plugin-statusbar-2.4.3.tgz#cc557aef66c27484e0f7f045004040d03321f82d"
   integrity sha1-zFV672bCdITg9/BFAEBA0DMh+C0=
 
+cordova-plugin-x-socialsharing@^5.4.7:
+  version "5.4.7"
+  resolved "https://registry.npm.taobao.org/cordova-plugin-x-socialsharing/download/cordova-plugin-x-socialsharing-5.4.7.tgz#4ebe23f650b11df3437589093587a5dfeb870ab7"
+  integrity sha1-Tr4j9lCxHfNDdYkJNYel3+uHCrc=
+
 core-js@^2.4.0, core-js@^2.6.5:
   version "2.6.9"
   resolved "https://registry.npm.taobao.org/core-js/download/core-js-2.6.9.tgz#6b4b214620c834152e179323727fc19741b084f2"

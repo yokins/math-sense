@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-26 14:06:48
+ * @LastEditTime: 2019-08-28 09:33:13
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -354,7 +354,7 @@ export default {
     // padding: 10px;
     display: block;
     overflow: hidden;
-    overflow-y: auto;
+    overflow-y: scroll;
   }
 
   .panel {

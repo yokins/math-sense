@@ -3,11 +3,15 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:28
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-27 09:15:37
+ * @LastEditTime: 2019-08-28 16:46:52
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
   <div class="result">
+    <van-nav-bar v-if="$route.query.type" :border="false" :z-index="1000">
+      <van-icon slot="left" class-prefix="wm" name="close" @click="onClickLeft"></van-icon>
+    </van-nav-bar>
+
     <div class="bokeh"></div>
     <div class="bokeh"></div>
     <div class="bokeh"></div>
@@ -151,6 +155,14 @@ export default {
 
   methods: {
     ...mapActions(['set_doing_question']),
+    /**
+     * @description: 点击返回
+     * @param {type} 
+     * @return: 
+     */
+    onClickLeft() {
+      this.$router.go(-1)
+    },
     /**
      * @description: 拉取练习信息
      * @param {type}

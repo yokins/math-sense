@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-28 09:33:08
+ * @LastEditTime: 2019-09-04 16:28:57
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -455,11 +455,12 @@ export default {
       }
     },
     /**
-     * @description:
+     * @description: 退出练习
      * @param {type}
      * @return:
      */
     close() {
+        
       this.$router.replace({ name: 'home' })
     },
     /**

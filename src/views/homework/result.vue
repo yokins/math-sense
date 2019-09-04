@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:28
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-28 17:06:27
+ * @LastEditTime: 2019-09-04 16:54:16
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -92,6 +92,7 @@
         v-for="(item, index) in rightQuestions"
         :key="index"
         :class="['task-item', 'correct']"
+        @click="toReason(item)"
       >{{ questionIndex(item.id, rightQuestions) + 1 }}</div>
     </div>
 
@@ -202,25 +203,26 @@ export default {
      * @return:
      */
     toReason(item) {
-      if (item.student_summaries.length <= 0) {
-        this.$router.replace({
-          name: 'homework_question_do',
-          params: { homework_id: this.$route.params.homework_id, question_id: item.id },
-          query: { type: 'reason' }
-        })
-      }
-
       if (this.isShow) {
-        this.$router.replace({
+        this.$router.push({
           name: 'homework_question_show',
-          params: { homework_id: this.$route.params.homework_id, question_id: item.id }
+          params: { homework_id: this.$route.params.homework_id, question_id: item.id },
+          query: { type: 'back' }
         })
+      } else {
+        if (item.student_summaries.length <= 0) {
+          this.$router.replace({
+            name: 'homework_question_do',
+            params: { homework_id: this.$route.params.homework_id, question_id: item.id },
+            query: { type: 'reason' }
+          })
+        }
       }
     },
     /**
      * @description: 显示原因
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     showReason(reasons) {
       let desc = ''
@@ -385,7 +387,6 @@ export default {
       background: rgba(179, 179, 179, 1);
     }
   }
-
 
   .reason-span {
     display: inline-block;

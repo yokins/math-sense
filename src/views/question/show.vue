@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-28 09:33:13
+ * @LastEditTime: 2019-09-04 16:54:25
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -238,7 +238,11 @@ export default {
      * @return:
      */
     close() {
-      this.$router.replace({ name: 'home' })
+      if (this.$route.query.type === 'back') {
+        this.$router.go(-1)
+      } else {
+        this.$router.replace({ name: 'home' })
+      }
     },
     /**
      * @description: 获取题目信息

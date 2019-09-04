@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:46:59
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-27 16:31:04
+ * @LastEditTime: 2019-09-04 16:22:25
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -24,7 +24,7 @@
       <label>输入您想要反馈的问题</label>
       <van-field class="content" v-model="content" type="textarea" placeholder="请输入意见" rows="5" autosize />
       <label>留下您的联系方式</label>
-      <van-field class="contact" v-model="contact" clearable placeholder="请输入练习方式" />
+      <van-field class="contact" v-model="contact" clearable placeholder="请输入联系方式" />
     </div>
   </div>
 </template>

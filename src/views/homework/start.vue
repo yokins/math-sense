@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:43
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-28 09:32:03
+ * @LastEditTime: 2019-09-05 15:11:32
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 
@@ -81,7 +81,31 @@ export default {
         this.knowledge_count = res.knowledge_count
         this.set_doing_question(res.homework_question_ids)
         this.batch_id = res.batch_id
+        this.checkToResultOrJudge()
       })
+    },
+    /**
+     * @description: 检查是否需要直接跳转到结果页，或者结算页
+     * @param {type} 
+     * @return: 
+     */
+    checkToResultOrJudge() {
+      // 未做题目
+      const hadInitQuestion = this.doing_questions.some(item => {
+        return item.status === 'init'
+      })
+      // 需要重做但是没做
+      const hadRedoAndNotDoQuestion = this.doing_questions.some(item => {
+        return item.status === 'wrong' && !item.is_redo
+      })
+
+      if (hadInitQuestion) {
+        return false
+      } else if (hadRedoAndNotDoQuestion) {
+        this.$router.replace({ name: 'homework_judge', params: { homework_id: this.homework_id } })
+      } else {
+        this.$router.replace({ name: 'homework_result', params: { homework_id: this.homework_id } })
+      }
     },
     /**
      * @description: 点击复制

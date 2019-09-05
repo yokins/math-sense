@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-05 09:24:58
+ * @LastEditTime: 2019-09-05 10:53:35
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -19,7 +19,7 @@
     <div class="top">
       <span class="wm wm-close" style="margin-right: 10px;" @click="close"></span>
       <progress-bar :progress="percent"></progress-bar>
-      <span style="margin-left: 10px;">{{ currentQuestionIndex }}/{{doing_questions.length}}</span>
+      <span style="margin-left: 10px;">{{ currentQuestionIndex }}/{{currentQuestions.length}}</span>
     </div>
 
     <div class="question" v-html="question.html"></div>
@@ -193,7 +193,7 @@
         type="info"
         @click="submitReason"
         :disabled="reasonDisabled"
-      >提交答案</van-button>
+      >提交错误总结</van-button>
     </div>
   </div>
 </template>
@@ -246,12 +246,31 @@ export default {
   computed: {
     ...mapState(['doing_questions']),
     /**
+     * @description: 获取所有当前要操作的题目
+     * @param {type} 
+     * @return: 
+     */
+    currentQuestions() {
+      let arr = this.doing_questions
+      if (this.$route.query.type === 'redo') {
+        arr = this.doing_questions.filter(item => {
+          return item.status === 'wrong' && !item.is_redo
+        })
+      } else if (this.$route.query.type === 'reason') {
+        arr = this.doing_questions.filter(item => {
+          return item.status === 'wrong' && item.is_redo && item.student_summaries.length <= 0
+        })
+      }
+      console.log(arr)
+      return arr
+    },
+    /**
      * @description: 当前题目的序号
      * @param {type}
      * @return:
      */
     currentQuestionIndex() {
-      const index = this.doing_questions.findIndex(item => {
+      const index = this.currentQuestions.findIndex(item => {
         return item.id === parseInt(this.$route.params.question_id)
       })
       return index + 1
@@ -261,8 +280,9 @@ export default {
      * @param {type}
      * @return:
      */
+    // todo: 需要处理百分比，分成三个部分（重做 、提交原因）
     percent() {
-      return (this.currentQuestionIndex / this.doing_questions.length) * 100
+      return (this.currentQuestionIndex / this.currentQuestions.length) * 100
     },
     /**
      * @description: 禁止提交
@@ -270,7 +290,9 @@ export default {
      * @return:
      */
     submitDisabled() {
-      return !this.drawed || (!this.drawed && !this.step) || !this.result
+      // return !this.drawed || !(!this.drawed && this.step) || !this.result
+
+      return !((this.drawed || (!this.drawed && this.step)) && this.result)
     },
     /**
      * @description: 禁止提交原因

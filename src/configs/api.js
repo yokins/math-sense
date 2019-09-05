@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 16:37:12
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-22 19:20:13
+ * @LastEditTime: 2019-09-05 15:29:59
  * @Incantation: Buddha Bless Do Not Bugs
  */
 import http from './http'
@@ -107,6 +107,14 @@ const api = {
    */
   acknowledges() {
     return http.get('homework_questions/knowledges')
+  },
+  /**
+   * @description: 请求获取文件上传连接
+   * @param {type} 
+   * @return: 
+   */
+  get_file_Url(payload) {
+    return http.get('utils/fetch_s3_ur', { params: { file_name: payload.fileName, file_type: payload.fileType } })
   }
 }
 

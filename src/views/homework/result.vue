@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:28
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-04 16:54:16
+ * @LastEditTime: 2019-09-05 10:59:19
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -203,14 +203,14 @@ export default {
      * @return:
      */
     toReason(item) {
-      if (this.isShow) {
+      if (this.isShow || item.status !== 'wrong') {
         this.$router.push({
           name: 'homework_question_show',
           params: { homework_id: this.$route.params.homework_id, question_id: item.id },
           query: { type: 'back' }
         })
       } else {
-        if (item.student_summaries.length <= 0) {
+        if (item.student_summaries.length <= 0 && item.status === 'wrong') {
           this.$router.replace({
             name: 'homework_question_do',
             params: { homework_id: this.$route.params.homework_id, question_id: item.id },

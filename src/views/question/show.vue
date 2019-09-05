@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-05 08:58:21
+ * @LastEditTime: 2019-09-05 16:15:31
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -19,8 +19,8 @@
     <!-- tabs区域 -->
     <div class="tabs">
       <div :class="['tab', showTab('record') ? 'active' : '']" @click="onClickTab('record')">首次答题</div>
-      <div :class="['tab', showTab('redo_record') ? 'active' : '']" @click="onClickTab('redo_record')">订正答题</div>
-      <div :class="['tab', showTab('reason') ? 'active' : '']" @click="onClickTab('reason')">错题总结</div>
+      <div v-if="answer_2" :class="['tab', showTab('redo_record') ? 'active' : '']" @click="onClickTab('redo_record')">订正答题</div>
+      <div :class="['tab', showTab('reason') ? 'active' : '']" @click="onClickTab('reason')">{{ answer_2 ? '错题总结' : '题目解析' }} </div>
     </div>
     <!-- tabs区域 -->
 
@@ -50,8 +50,8 @@
     <!-- 首次 -->
 
     <!-- 订正 -->
-    <div class="panel step" v-show="showTab('redo_record')">
-      <div class="content" v-if="answer_2">
+    <div class="panel step" v-if="answer_2" v-show="showTab('redo_record')">
+      <div class="content">
         <span class="tip">您的解题步骤</span>
         <img
           v-if="answer_2.attachments[0]"
@@ -62,8 +62,8 @@
       </div>
     </div>
 
-    <div class="panel answer" v-show="showTab('redo_record')">
-      <div class="content display" v-if="answer_2 && answer_2.homework_answer_contents[0]">
+    <div class="panel answer" v-if="answer_2 && answer_2.homework_answer_contents[0]" v-show="showTab('redo_record')">
+      <div class="content display">
         <span class="tip">您的答案</span>
         <!-- <vue-mathjax :formula="answer_2.homework_answer_contents[0].content"></vue-mathjax> -->
         <div class="katex-answer" v-if="answer_2.homework_answer_contents[0].content" v-katex="answer_2.homework_answer_contents[0].content"></div>
@@ -92,7 +92,7 @@
       </div>
     </div>
 
-    <div class="panel panel-reason" v-show="showTab('reason')">
+    <div class="panel panel-reason" v-if="answer_2" v-show="showTab('reason')">
       <div class="content">
         <span>你总结的错误原因</span>
         <div class="checkboxs">
@@ -102,7 +102,7 @@
       </div>
     </div>
 
-    <div class="panel panel-reason" v-show="showTab('reason')">
+    <div class="panel panel-reason" v-if="answer_2" v-show="showTab('reason')">
       <div class="content">
         <span>老师总结的错误原因</span>
         <div class="checkboxs">
@@ -287,7 +287,15 @@ export default {
       if (tab_name !== this.active_tab) {
         this.active_tab = tab_name
       }
-    }
+    },
+    /**
+     * @description: 预览图片
+     * @param {type}
+     * @return:
+     */
+    clickStepImg(url) {
+      ImagePreview([url])
+    },
   }
 }
 </script>

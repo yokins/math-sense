@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-04 16:54:25
+ * @LastEditTime: 2019-09-05 08:58:21
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -185,19 +185,25 @@ export default {
      * @return: 
      */
     teacher_summaries_content() {
-      if (this.teacher_summaries.length > 0) {
-        const list = this.teacher_summaries.filter(item => {
-          return item.content !== ''
-        })
+      // if (this.teacher_summaries.length > 0) {
+      //   const list = this.teacher_summaries.filter(item => {
+      //     return item.content !== ''
+      //   })
 
-        if (list.length > 0) {
-          return list[0].content
-        } else {
-          return false
+      //   if (list.length > 0) {
+      //     return list[0].content
+      //   } else {
+      //     return false
+      //   }
+      // } else {
+      //   return false
+      // }
+      return this.teacher_summaries.reduce((content, item) => {
+        if (item.content) {
+          content = item.content
         }
-      } else {
-        return false
-      }
+        return content
+      }, '')
     },
     /**
      * @description: 学生评价
@@ -205,19 +211,26 @@ export default {
      * @return: 
      */
     student_summaries_content() {
-      if (this.student_summaries.length > 0) {
-        const list = this.student_summaries.filter(item => {
-          return item.content !== ''
-        })
+      // if (this.student_summaries.length > 0) {
+      //   const list = this.student_summaries.filter(item => {
+      //     return item.content !== ''
+      //   })
 
-        if (list.length > 0) {
-          return list[0].content
-        } else {
-          return false
+      //   if (list.length > 0) {
+      //     return list[0].content
+      //   } else {
+      //     return false
+      //   }
+      // } else {
+      //   return false
+      // }
+
+      return this.student_summaries.reduce((content, item) => {
+        if (item.content) {
+          content = item.content
         }
-      } else {
-        return false
-      }
+        return content
+      }, '')
     }
   },
 

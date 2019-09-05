@@ -3,11 +3,19 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-04 16:28:57
+ * @LastEditTime: 2019-09-05 09:24:58
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
   <div class="page question-do" id="question-do">
+    <van-popup class="close-popup" v-model="show_close" round>
+      <div class="title">是否退出答题</div>
+      <div class="content">退出后当前题目不保留做题记录</div>
+      <div class="btns">
+        <van-button round type="default" plain size="small" @click="$router.replace({ name: 'home' })">确认退出</van-button>
+        <van-button round type="info" size="small" @click="show_close = false">继续练习</van-button>
+      </div>
+    </van-popup>
     <div class="top">
       <span class="wm wm-close" style="margin-right: 10px;" @click="close"></span>
       <progress-bar :progress="percent"></progress-bar>
@@ -133,12 +141,9 @@
           <span>正确答案</span>
           <div class="question-answer" v-if="question.question_answers && question.question_answers[0]">
             <!-- <vue-mathjax v-for="(item, index) in question.question_answers" :key="index" :formula="item.content"></vue-mathjax> -->
-            <div
-              v-for="(item, index) in question.question_answers[0].question_answer_contents"
-              :key="index"
-            >
+            <div v-for="(item, index) in question.question_answers[0].question_answer_contents" :key="index">
               <div class="katex-answer" v-katex="item.content"></div>
-              <span v-if="question.question_answers[0].question_answer_contents.length - 1 !== index"> 、</span>
+              <span v-if="question.question_answers[0].question_answer_contents.length - 1 !== index">、</span>
             </div>
           </div>
         </div>
@@ -210,6 +215,7 @@ export default {
   },
   data() {
     return {
+      show_close: false,
       active_tab: 'form',
       show_tabs: false,
       question: {},
@@ -460,8 +466,8 @@ export default {
      * @return:
      */
     close() {
-        
-      this.$router.replace({ name: 'home' })
+      this.show_close = true
+      // this.$router.replace({ name: 'home' })
     },
     /**
      * @description: 下一个题目的id
@@ -594,7 +600,6 @@ export default {
 
             this.init(next.id)
           }
-
         })
     },
     /**
@@ -718,8 +723,8 @@ export default {
     },
     /**
      * @description: 锁住block区域
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     lockBlock() {
       const a = document.getElementById('block-panel')
@@ -727,8 +732,8 @@ export default {
     },
     /**
      * @description: 解锁block区域
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     unlockBlock() {
       const a = document.getElementById('block-panel')
@@ -773,6 +778,34 @@ export default {
 
     span {
       font-size: 13px;
+    }
+  }
+
+  .close-popup {
+    padding: 15px;
+    width: 50vw;
+    min-height: 100px;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+
+    .title {
+      font-size: 13px;
+      color: #767789;
+      margin-bottom: 20px;
+    }
+
+    .content {
+      font-size: 11px;
+      color: #767789;
+      margin-bottom: 20px;
+    }
+
+    .btns {
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
     }
   }
 
@@ -1054,7 +1087,7 @@ export default {
   .question-answer {
     display: flex;
     padding: 10px 10px 0;
-    >div{
+    > div {
       display: flex;
     }
   }

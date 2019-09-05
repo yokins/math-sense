@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:46:35
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-26 10:46:35
+ * @LastEditTime: 2019-09-05 09:31:34
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -24,13 +24,15 @@
       </div>
     </div>
 
-    <div class="list">
+    <div class="list" style="flex: 1;flex-flow: column;display: flex;">
       <div class="title">
         练习记录
         <span>本月已累计答错 {{total_wrong_count}} 题</span>
       </div>
 
-      <homework-item v-for="(item, index) in list" :key="index" :homework="item"></homework-item>
+      <van-pull-refresh style="flex: 1" v-model="isLoading" @refresh="initData">
+        <homework-item v-for="(item, index) in list" :key="index" :homework="item"></homework-item>
+      </van-pull-refresh>
     </div>
   </div>
 </template>
@@ -41,7 +43,8 @@ export default {
   data() {
     return {
       list: [],
-      total_wrong_count: 0
+      total_wrong_count: 0,
+      isLoading: false
     }
   },
 
@@ -57,10 +60,13 @@ export default {
      * @return:
      */
     initData() {
-      this.$api.home().then(res => {
-        this.list = res.homeworks
-        this.total_wrong_count = res.total_wrong_count
-      })
+      setTimeout(() => {
+        this.$api.home().then(res => {
+          this.list = res.homeworks
+          this.total_wrong_count = res.total_wrong_count
+          this.isLoading = false
+        })
+      }, 500)
     },
     /**
      * @description: 清除doing_questions
@@ -78,6 +84,8 @@ export default {
 .home {
   min-height: calc(100vh - 50px);
   padding-bottom: 50px;
+  display: flex;
+  flex-flow: column nowrap;
   .banner {
     padding: 10px 30px 0 15px;
     background: #3f8166;

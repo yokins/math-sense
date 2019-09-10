@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-10 15:29:10
+ * @LastEditTime: 2019-09-10 16:20:06
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -241,9 +241,15 @@ export default {
     // })
 
     // // 监听键盘出现
-    // window.addEventListener('native.keyboardshow', function() {
-    //   console.log('show2')
-    // });
+    window.addEventListener('native.keyboardshow', function() {
+      const panel = document.getElementById('block-panel')
+      panel.scrollTop = panel.scrollHeight
+    })
+
+    window.addEventListener('resize', function() {
+      const panel = document.getElementById('block-panel')
+      panel.scrollTop = panel.scrollHeight
+    })
     
     if (this.$route.query.type !== 'reason') {
       this.initMyscript()

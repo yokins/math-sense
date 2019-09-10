@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:28
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-05 10:59:19
+ * @LastEditTime: 2019-09-10 10:48:02
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -72,7 +72,7 @@
     </div>
 
     <div class="wrong-item" v-for="(item, index) in wrongQuestions" :key="index" @click="toReason(item)">
-      <div class="index">{{ questionIndex(item.id, wrongQuestions) + 1 }}</div>
+      <div class="index">{{ questionIndex(item.id) + 1 }}</div>
       <div class="text" v-if="isShow">
         <span class="reason-span">{{ showReason(item.student_summaries) }}</span>
         <van-icon style="margin-right: 10px;" name="arrow"></van-icon>
@@ -93,7 +93,7 @@
         :key="index"
         :class="['task-item', 'correct']"
         @click="toReason(item)"
-      >{{ questionIndex(item.id, rightQuestions) + 1 }}</div>
+      >{{ questionIndex(item.id) + 1 }}</div>
     </div>
 
     <button class="submit" v-if="!isShow" :disabled="can_not_submit" @click="submit">完成练习</button>
@@ -182,8 +182,8 @@ export default {
      * @param {type}
      * @return:
      */
-    questionIndex(id, arr) {
-      return arr.findIndex(item => {
+    questionIndex(id) {
+      return this.homework_question_ids.findIndex(item => {
         return item.id === id
       })
     },

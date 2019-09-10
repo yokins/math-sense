@@ -3,12 +3,26 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 13:58:40
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-05 15:02:15
+ * @LastEditTime: 2019-09-10 09:26:19
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src * data: blob: ws: wss: gap://ready file://*
+                              https://oraluploads.s3.cn-north-1.amazonaws.com.cn
+                              http://oraluploads.s3.cn-north-1.amazonaws.com.cn
+                              https://s3.cn-north-1.amazonaws.com.cn
+                              https://sg-backend-test.wfl-ischool.cn
+                              http://sg-backend-test.wfl-ischool.cn
+                              https://sg-backend.wfl-ischool.cn
+                              http://sg-backend.wfl-ischool.cn;
+                              style-src * 'unsafe-inline'; 
+                              script-src * 'unsafe-inline' 'unsafe-eval';
+                              connect-src * ws: wss:;"
+    />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta

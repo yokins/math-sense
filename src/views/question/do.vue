@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-05 10:53:35
+ * @LastEditTime: 2019-09-10 09:48:49
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -247,8 +247,8 @@ export default {
     ...mapState(['doing_questions']),
     /**
      * @description: 获取所有当前要操作的题目
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     currentQuestions() {
       let arr = this.doing_questions

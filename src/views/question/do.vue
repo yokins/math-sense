@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-10 09:48:49
+ * @LastEditTime: 2019-09-10 15:29:10
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -44,7 +44,7 @@
           <span class="tip">在这里写步骤</span>
           <img class="upload" src="../../assets/images/camera.png" @click="uploadImg" />
           <span class="clean" @click="cleanStep">清空</span>
-          <img v-if="step" :src="step" class="step-img" @click="clickStepImg" />
+          <img v-if="step" :src="step" class="step-img" @click="clickStepImg(step)" />
           <draw-panel v-else class="draw-panel" ref="draw" @updateDrawed="updateDrawed"></draw-panel>
         </div>
       </div>
@@ -236,6 +236,15 @@ export default {
   },
 
   mounted() {
+    // window.addEventListener('keyboardWillShow', function () {
+    //   console.log('show1')
+    // })
+
+    // // 监听键盘出现
+    // window.addEventListener('native.keyboardshow', function() {
+    //   console.log('show2')
+    // });
+    
     if (this.$route.query.type !== 'reason') {
       this.initMyscript()
     } else {
@@ -395,8 +404,8 @@ export default {
           server: {
             scheme: 'https',
             host: 'cloud.myscript.com',
-            applicationKey: '3096583b-ab1c-40f7-a814-9a15b709a542',
-            hmacKey: 'e3df8899-4250-40c9-acf4-baadc4ec93a5'
+            applicationKey: 'a1fa5193-db93-4fd0-aba7-879bd4572f05',
+            hmacKey: '3334c171-f776-445d-832f-def6a5e12d2f'
           },
           v4: {
             alwaysConnected: false,
@@ -638,6 +647,7 @@ export default {
      * @return:
      */
     clickStepImg(url) {
+      console.log([url ? url : this.step])
       ImagePreview([url ? url : this.step])
     },
     /**
@@ -834,7 +844,7 @@ export default {
   .question {
     display: block;
     overflow: hidden;
-    overflow-y: auto;
+    overflow-y: scroll;
     // flex: 1;
     // height: 75px;
     max-height: 300px;

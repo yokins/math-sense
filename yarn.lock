@@ -2505,16 +2505,6 @@ cordova-plugin-file@^6.0.2:
   resolved "https://registry.npm.taobao.org/cordova-plugin-file/download/cordova-plugin-file-6.0.2.tgz#f3911479f8357e9aacb5576674f8d95b31a1fb20"
   integrity sha1-85EUefg1fpqstVdmdPjZWzGh+yA=
 
-cordova-plugin-ionic-keyboard@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.npm.taobao.org/cordova-plugin-ionic-keyboard/download/cordova-plugin-ionic-keyboard-2.2.0.tgz#53ba9ccd5e765165446a094cfe042a2ddd87d81d"
-  integrity sha1-U7qczV52UWVEaglM/gQqLd2H2B0=
-
-cordova-plugin-keyboard@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.npm.taobao.org/cordova-plugin-keyboard/download/cordova-plugin-keyboard-1.2.0.tgz#8445812643e4763e7beffed39d279f151bb89aeb"
-  integrity sha1-hEWBJkPkdj577/7TnSefFRu4mus=
-
 cordova-plugin-media-capture@^3.0.3:
   version "3.0.3"
   resolved "https://registry.npm.taobao.org/cordova-plugin-media-capture/download/cordova-plugin-media-capture-3.0.3.tgz#9e04494245ad620f27fef49850fce2bfb342426e"
@@ -5159,11 +5149,6 @@ invert-kv@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npm.taobao.org/invert-kv/download/invert-kv-2.0.0.tgz#7393f5afa59ec9ff5f67a27620d11c226e3eec02"
   integrity sha1-c5P1r6Weyf9fZ6J2INEcIm4+7AI=
-
-ionic-plugin-keyboard@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.npm.taobao.org/ionic-plugin-keyboard/download/ionic-plugin-keyboard-2.2.1.tgz#f2a9e169bbe9b5522400347c9fd6d3467ee3fa12"
-  integrity sha1-8qnhabvptVIkADR8n9bTRn7j+hI=
 
 ip-regex@^2.1.0:
   version "2.1.0"

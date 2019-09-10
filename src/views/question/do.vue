@@ -1,11 +1,3 @@
-<!--
- * @Description: 
- * @Author: 施永坚（yokins）
- * @Date: 2019-08-16 14:48:20
- * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-10 16:24:57
- * @Incantation: Buddha Bless Do Not Bugs
- -->
 <template>
   <div class="page question-do" id="question-do">
     <van-popup class="close-popup" v-model="show_close" round>
@@ -210,9 +202,9 @@ import upload from '../../configs/upload'
 import { VueMathjax } from 'vue-mathjax'
 
 export default {
-  components: {
-    'vue-mathjax': VueMathjax
-  },
+  // components: {
+  //   'vue-mathjax': VueMathjax
+  // },
   data() {
     return {
       show_close: false,
@@ -240,17 +232,17 @@ export default {
     //   console.log('show1')
     // })
 
-    // // 监听键盘出现
-    window.addEventListener('native.keyboardshow', function() {
-      const panel = document.getElementById('block-panel')
-      panel.scrollTop = panel.scrollHeight
-    })
+    // 监听键盘出现
+    // window.addEventListener('native.keyboardshow', function() {
+    //   const panel = document.getElementById('block-panel')
+    //   panel.scrollTop = panel.scrollHeight
+    // })
 
-    window.addEventListener('resize', function() {
-      const panel = document.getElementById('block-panel')
-      panel.scrollTop = panel.scrollHeight
-    })
-    
+    // window.addEventListener('resize', function() {
+    //   const panel = document.getElementById('block-panel')
+    //   panel.scrollTop = panel.scrollHeight
+    // })
+
     if (this.$route.query.type !== 'reason') {
       this.initMyscript()
     } else {

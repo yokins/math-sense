@@ -1,11 +1,3 @@
-<!--
- * @Description: 
- * @Author: 施永坚（yokins）
- * @Date: 2019-08-16 14:47:28
- * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-10 10:48:02
- * @Incantation: Buddha Bless Do Not Bugs
- -->
 <template>
   <div class="result">
     <van-nav-bar v-if="$route.query.type" :border="false" :z-index="1000">
@@ -203,7 +195,7 @@ export default {
      * @return:
      */
     toReason(item) {
-      if (this.isShow || item.status !== 'wrong') {
+      if (this.isShow || item.status !== 'wrong' || (item.student_summaries.length > 0 && item.status === 'wrong')) {
         this.$router.push({
           name: 'homework_question_show',
           params: { homework_id: this.$route.params.homework_id, question_id: item.id },

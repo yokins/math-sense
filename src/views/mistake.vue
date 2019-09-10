@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:05
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-04 16:54:09
+ * @LastEditTime: 2019-09-10 15:46:28
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -41,6 +41,7 @@
 <script>
 import { Popup, Picker, List } from 'vant'
 import { setTimeout } from 'timers'
+import {mapState, mapActions} from 'vuex'
 export default {
   components: {
     [Popup.name]: Popup,
@@ -59,11 +60,20 @@ export default {
       load_finished: false
     }
   },
+  computed: {
+    ...mapState(['currentMistakeSelect']),
+  },
+  created() {
+    console.log(this.currentMistakeSelect)
+    this.active_fitler = this.currentMistakeSelect
+  },
   mounted() {
     this.initData()
     this.onLoad(true)
+    
   },
   methods: {
+    ...mapActions(['setCurrentMistakeSelect', 'cleanCurrentMistakeSelect']),
     /**
      * @description: 上拉刷新
      * @param {type}
@@ -127,6 +137,7 @@ export default {
       return str
     },
     onConfirm(value) {
+      this.setCurrentMistakeSelect(value)
       this.active_fitler = value
       this.show = false
     },
@@ -148,6 +159,7 @@ export default {
      */
     onClickLeft() {
       this.$router.go(-1)
+      this.cleanCurrentMistakeSelect()
     }
   },
 

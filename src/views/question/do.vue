@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-10 16:20:06
+ * @LastEditTime: 2019-09-10 16:24:57
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -748,7 +748,8 @@ export default {
           )
         },
         error => {
-          this.$toast.fail('摄像头打开失败，请重试！')
+          console.log('摄像头打开失败，请重试！')
+          // this.$toast.fail('摄像头打开失败，请重试！')
         },
         {
           quality: 50, // 质量

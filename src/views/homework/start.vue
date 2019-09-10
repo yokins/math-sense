@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:43
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-05 15:11:32
+ * @LastEditTime: 2019-09-10 16:27:31
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 
@@ -246,7 +246,7 @@ export default {
 
     .vector {
       width: 100%;
-      height: 200px;
+      height: 180px;
       background-image: url('../../assets/images/vector.png');
       background-position: center center;
       background-repeat: no-repeat;

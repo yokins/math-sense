@@ -160,6 +160,7 @@
             placeholder="请输入其他原因"
             rows="3"
             autosize
+            @focus="toresize()"
           />
         </div>
       </div>
@@ -361,6 +362,16 @@ export default {
 
   methods: {
     ...mapActions(['set_doing_question']),
+    /**
+     * @description: 页面高度
+     * @param {type} 
+     * @return: 
+     */
+    toresize() {
+      const panel = document.getElementById('block-panel')
+      panel.scrollTop = panel.scrollHeight
+      console.log(panel.scrollTop)
+    },
     /**
      * @description: 初始化错误原因
      * @param {type}
@@ -858,6 +869,12 @@ export default {
     p {
       margin: 0 !important;
     }
+    // span {
+    //   display: inline-block;
+    // }
+    .katex {
+      display: inline-block;
+    }
   }
 
   .tabs {
@@ -1019,12 +1036,12 @@ export default {
           padding: 10px;
           font-size: 13px;
           color: #474e60;
-          float: left;
-          flex-flow: row wrap;
-          align-items: center;
-          p {
-            margin: 0 !important;
-          }
+          // float: left;
+          // flex-flow: row wrap;
+          // align-items: center;
+          // p {
+          //   margin: 0 !important;
+          // }
         }
 
         /*iPad 竖屏*/

@@ -36,7 +36,7 @@
     "cordova-plugin-x-socialsharing": "^5.4.7",
     "core-js": "^2.6.5",
     "fastclick": "^1.0.6",
-    "katex": "^0.11.0",
+    "katex": "^0.10.2",
     "latex2vue": "^1.2.1",
     "myscript": "^4.3.0",
     "normalize.css": "^8.0.1",

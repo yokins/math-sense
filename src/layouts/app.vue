@@ -2,7 +2,7 @@
  * @Author: yokins·shi(施永坚)
  * @Description: 改革春风吹满地，搬起砖来不吃力
  * @Date: 2019-08-16 16:12:29
- * @LastEditTime: 2019-08-26 13:03:31
+ * @LastEditTime: 2019-09-17 14:14:06
  -->
  <template>
   <div class="app" id="app">
@@ -25,5 +25,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
+.vlist-r {
+  display: inherit !important;
+}
 </style>

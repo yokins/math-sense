@@ -5682,17 +5682,10 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-katex@0.10.2:
+katex@0.10.2, katex@^0.10.2:
   version "0.10.2"
   resolved "https://registry.npm.taobao.org/katex/download/katex-0.10.2.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fkatex%2Fdownload%2Fkatex-0.10.2.tgz#39973edbb65eda5b6f9e7f41648781e557dd4932"
   integrity sha1-OZc+27Ze2ltvnn9BZIeB5VfdSTI=
-  dependencies:
-    commander "^2.19.0"
-
-katex@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.npm.taobao.org/katex/download/katex-0.11.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fkatex%2Fdownload%2Fkatex-0.11.0.tgz#9a870f37dd9a5c90446277754bfc98f905c04bbc"
-  integrity sha1-mocPN92aXJBEYnd1S/yY+QXAS7w=
   dependencies:
     commander "^2.19.0"
 

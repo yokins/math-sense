@@ -193,9 +193,9 @@
 
 <script>
 import 'pepjs'
-import 'katex/dist/katex.min.css'
 import katex from 'katex'
 import 'myscript/dist/myscript.min.css'
+import 'katex/dist/katex.min.css'
 import * as MyScriptJS from 'myscript/dist/myscript.esm'
 import { mapState, mapActions } from 'vuex'
 import { ImagePreview } from 'vant'
@@ -852,28 +852,15 @@ export default {
   }
 
   .question {
-    display: block;
-    overflow: hidden;
-    overflow-y: scroll;
-    // flex: 1;
-    // height: 75px;
-    max-height: 300px;
     background: #fff;
+    max-height: 200px;
+    overflow-x: hidden;
+    overflow-y: scroll;
     padding: 10px;
     margin-bottom: 10px;
     font-size: 13px;
-    color: #474e60;
-    float: left;
-    flex-flow: row wrap;
-    align-items: center;
-    p {
-      margin: 0 !important;
-    }
-    // span {
-    //   display: inline-block;
-    // }
     .katex {
-      display: inline-block;
+      font-size: 13px !important;
     }
   }
 

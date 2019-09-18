@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-05 16:15:31
+ * @LastEditTime: 2019-09-18 17:59:56
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -102,7 +102,7 @@
       </div>
     </div>
 
-    <div class="panel panel-reason" v-if="answer_2" v-show="showTab('reason')">
+    <div class="panel panel-reason" v-if="answer_2 && teacher_summaries.length > 0" v-show="showTab('reason')">
       <div class="content">
         <span>老师总结的错误原因</span>
         <div class="checkboxs">
@@ -520,6 +520,7 @@ export default {
     }
 
     &.panel-reason {
+      margin-top: 10px;
       margin-bottom: 0;
       &:last-child {
         margin-bottom: 10px;

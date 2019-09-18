@@ -4,7 +4,7 @@
       <van-icon slot="left" class-prefix="wm" name="close" @click="onClickLeft"></van-icon>
     </van-nav-bar>
 
-    <div class="bokeh"></div>
+    <!-- <div class="bokeh"></div>
     <div class="bokeh"></div>
     <div class="bokeh"></div>
     <div class="bokeh"></div>
@@ -53,7 +53,7 @@
     <div class="pyro">
       <div class="before"></div>
       <div class="after"></div>
-    </div>
+    </div> -->
 
     <div class="img">
       <span>完成 {{ homework_question_count }} 题练习</span>
@@ -70,7 +70,7 @@
         <van-icon style="margin-right: 10px;" name="arrow"></van-icon>
       </div>
       <div class="text" v-else>
-        {{ item.student_summaries.length > 0 ? '已选择原因' : '请总结错误原因' }}
+        {{ item.student_summaries.length > 0 ? showReason(item.student_summaries) : '请总结错误原因' }}
         <van-icon style="margin-right: 10px;" name="arrow"></van-icon>
       </div>
     </div>
@@ -267,8 +267,10 @@ export default {
     width: calc(100% - 130px);
     margin: 0 auto;
     background: #f4f5f7;
-    height: 30px;
-    border-radius: 30px;
+    // height: 30px;
+    // border-radius: 30px;
+    height: 45px;
+    border-radius: 45px;
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
@@ -279,9 +281,12 @@ export default {
     }
 
     .index {
-      width: 30px;
-      height: 30px;
-      border-radius: 30px;
+      // width: 30px;
+      // height: 30px;
+      // border-radius: 30px;
+      width: 45px;
+      height: 45px;
+      border-radius: 45px;
       background: #ff7b4d;
       color: #fff;
       font-size: 14px;

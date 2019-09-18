@@ -115,12 +115,12 @@
             v-katex="answer_2.homework_answer_contents[0].content"
           ></div>
           <van-icon
-            size="15"
+            size="20"
             v-if="answer_2.homework_answer_contents[0].status === 'wrong'"
             name="clear"
             color="#FF7B4D"
           ></van-icon>
-          <van-icon size="15" v-else name="checked" color="#3296fa"></van-icon>
+          <van-icon size="20" v-else name="checked" color="#3296fa"></van-icon>
         </div>
       </div>
       <!-- 订正 -->
@@ -413,8 +413,8 @@ export default {
           server: {
             scheme: 'https',
             host: 'cloud.myscript.com',
-            applicationKey: 'a1fa5193-db93-4fd0-aba7-879bd4572f05',
-            hmacKey: '3334c171-f776-445d-832f-def6a5e12d2f'
+            applicationKey: '2b08c438-64ef-4655-b0a6-a75986e23b5a',
+            hmacKey: '07a85927-f74c-4b78-a85f-0b0cd585ee7b'
           },
           v4: {
             alwaysConnected: false,
@@ -1046,6 +1046,7 @@ export default {
 
     &.panel-reason {
       margin-bottom: 10px;
+      margin-top: 10px;
       .content {
         min-height: 100px;
         padding: 10px;

@@ -105,7 +105,11 @@
               :class="['tag', 'selected']"
             >{{item.tag.content}}</div>
           </div>
-          <div class="checkboxs" style="font-size: 14px;" v-if="first_student_summaries_content">{{ first_student_summaries_content }}</div>
+          <div
+            class="checkboxs"
+            style="font-size: 14px;"
+            v-if="first_student_summaries_content"
+          >{{ first_student_summaries_content }}</div>
         </div>
       </div>
       <!-- 首次 -->
@@ -219,6 +223,7 @@ import { mapState, mapActions } from 'vuex';
 import { ImagePreview } from 'vant';
 import upload from '../../configs/upload';
 import { VueMathjax } from 'vue-mathjax';
+import axios from 'axios';
 
 export default {
   // components: {
@@ -237,7 +242,8 @@ export default {
       reason: [],
       other: '',
       tags: [],
-      selected_tags: []
+      selected_tags: [],
+      user_count: ''
     };
   },
 
@@ -267,6 +273,10 @@ export default {
     } else {
       this.initTags();
     }
+  },
+
+  beforeDestroy() {
+    clearInterval(this.user_count);
   },
 
   computed: {
@@ -453,11 +463,22 @@ export default {
       });
     },
     /**
+     * @description: 获取手写板的appkey跟mackey
+     * @param {type}
+     * @return:
+     */
+    initAppKeyAndMacKey() {
+      return axios.get(process.env.VUE_APP_UPLOAD_URL + 'my_script_keys');
+    },
+    /**
      * @description: 手写板初始化，另外附加监听值
      * @param {type}
      * @return:
      */
-    initMyscript() {
+    async initMyscript() {
+      const keys = await this.initAppKeyAndMacKey().then(res => {
+        return res.data.data;
+      });
       const _this = this;
       const editorElement = this.$refs.editor;
       MyScriptJS.register(editorElement, {
@@ -468,8 +489,10 @@ export default {
           server: {
             scheme: 'https',
             host: 'cloud.myscript.com',
-            applicationKey: '2b08c438-64ef-4655-b0a6-a75986e23b5a',
-            hmacKey: '07a85927-f74c-4b78-a85f-0b0cd585ee7b'
+            applicationKey: keys.app_key,
+            hmacKey: keys.mac_key
+            // applicationKey: '2b08c438-64ef-4655-b0a6-a75986e23b5a',
+            // hmacKey: '07a85927-f74c-4b78-a85f-0b0cd585ee7b'
           },
           v4: {
             alwaysConnected: false,
@@ -496,6 +519,9 @@ export default {
           _this.result = '';
         }
       });
+      this.user_count = setInterval(function() {
+        axios.post(process.env.VUE_APP_UPLOAD_URL + 'my_script_keys', keys);
+      }, 300000);
     },
     /**
      * @description: 根据tab处理数据初始化

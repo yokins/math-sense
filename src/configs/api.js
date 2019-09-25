@@ -1,12 +1,12 @@
 /*
- * @Description: 
+ * @Description:
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 16:37:12
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-05 15:29:59
+ * @LastEditTime: 2019-09-25 15:33:51
  * @Incantation: Buddha Bless Do Not Bugs
  */
-import http from './http'
+import http from './http';
 
 const api = {
   /**
@@ -16,7 +16,7 @@ const api = {
    * @returns { errorcode: '', user: {} }
    */
   login(payload) {
-    return http.post('login', payload)
+    return http.post('login', payload);
   },
   /**
    * 获取首页的数据
@@ -24,7 +24,7 @@ const api = {
    * @returns { errcode: '', homeworks: [] }
    */
   home(payload) {
-    return http.get('homes', { params: payload })
+    return http.get('homes', { params: payload });
   },
 
   /**
@@ -33,7 +33,7 @@ const api = {
    * @return:
    */
   get_homework_info(payload) {
-    return http.get(`homeworks/${payload}`)
+    return http.get(`homeworks/${payload}`);
   },
   /**
    * @description: 获取一个题目的信息
@@ -41,7 +41,7 @@ const api = {
    * @return:
    */
   get_question(payload) {
-    return http.get(`homework_questions/${payload.id}?homework_id=${payload.homework_id}`)
+    return http.get(`homework_questions/${payload.id}?homework_id=${payload.homework_id}`);
   },
   /**
    * @description: 解答一个题目
@@ -49,7 +49,7 @@ const api = {
    * @return:
    */
   answer_question(payload) {
-    return http.post(`homework_questions/${payload.id}/answer?homework_id=${payload.homework_id}`, payload.params)
+    return http.post(`homework_questions/${payload.id}/answer?homework_id=${payload.homework_id}`, payload.params);
   },
   /**
    * @description: 总结一个题目
@@ -57,7 +57,7 @@ const api = {
    * @return:
    */
   summary_question(payload) {
-    return http.post(`homework_questions/${payload.id}/summary`, payload.params)
+    return http.post(`homework_questions/${payload.id}/summary`, payload.params);
   },
   /**
    * @description: Tag列表
@@ -65,7 +65,7 @@ const api = {
    * @return:
    */
   question_tags() {
-    return http.get('tags')
+    return http.get('tags');
   },
   /**
    * @description: 完成练习
@@ -73,7 +73,7 @@ const api = {
    * @return:
    */
   complete(payload) {
-    return http.put(`homeworks/${payload}/complete`)
+    return http.put(`homeworks/${payload}/complete`);
   },
 
   /**
@@ -82,7 +82,7 @@ const api = {
    * @return:
    */
   tree(payload) {
-    return http.get(`homeworks`, { params: payload })
+    return http.get(`homeworks`, { params: payload });
   },
   /**
    * @description:
@@ -90,7 +90,7 @@ const api = {
    * @return:
    */
   get_mistake(payload) {
-    return http.get('homework_questions', { params: payload })
+    return http.get('homework_questions', { params: payload });
   },
   /**
    * @description: 意见反馈
@@ -98,7 +98,7 @@ const api = {
    * @return:
    */
   feedbacks(payload) {
-    return http.post('feedbacks', payload)
+    return http.post('feedbacks', payload);
   },
   /**
    * @description: 获取知识点列表
@@ -106,16 +106,24 @@ const api = {
    * @return:
    */
   acknowledges() {
-    return http.get('homework_questions/knowledges')
+    return http.get('homework_questions/knowledges');
   },
   /**
    * @description: 请求获取文件上传连接
-   * @param {type} 
-   * @return: 
+   * @param {type}
+   * @return:
    */
   get_file_Url(payload) {
-    return http.get('utils/fetch_s3_ur', { params: { file_name: payload.fileName, file_type: payload.fileType } })
+    return http.get('utils/fetch_s3_ur', { params: { file_name: payload.fileName, file_type: payload.fileType } });
+  },
+  /**
+   * @description: 获取key
+   * @param {type}
+   * @return:
+   */
+  get_appkey_mackey() {
+    return http.get('my_script_keys');
   }
-}
+};
 
-export default api
+export default api;

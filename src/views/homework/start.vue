@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:43
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-18 18:06:37
+ * @LastEditTime: 2019-09-25 15:39:37
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 
@@ -152,7 +152,7 @@ export default {
     shareOption() {
       var options = {
         message: '练习下载链接', // 分享的内容
-        url: process.env.VUE_APP_UPLOAD_URL + this.batch_id
+        url: process.env.VUE_APP_FILE + this.batch_id
 //         url: `http://sg-test.wfl-ischool.cn/#/training/index?id=${this.batch_id}`,//外链
       }
 

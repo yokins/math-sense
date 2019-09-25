@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:33
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-24 16:46:56
+ * @LastEditTime: 2019-09-24 17:55:10
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -23,8 +23,11 @@
     </div>
 
     <div class="wrong-questions">
-      <div class="title">错误 <span>{{wrong_question.length}}</span> 题</div>
-      <div class="question" v-for="(item, index) in wrong_question" :key="index">
+      <div class="title">
+        错误
+        <span>{{wrong_question.length}}</span> 题
+      </div>
+      <div class="question" v-for="(item, index) in wrong_question" :key="index" @click="toSummary(item.question)">
         <div class="index">{{item.index}}</div>
         <div class="desc">
           <div class="reason">{{ showSummary(item.question) }}</div>
@@ -34,17 +37,18 @@
     </div>
 
     <div class="right-questions">
-      <div class="title">正确 <span>{{right_question.length}}</span> 题</div>
+      <div class="title">
+        正确
+        <span>{{right_question.length}}</span> 题
+      </div>
       <div class="questions">
-        <div class="index question" v-for="(item, index) in right_question" :key="index">
-          {{ index.index }}
-        </div>
+        <div class="index question" v-for="(item, index) in right_question" :key="index">{{ index.index }}</div>
       </div>
     </div>
 
     <!-- <div class="list">
       <div v-for="(item, index) in homework_question_ids" :key="index" :class="['item', item.status]">{{ index + 1 }}</div>
-    </div> -->
+    </div>-->
 
     <van-button class="submit" size="small" block round type="warning" @click="goRedo">订正题目</van-button>
   </div>
@@ -151,9 +155,9 @@ export default {
      * @return:
      */
     showSummary(question) {
-      if (question.homework_answers[0].student_summaries.length > 0) {
-        const arr = question.homework_answers[0].student_summaries;
-        return student_summaries.reduce((str, item, index) => {
+      const arr = question.homework_answers[0].student_summaries;
+      if (arr.length > 0) {
+        return arr.reduce((str, item, index) => {
           const symbol = arr.length - 1 === index ? '' : '、';
           if (item.content) {
             str = str + item.content + symbol;
@@ -164,6 +168,26 @@ export default {
         }, '');
       } else {
         return '请总结错误原因';
+      }
+    },
+    /**
+     * @description: 进入总结
+     * @param {type} 
+     * @return: 
+     */
+    toSummary(question) {
+      if (question.homework_answers[0].student_summaries.length > 0) {
+        this.$router.push({
+          name: 'homework_question_show',
+          params: { homework_id: this.$route.params.homework_id, question_id: question.id },
+          query: { type: 'back' }
+        })
+      } else {
+        this.$router.replace({
+          name: 'homework_question_do',
+          params: { homework_id: this.$route.params.homework_id, question_id: question.id },
+          query: { type: 'reason' }
+        })
       }
     }
   }
@@ -310,7 +334,6 @@ export default {
 
         .van-icon {
           font-size: 14px;
-
         }
       }
     }

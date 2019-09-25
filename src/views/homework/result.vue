@@ -66,11 +66,11 @@
     <div class="wrong-item" v-for="(item, index) in wrongQuestions" :key="index" @click="toReason(item)">
       <div class="index">{{ questionIndex(item.id) + 1 }}</div>
       <div class="text" v-if="isShow">
-        <span class="reason-span">{{ showReason(item.student_summaries) }}</span>
+        <span class="reason-span">{{ showReason(item.homework_answers[1].student_summaries) }}</span>
         <van-icon style="margin-right: 10px;" name="arrow"></van-icon>
       </div>
       <div class="text" v-else>
-        {{ item.student_summaries.length > 0 ? showReason(item.student_summaries) : '请总结错误原因' }}
+        {{ item.homework_answers[1].student_summaries.length > 0 ? showReason(item.homework_answers[1].student_summaries) : '请总结错误原因' }}
         <van-icon style="margin-right: 10px;" name="arrow"></van-icon>
       </div>
     </div>
@@ -130,7 +130,7 @@ export default {
      */
     can_not_submit() {
       return this.wrongQuestions.some(item => {
-        return item.student_summaries.length < 1 && item.status
+        return item.homework_answers[0].student_summaries.length < 1 && item.status
       })
     },
     /**
@@ -195,14 +195,14 @@ export default {
      * @return:
      */
     toReason(item) {
-      if (this.isShow || item.status !== 'wrong' || (item.student_summaries.length > 0 && item.status === 'wrong')) {
+      if (this.isShow || item.status !== 'wrong' || (item.homework_answers[1].student_summaries.length > 0 && item.status === 'wrong')) {
         this.$router.push({
           name: 'homework_question_show',
           params: { homework_id: this.$route.params.homework_id, question_id: item.id },
           query: { type: 'back' }
         })
       } else {
-        if (item.student_summaries.length <= 0 && item.status === 'wrong') {
+        if (item.homework_answers[1].student_summaries.length <= 0 && item.status === 'wrong') {
           this.$router.replace({
             name: 'homework_question_do',
             params: { homework_id: this.$route.params.homework_id, question_id: item.id },

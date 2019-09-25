@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-18 17:59:56
+ * @LastEditTime: 2019-09-25 09:30:21
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -20,7 +20,10 @@
     <div class="tabs">
       <div :class="['tab', showTab('record') ? 'active' : '']" @click="onClickTab('record')">首次答题</div>
       <div v-if="answer_2" :class="['tab', showTab('redo_record') ? 'active' : '']" @click="onClickTab('redo_record')">订正答题</div>
-      <div :class="['tab', showTab('reason') ? 'active' : '']" @click="onClickTab('reason')">{{ answer_2 ? '错题总结' : '题目解析' }} </div>
+      <div v-if="homework_answers.length > 1" :class="['tab', showTab('reason') ? 'active' : '']" @click="onClickTab('reason')">
+        <!-- {{ answer_2 ? '错题总结' : '题目解析' }} -->
+        题目解析
+      </div>
     </div>
     <!-- tabs区域 -->
 
@@ -92,7 +95,27 @@
       </div>
     </div>
 
-    <div class="panel panel-reason" v-if="answer_2" v-show="showTab('reason')">
+    <div class="panel panel-reason" v-if="student_summaries.length > 0" v-show="showTab('record') || showTab('redo_record')">
+      <div class="content">
+        <span>你总结的错误原因</span>
+        <div class="checkboxs">
+          <div v-for="(item, index) in student_summaries" :key="index" :class="['tag', 'selected']">{{item.tag.content}}</div>
+        </div>
+        <div class="checkboxs" v-if="student_summaries_content">{{ student_summaries_content }}</div>
+      </div>
+    </div>
+
+    <div class="panel panel-reason" v-if="teacher_summaries.length > 0" v-show="showTab('record') || showTab('redo_record')">
+      <div class="content">
+        <span>老师总结的错误原因</span>
+        <div class="checkboxs">
+          <div v-for="(item, index) in teacher_summaries" :key="index" :class="['tag', 'selected']">{{item.tag.content}}</div>
+        </div>
+        <div class="checkboxs" v-if="teacher_summaries_content">{{ teacher_summaries_content }}</div>
+      </div>
+    </div>
+
+    <!-- <div class="panel panel-reason" v-if="answer_2" v-show="showTab('reason')">
       <div class="content">
         <span>你总结的错误原因</span>
         <div class="checkboxs">
@@ -110,7 +133,7 @@
         </div>
         <div class="checkboxs" v-if="teacher_summaries_content">{{ teacher_summaries_content }}</div>
       </div>
-    </div>
+    </div> -->
     <!-- 原因 -->
     </div>
   </div>
@@ -134,8 +157,8 @@ export default {
       show_tabs: false,
       question: {},
       homework_answers: [],
-      student_summaries: [],
-      teacher_summaries: [],
+      // student_summaries: [],
+      // teacher_summaries: [],
       drawed: false,
       result: '',
       step: '',
@@ -180,24 +203,39 @@ export default {
       }
     },
     /**
+     * @description: 根据回答量来决定当前的学生回答
+     * @param {type} 
+     * @return: 
+     */
+    student_summaries() {
+      if (this.homework_answers.length > 0 && this.active_tab === 'record') {
+        return this.homework_answers[0].student_summaries
+      } else if (this.homework_answers.length > 0 && this.active_tab === 'redo_record') {
+        return this.homework_answers[1].student_summaries
+      } else {
+        return []
+      }
+    },
+    /**
+     * @description: 根据回答量来决定当前的教师回答
+     * @param {type} 
+     * @return: 
+     */
+    teacher_summaries() {
+      if (this.homework_answers.length > 0 && this.active_tab === 'record') {
+        return this.homework_answers[0].teacher_summaries
+      } else if (this.homework_answers.length > 0 && this.active_tab === 'redo_record') {
+        return this.homework_answers[1].teacher_summaries
+      } else {
+        return []
+      }
+    },
+    /**
      * @description: 教师评价
      * @param {type} 
      * @return: 
      */
     teacher_summaries_content() {
-      // if (this.teacher_summaries.length > 0) {
-      //   const list = this.teacher_summaries.filter(item => {
-      //     return item.content !== ''
-      //   })
-
-      //   if (list.length > 0) {
-      //     return list[0].content
-      //   } else {
-      //     return false
-      //   }
-      // } else {
-      //   return false
-      // }
       return this.teacher_summaries.reduce((content, item) => {
         if (item.content) {
           content = item.content
@@ -211,20 +249,6 @@ export default {
      * @return: 
      */
     student_summaries_content() {
-      // if (this.student_summaries.length > 0) {
-      //   const list = this.student_summaries.filter(item => {
-      //     return item.content !== ''
-      //   })
-
-      //   if (list.length > 0) {
-      //     return list[0].content
-      //   } else {
-      //     return false
-      //   }
-      // } else {
-      //   return false
-      // }
-
       return this.student_summaries.reduce((content, item) => {
         if (item.content) {
           content = item.content
@@ -266,8 +290,8 @@ export default {
       this.$api.get_question({ id: id, homework_id: this.$route.params.homework_id }).then(res => {
         this.question = res.homework_question.question
         this.homework_answers = res.homework_question.homework_answers
-        this.student_summaries = res.homework_question.student_summaries
-        this.teacher_summaries = res.homework_question.teacher_summaries
+        // this.student_summaries = res.homework_question.student_summaries
+        // this.teacher_summaries = res.homework_question.teacher_summaries
       })
     },
     /**

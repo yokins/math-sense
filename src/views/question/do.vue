@@ -21,10 +21,14 @@
       <div :class="['tab', showTab('record') ? 'active' : '']" @click="onClickTab('record')">首次答题</div>
       <div
         :class="['tab', showTab('redo_record') ? 'active' : '']"
-        v-if="onReason"
+        v-if="onReason && homework_answers.length > 1"
         @click="onClickTab('redo_record')"
       >订正答题</div>
-      <div :class="['tab', showTab('form') ? 'active' : '']" v-else @click="onClickTab('form')">订正答题</div>
+      <div
+        :class="['tab', showTab('form') ? 'active' : '']"
+        v-if="!onReason && homework_answers.length > 0"
+        @click="onClickTab('form')"
+      >订正答题</div>
       <div :class="['tab', showTab('reason') ? 'active' : '']" v-if="onReason" @click="onClickTab('reason')">错题总结</div>
     </div>
     <!-- tabs区域 -->
@@ -90,6 +94,20 @@
           <van-icon size="15" v-else name="checked" color="#3296fa"></van-icon>
         </div>
       </div>
+
+      <div class="panel panel-reason" v-if="first_student_summaries.length > 0 && showTab('record')">
+        <div class="content">
+          <span>你总结的错误原因</span>
+          <div class="checkboxs">
+            <div
+              v-for="(item, index) in first_student_summaries"
+              :key="index"
+              :class="['tag', 'selected']"
+            >{{item.tag.content}}</div>
+          </div>
+          <div class="checkboxs" style="font-size: 14px;" v-if="first_student_summaries_content">{{ first_student_summaries_content }}</div>
+        </div>
+      </div>
       <!-- 首次 -->
 
       <!-- 订正 -->
@@ -126,7 +144,7 @@
       <!-- 订正 -->
 
       <!-- 原因 -->
-      <div class="panel panel-answer" v-show="showTab('reason')">
+      <div class="panel panel-answer" v-show="showTab('reason') && homework_answers.length > 1">
         <div class="content">
           <span>正确解析</span>
           <div class="question-analyze" v-if="question.question_analyze" v-html="question.question_analyze.html"></div>
@@ -254,6 +272,14 @@ export default {
   computed: {
     ...mapState(['doing_questions']),
     /**
+     * @description:
+     * @param {type}
+     * @return:
+     */
+    isNotFirstReason() {
+      return this.homework_answers.length > 1;
+    },
+    /**
      * @description: 获取所有当前要操作的题目
      * @param {type}
      * @return:
@@ -265,11 +291,16 @@ export default {
           return item.status === 'wrong' && !item.is_redo;
         });
       } else if (this.$route.query.type === 'reason') {
-        arr = this.doing_questions.filter(item => {
-          return item.status === 'wrong' && item.is_redo && item.student_summaries.length <= 0;
-        });
+        if (this.isNotFirstReason) {
+          arr = this.doing_questions.filter(item => {
+            return item.status === 'wrong' && item.is_redo && item.homework_answers.length > 1;
+          });
+        } else {
+          arr = this.doing_questions.filter(item => {
+            return item.status === 'wrong' && !item.is_redo && item.homework_answers.length <= 1;
+          });
+        }
       }
-      console.log(arr);
       return arr;
     },
     /**
@@ -356,6 +387,31 @@ export default {
       } else {
         return null;
       }
+    },
+    /**
+     * @description: 显示第一次提交的原因
+     * @param {type}
+     * @return:
+     */
+    first_student_summaries() {
+      if (this.homework_answers.length > 0 && this.homework_answers[0].student_summaries.length > 0) {
+        return this.homework_answers[0].student_summaries;
+      } else {
+        return [];
+      }
+    },
+    /**
+     * @description: 第一次提交的content
+     * @param {type}
+     * @return:
+     */
+    first_student_summaries_content() {
+      return this.first_student_summaries.reduce((content, item) => {
+        if (item.content) {
+          content = item.content;
+        }
+        return content;
+      }, '');
     }
   },
 
@@ -389,7 +445,7 @@ export default {
     init(id) {
       this.$api.get_question({ id: id, homework_id: this.$route.params.homework_id }).then(res => {
         this.question = res.homework_question.question;
-        this.homework_answers = res.homework_question.homework_answers;
+        this.homework_answers = res.homework_question.homework_answers || [];
         this.result = '';
         this.step = '';
         this.other = '';
@@ -550,7 +606,11 @@ export default {
         return item.id === parseInt(this.$route.params.question_id);
       });
       let next = this.doing_questions.filter((item, index) => {
-        return item.status === 'wrong' && item.is_redo && item.student_summaries.length <= 0 && index > currentIndex;
+        if (this.isNotFirstReason) {
+          return item.status === 'wrong' && item.is_redo && item.homework_answers.length > 1 && index > currentIndex;
+        } else {
+          return item.status === 'wrong' && !item.is_redo && item.homework_answers.length <= 1 && index > currentIndex;
+        }
       });
 
       return next.length > 0 ? next[0] : null;
@@ -684,18 +744,26 @@ export default {
       this.selected_tags.forEach((item, index) => {
         tags.push({ id: item, content: item === this.tags[this.tags.length - 1].id ? this.other : '' });
       });
+      const homework_answer_id = this.homework_answers[this.isNotFirstReason ? 1 : 0].id;
       this.$api
         .summary_question({
           id: this.$route.params.question_id,
-          params: { id: this.$route.params.question_id, tags: tags }
+          params: { id: this.$route.params.question_id, tags: tags, homework_answer_id: homework_answer_id }
         })
         .then(() => {
           const next = this.nextReasonQuestion();
           if (!next) {
-            this.$router.replace({
-              name: 'homework_result',
-              params: { homework_id: this.$route.params.homework_id }
-            });
+            if (this.isNotFirstReason) {
+              this.$router.replace({
+                name: 'homework_result',
+                params: { homework_id: this.$route.params.homework_id }
+              });
+            } else {
+              this.$router.replace({
+                name: 'homework_judge',
+                params: { homework_id: this.$route.params.homework_id }
+              });
+            }
           } else {
             this.$router.replace({
               name: 'homework_question_do',
@@ -781,23 +849,6 @@ export default {
       a.style.overflowY = 'auto';
     }
   }
-
-  // watch: {
-  //   /**
-  //    * @description: 监控答案，然后显示
-  //    * @param {type}
-  //    * @return:
-  //    */
-  //   result(val) {
-  //     const resultElement = this.$refs.result
-  //     console.log(val)
-  //     if (val) {
-  //       katex.render(val.trim(), resultElement)
-  //     } else {
-  //       resultElement.innerHTML = ''
-  //     }
-  //   }
-  // }
 };
 </script>
 

@@ -130,7 +130,7 @@ export default {
      */
     can_not_submit() {
       return this.wrongQuestions.some(item => {
-        return item.homework_answers[0].student_summaries.length < 1 && item.status
+        return item.homework_answers[1].student_summaries.length < 1 && item.status
       })
     },
     /**

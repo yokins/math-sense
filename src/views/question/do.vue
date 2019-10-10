@@ -68,7 +68,7 @@
         <div class="content" v-if="answer_1">
           <span class="tip">您的解题步骤</span>
           <img
-            v-if="answer_1.attachments[0]"
+            v-if="answer_1.attachments[0] && answer_1.attachments[0].url"
             :src="answer_1.attachments[0].url"
             class="step-img"
             @click="clickStepImg(answer_1.attachments[0].url)"
@@ -119,7 +119,7 @@
         <div class="content" v-if="answer_2">
           <span class="tip">您的解题步骤</span>
           <img
-            v-if="answer_2.attachments[0]"
+            v-if="answer_2.attachments[0] && answer_2.attachments[0].url"
             :src="answer_2.attachments[0].url"
             class="step-img"
             @click="clickStepImg(answer_2.attachments[0].url)"
@@ -617,7 +617,11 @@ export default {
         return item.id === parseInt(this.$route.params.question_id);
       });
       let next = this.doing_questions.filter((item, index) => {
-        return item.status === 'wrong' && !item.is_redo && index > currentIndex;
+        if (currentIndex === this.doing_questions.length - 1) {
+          return item.status === 'wrong' && !item.is_redo && index < currentIndex;
+        } else {
+          return item.status === 'wrong' && !item.is_redo && index > currentIndex;
+        }
       });
 
       return next.length > 0 ? next[0] : null;
@@ -631,11 +635,20 @@ export default {
       let currentIndex = this.doing_questions.findIndex(item => {
         return item.id === parseInt(this.$route.params.question_id);
       });
+
       let next = this.doing_questions.filter((item, index) => {
         if (this.isNotFirstReason) {
-          return item.status === 'wrong' && item.is_redo && item.homework_answers.length > 1 && index > currentIndex;
+          if (currentIndex === this.doing_questions.length - 1) {
+            return item.status === 'wrong' && item.is_redo && item.homework_answers.length > 1 && item.homework_answers[1].student_summaries.length < 1 && index < currentIndex;
+          } else {
+            return item.status === 'wrong' && item.is_redo && item.homework_answers.length > 1 && item.homework_answers[1].student_summaries.length < 1 && index > currentIndex;
+          }
         } else {
-          return item.status === 'wrong' && !item.is_redo && item.homework_answers.length <= 1 && index > currentIndex;
+          if (currentIndex === this.doing_questions.length - 1) {
+            return item.status === 'wrong' && !item.is_redo && item.homework_answers.length <= 1 && item.homework_answers[0].student_summaries.length < 1 && index < currentIndex;
+          } else {
+            return item.status === 'wrong' && !item.is_redo && item.homework_answers.length <= 1 && item.homework_answers[0].student_summaries.length < 1  && index > currentIndex;
+          }
         }
       });
 
@@ -686,12 +699,11 @@ export default {
           const next = _this.$route.query.type
             ? _this.nextRedoQuestion(_this.$route.params.question_id)
             : _this.nextQuestion(_this.$route.params.question_id);
-
-          if (!next) {
-            // 更新题目信息
-            this.$api.get_homework_info(this.$route.params.homework_id).then(res => {
-              this.set_doing_question(res.homework_question_ids);
-              const questions = res.homework_question_ids;
+          // 更新题目信息
+          this.$api.get_homework_info(this.$route.params.homework_id).then(res => {
+            this.set_doing_question(res.homework_question_ids);
+            const questions = res.homework_question_ids;
+            if (!next) {
               const hadNeedRedoAndNotRedo = questions.some(item => {
                 return item.status === 'wrong' && !item.is_redo;
               });
@@ -706,25 +718,64 @@ export default {
                   params: { homework_id: _this.$route.params.homework_id }
                 });
               }
-            });
-          } else {
-            _this.cleanResult();
-            _this.cleanStep();
-            if (this.$route.query.type) {
-              _this.$router.replace({
-                name: 'homework_question_do',
-                params: { homework_id: _this.$route.params.homework_id, question_id: next.id },
-                query: { type: 'redo' }
-              });
             } else {
-              _this.$router.replace({
-                name: 'homework_question_do',
-                params: { homework_id: _this.$route.params.homework_id, question_id: next.id }
-              });
-            }
+              _this.cleanResult();
+              _this.cleanStep();
+              if (this.$route.query.type) {
+                _this.$router.replace({
+                  name: 'homework_question_do',
+                  params: { homework_id: _this.$route.params.homework_id, question_id: next.id },
+                  query: { type: 'redo' }
+                });
+              } else {
+                _this.$router.replace({
+                  name: 'homework_question_do',
+                  params: { homework_id: _this.$route.params.homework_id, question_id: next.id }
+                });
+              }
 
-            this.init(next.id);
-          }
+              this.init(next.id);
+            }
+          });
+
+          // if (!next) {
+          //   // 更新题目信息
+          //   this.$api.get_homework_info(this.$route.params.homework_id).then(res => {
+          //     this.set_doing_question(res.homework_question_ids);
+          //     const questions = res.homework_question_ids;
+          //     const hadNeedRedoAndNotRedo = questions.some(item => {
+          //       return item.status === 'wrong' && !item.is_redo;
+          //     });
+          //     if (hadNeedRedoAndNotRedo) {
+          //       _this.$router.replace({
+          //         name: 'homework_judge',
+          //         params: { homework_id: _this.$route.params.homework_id }
+          //       });
+          //     } else {
+          //       _this.$router.replace({
+          //         name: 'homework_result',
+          //         params: { homework_id: _this.$route.params.homework_id }
+          //       });
+          //     }
+          //   });
+          // } else {
+          //   _this.cleanResult();
+          //   _this.cleanStep();
+          //   if (this.$route.query.type) {
+          //     _this.$router.replace({
+          //       name: 'homework_question_do',
+          //       params: { homework_id: _this.$route.params.homework_id, question_id: next.id },
+          //       query: { type: 'redo' }
+          //     });
+          //   } else {
+          //     _this.$router.replace({
+          //       name: 'homework_question_do',
+          //       params: { homework_id: _this.$route.params.homework_id, question_id: next.id }
+          //     });
+          //   }
+
+          //   this.init(next.id);
+          // }
         });
     },
     /**
@@ -777,27 +828,31 @@ export default {
           params: { id: this.$route.params.question_id, tags: tags, homework_answer_id: homework_answer_id }
         })
         .then(() => {
-          const next = this.nextReasonQuestion();
-          if (!next) {
-            if (this.isNotFirstReason) {
-              this.$router.replace({
-                name: 'homework_result',
-                params: { homework_id: this.$route.params.homework_id }
-              });
+          this.$api.get_homework_info(this.$route.params.homework_id).then(res => {
+            this.set_doing_question(res.homework_question_ids);
+            console.log(this.doing_questions)
+            const next = this.nextReasonQuestion();
+            if (!next) {
+              if (this.isNotFirstReason) {
+                this.$router.replace({
+                  name: 'homework_result',
+                  params: { homework_id: this.$route.params.homework_id }
+                });
+              } else {
+                this.$router.replace({
+                  name: 'homework_judge',
+                  params: { homework_id: this.$route.params.homework_id }
+                });
+              }
             } else {
               this.$router.replace({
-                name: 'homework_judge',
-                params: { homework_id: this.$route.params.homework_id }
+                name: 'homework_question_do',
+                params: { homework_id: this.$route.params.homework_id, question_id: next.id },
+                query: { type: 'reason' }
               });
+              this.init(next.id);
             }
-          } else {
-            this.$router.replace({
-              name: 'homework_question_do',
-              params: { homework_id: this.$route.params.homework_id, question_id: next.id },
-              query: { type: 'reason' }
-            });
-            this.init(next.id);
-          }
+          });
         });
     },
     /**

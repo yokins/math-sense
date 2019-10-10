@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-25 09:30:21
+ * @LastEditTime: 2019-10-10 17:59:10
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -33,7 +33,7 @@
       <div class="content" v-if="answer_1">
         <span class="tip">您的解题步骤</span>
         <img
-          v-if="answer_1.attachments[0]"
+          v-if="answer_1.attachments[0] && answer_1.attachments[0].url"
           :src="answer_1.attachments[0].url"
           class="step-img"
           @click="clickStepImg(answer_1.attachments[0].url)"
@@ -57,7 +57,7 @@
       <div class="content">
         <span class="tip">您的解题步骤</span>
         <img
-          v-if="answer_2.attachments[0]"
+          v-if="answer_2.attachments[0] && answer_2.attachments[0].url"
           :src="answer_2.attachments[0].url"
           class="step-img"
           @click="clickStepImg(answer_2.attachments[0].url)"

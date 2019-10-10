@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:33
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-24 17:55:10
+ * @LastEditTime: 2019-10-10 18:14:14
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -42,7 +42,7 @@
         <span>{{right_question.length}}</span> 题
       </div>
       <div class="questions">
-        <div class="index question" v-for="(item, index) in right_question" :key="index">{{ index.index }}</div>
+        <div class="index question" v-for="(item, index) in right_question" :key="index" @click="toShow(item)">{{ item.index }}</div>
       </div>
     </div>
 
@@ -50,7 +50,7 @@
       <div v-for="(item, index) in homework_question_ids" :key="index" :class="['item', item.status]">{{ index + 1 }}</div>
     </div>-->
 
-    <van-button class="submit" size="small" block round type="warning" @click="goRedo">订正题目</van-button>
+    <van-button class="submit" size="small" block round type="warning" :disabled="cantRedo" @click="goRedo">订正题目</van-button>
   </div>
 </template>
 
@@ -99,6 +99,16 @@ export default {
         }
         return arr;
       }, []);
+    },
+    /**
+     * @description: 判断是否能进行订正
+     * @param {type} 
+     * @return: 
+     */
+    cantRedo() {
+      return this.homework_question_ids.some((item, index) => {
+        return item.status === 'wrong' && !item.is_redo && item.homework_answers[0].student_summaries.length <= 0
+      })
     }
   },
   created() {
@@ -189,6 +199,18 @@ export default {
           query: { type: 'reason' }
         })
       }
+    },
+    /**
+     * @description: 跳转到显示
+     * @param {type} 
+     * @return: 
+     */
+    toShow(item) {
+      this.$router.push({
+        name: 'homework_question_show',
+        params: { homework_id: this.$route.params.homework_id, question_id: item.question.id },
+        query: { type: 'back' }
+      })
     }
   }
 };

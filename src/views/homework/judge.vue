@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:33
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-10-10 18:14:14
+ * @LastEditTime: 2019-10-11 16:24:16
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -18,8 +18,8 @@
         <span>{{ wrong_and_not_redo_count }}</span> 道练习题需要订正
       </div>
       <div class="title last">请总结错误原因然后进行订正</div>
-      <div class="tip">点击订正按钮完成重新作答</div>
-      <div class="tip">重新作答时可查看上一次作答的草稿和答案</div>
+      <div class="tip">点击订正按钮完成订正题目</div>
+      <div class="tip">订正题目时可查看上一次作答的步骤和答案</div>
     </div>
 
     <div class="wrong-questions">

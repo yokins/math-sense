@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:46:35
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-05 09:31:34
+ * @LastEditTime: 2019-10-11 16:40:09
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -30,7 +30,10 @@
         <span>本月已累计答错 {{total_wrong_count}} 题</span>
       </div>
 
-      <van-pull-refresh style="flex: 1" v-model="isLoading" @refresh="initData">
+      <van-pull-refresh style="flex: 1;" v-model="isLoading" @refresh="initData">
+        <div v-if="list.length <= 0 && !isLoading"  class="placeholder">
+          没有练习哦~
+        </div>
         <homework-item v-for="(item, index) in list" :key="index" :homework="item"></homework-item>
       </van-pull-refresh>
     </div>
@@ -150,6 +153,14 @@ export default {
         }
       }
     }
+  }
+
+  .placeholder {
+    min-height: 200px;
+    font-size: 12px;
+    color: #e1e1e1;
+    text-align: center;
+    padding-top: 15px;
   }
 
   .list {

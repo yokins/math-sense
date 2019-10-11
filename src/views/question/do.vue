@@ -1,6 +1,14 @@
 <template>
   <div class="page question-do" id="question-do">
-    <van-popup class="close-popup" v-model="show_close" round>
+    <van-popup v-if="onReason" class="close-popup" v-model="show_close" round>
+      <div class="title">是否退出总结原因</div>
+      <div class="content">退出后当前题目不保留总结原因记录</div>
+      <div class="btns">
+        <van-button round type="default" plain size="small" @click="$router.replace({ name: 'home' })">确认退出</van-button>
+        <van-button round type="info" size="small" @click="show_close = false">继续总结</van-button>
+      </div>
+    </van-popup>
+    <van-popup v-else class="close-popup" v-model="show_close" round>
       <div class="title">是否退出答题</div>
       <div class="content">退出后当前题目不保留做题记录</div>
       <div class="btns">

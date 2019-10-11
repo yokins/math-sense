@@ -12,6 +12,7 @@ body {
   user-select: none;
 }
 
-input {
-  user-select: auto;
+input, textarea {
+  user-select: text !important;
 }
+

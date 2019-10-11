@@ -413,8 +413,8 @@ export default {
           server: {
             scheme: 'https',
             host: 'cloud.myscript.com',
-            applicationKey: '2b08c438-64ef-4655-b0a6-a75986e23b5a',
-            hmacKey: '07a85927-f74c-4b78-a85f-0b0cd585ee7b'
+            applicationKey: 'fe31426f-6cd1-41ec-a4f4-68df089001bd',
+            hmacKey: '94a95c87-dbec-4d6e-8691-22e1a756cf71'
           },
           v4: {
             alwaysConnected: false,

@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:43
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-25 15:39:37
+ * @LastEditTime: 2019-10-11 09:05:26
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 
@@ -20,7 +20,7 @@
       <div class="title">练习马上开始</div>
       <div class="title last">深呼吸调整好自己的最佳状态</div>
 
-      <div class="tip">如需打印题目，可点击下方转发按钮发送至微信</div>
+      <div class="tip">如需打印题目，可点击下方分享按钮发送至微信</div>
       <div class="tip">注意查看答案识别是否正确</div>
       <div class="tip">有些题目需要填写多个答案，不要忘了哦~</div>
     </div>

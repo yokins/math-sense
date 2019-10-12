@@ -306,16 +306,16 @@ export default {
       let arr = this.doing_questions;
       if (this.$route.query.type === 'redo') {
         arr = this.doing_questions.filter(item => {
-          return item.status === 'wrong' && !item.is_redo;
+          return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo;
         });
       } else if (this.$route.query.type === 'reason') {
         if (this.isNotFirstReason) {
           arr = this.doing_questions.filter(item => {
-            return item.status === 'wrong' && item.is_redo && item.homework_answers.length > 1;
+            return (item.status === 'wrong' || item.status === 'redoing') && item.is_redo && item.homework_answers.length > 1;
           });
         } else {
           arr = this.doing_questions.filter(item => {
-            return item.status === 'wrong' && !item.is_redo && item.homework_answers.length <= 1;
+            return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo && item.homework_answers.length <= 1;
           });
         }
       }
@@ -626,9 +626,9 @@ export default {
       });
       let next = this.doing_questions.filter((item, index) => {
         if (currentIndex === this.doing_questions.length - 1) {
-          return item.status === 'wrong' && !item.is_redo && index < currentIndex;
+          return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo && index < currentIndex;
         } else {
-          return item.status === 'wrong' && !item.is_redo && index > currentIndex;
+          return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo && index > currentIndex;
         }
       });
 
@@ -647,15 +647,15 @@ export default {
       let next = this.doing_questions.filter((item, index) => {
         if (this.isNotFirstReason) {
           if (currentIndex === this.doing_questions.length - 1) {
-            return item.status === 'wrong' && item.is_redo && item.homework_answers.length > 1 && item.homework_answers[1].student_summaries.length < 1 && index < currentIndex;
+            return (item.status === 'wrong' || item.status === 'redoing') && item.is_redo && item.homework_answers.length > 1 && item.homework_answers[1].student_summaries.length < 1 && index < currentIndex;
           } else {
-            return item.status === 'wrong' && item.is_redo && item.homework_answers.length > 1 && item.homework_answers[1].student_summaries.length < 1 && index > currentIndex;
+            return (item.status === 'wrong' || item.status === 'redoing') && item.is_redo && item.homework_answers.length > 1 && item.homework_answers[1].student_summaries.length < 1 && index > currentIndex;
           }
         } else {
           if (currentIndex === this.doing_questions.length - 1) {
-            return item.status === 'wrong' && !item.is_redo && item.homework_answers.length <= 1 && item.homework_answers[0].student_summaries.length < 1 && index < currentIndex;
+            return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo && item.homework_answers.length <= 1 && item.homework_answers[0].student_summaries.length < 1 && index < currentIndex;
           } else {
-            return item.status === 'wrong' && !item.is_redo && item.homework_answers.length <= 1 && item.homework_answers[0].student_summaries.length < 1  && index > currentIndex;
+            return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo && item.homework_answers.length <= 1 && item.homework_answers[0].student_summaries.length < 1  && index > currentIndex;
           }
         }
       });
@@ -713,7 +713,7 @@ export default {
             const questions = res.homework_question_ids;
             if (!next) {
               const hadNeedRedoAndNotRedo = questions.some(item => {
-                return item.status === 'wrong' && !item.is_redo;
+                return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo;
               });
               if (hadNeedRedoAndNotRedo) {
                 _this.$router.replace({
@@ -752,7 +752,7 @@ export default {
           //     this.set_doing_question(res.homework_question_ids);
           //     const questions = res.homework_question_ids;
           //     const hadNeedRedoAndNotRedo = questions.some(item => {
-          //       return item.status === 'wrong' && !item.is_redo;
+          //       return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo;
           //     });
           //     if (hadNeedRedoAndNotRedo) {
           //       _this.$router.replace({

@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:43
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-10-11 09:05:26
+ * @LastEditTime: 2019-10-12 10:10:46
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 
@@ -96,7 +96,7 @@ export default {
       })
       // 需要重做但是没做
       const hadRedoAndNotDoQuestion = this.doing_questions.some(item => {
-        return item.status === 'wrong' && !item.is_redo
+        return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo
       })
 
       if (hadInitQuestion) {
@@ -128,7 +128,7 @@ export default {
       })
       // 需要重做但是没做
       const hadRedoAndNotDoQuestion = this.doing_questions.some(item => {
-        return item.status === 'wrong' && !item.is_redo
+        return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo
       })
       if (hadInitQuestion || hadRedoAndNotDoQuestion) {
         this.$router.replace({ name: 'homework_loading', params: { homework_id: this.homework_id } })

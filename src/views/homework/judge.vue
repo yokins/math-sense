@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:33
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-10-11 16:24:16
+ * @LastEditTime: 2019-10-12 10:08:21
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -71,7 +71,7 @@ export default {
      */
     wrong_and_not_redo_count() {
       return this.homework_question_ids.filter(item => {
-        return item.status === 'wrong' && !item.is_redo;
+        return (item.status === 'wrong' || item.status === 'redoing')  && !item.is_redo;
       }).length;
     },
     /**
@@ -81,7 +81,7 @@ export default {
      */
     wrong_question() {
       return this.homework_question_ids.reduce((arr, item, index) => {
-        if (item.status === 'wrong' && !item.is_redo) {
+        if ((item.status === 'wrong' || item.status === 'redoing') && !item.is_redo) {
           arr.push({ index: index + 1, question: item });
         }
         return arr;
@@ -107,7 +107,7 @@ export default {
      */
     cantRedo() {
       return this.homework_question_ids.some((item, index) => {
-        return item.status === 'wrong' && !item.is_redo && item.homework_answers[0].student_summaries.length <= 0
+        return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo && item.homework_answers[0].student_summaries.length <= 0
       })
     }
   },
@@ -142,7 +142,7 @@ export default {
      */
     goRedo() {
       const redoQuestion = this.homework_question_ids.filter(item => {
-        return item.status === 'wrong' && !item.is_redo;
+        return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo;
       })[0];
       console.log('TCL: goRedo -> redoQuestion', redoQuestion);
       this.$router.replace({

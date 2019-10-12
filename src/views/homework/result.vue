@@ -120,7 +120,7 @@ export default {
      */
     wrongQuestions() {
       return this.homework_question_ids.filter(item => {
-        return item.status === 'wrong' && item.is_redo
+        return (item.status === 'wrong' || item.status === 'redoing') && item.is_redo
       })
     },
     /**
@@ -195,14 +195,14 @@ export default {
      * @return:
      */
     toReason(item) {
-      if (this.isShow || item.status !== 'wrong' || (item.homework_answers[1].student_summaries.length > 0 && item.status === 'wrong')) {
+      if (this.isShow || item.status !== 'wrong' || (item.homework_answers[1].student_summaries.length > 0 && (item.status === 'wrong' || item.status === 'redoing'))) {
         this.$router.push({
           name: 'homework_question_show',
           params: { homework_id: this.$route.params.homework_id, question_id: item.id },
           query: { type: 'back' }
         })
       } else {
-        if (item.homework_answers[1].student_summaries.length <= 0 && item.status === 'wrong') {
+        if (item.homework_answers[1].student_summaries.length <= 0 && (item.status === 'wrong' || item.status === 'redoing')) {
           this.$router.replace({
             name: 'homework_question_do',
             params: { homework_id: this.$route.params.homework_id, question_id: item.id },

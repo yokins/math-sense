@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:48:20
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-10-10 17:59:10
+ * @LastEditTime: 2019-10-12 15:30:12
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -85,11 +85,12 @@
         <div class="question-answer" v-if="question.question_answers && question.question_answers[0]">
           <!-- <vue-mathjax v-for="(item, index) in question.question_answers" :key="index" :formula="item.content"></vue-mathjax> -->
           <div
+            class="answers"
             v-for="(item, index) in question.question_answers[0].question_answer_contents"
             :key="index"
           >
             <div class="katex-answer" v-katex="item.content"></div>
-            <span v-if="question.question_answers[0].question_answer_contents.length - 1 !== index"> 、</span>
+            <div style="font-size: 13px;display:flex;align-items:flex-end;" v-if="question.question_answers[0].question_answer_contents.length - 1 !== index"> 、</div>
           </div>
         </div>
       </div>
@@ -618,6 +619,11 @@ export default {
     color: #3296fa !important;
     font-size: 14px !important;
   }
+
+  .answers {
+    display: flex;
+    align-items: center;
+  }
    
   .katex-answer {
     font-size: 14px !important;
@@ -631,4 +637,5 @@ export default {
     }
   }
 }
+
 </style>

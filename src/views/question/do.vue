@@ -163,9 +163,9 @@
           <span>正确答案</span>
           <div class="question-answer" v-if="question.question_answers && question.question_answers[0]">
             <!-- <vue-mathjax v-for="(item, index) in question.question_answers" :key="index" :formula="item.content"></vue-mathjax> -->
-            <div v-for="(item, index) in question.question_answers[0].question_answer_contents" :key="index">
+            <div class="answers" v-for="(item, index) in question.question_answers[0].question_answer_contents" :key="index">
               <div class="katex-answer" v-katex="item.content"></div>
-              <span v-if="question.question_answers[0].question_answer_contents.length - 1 !== index">、</span>
+              <div style="font-size: 13px;display:flex;align-items:flex-end;padding-bottom: 5px;" v-if="question.question_answers[0].question_answer_contents.length - 1 !== index">、</div>
             </div>
           </div>
         </div>
@@ -1258,9 +1258,13 @@ export default {
   .katex-answer {
     font-size: 14px !important;
   }
-
+  .answers {
+    display: flex;
+    align-items: center;
+  }
   .question-answer {
     display: flex;
+    align-items: center;
     padding: 10px 10px 0;
     > div {
       display: flex;

@@ -306,16 +306,19 @@ export default {
       let arr = this.doing_questions;
       if (this.$route.query.type === 'redo') {
         arr = this.doing_questions.filter(item => {
-          return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo;
+          // return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo;
+          return (item.status === 'wrong' || item.status === 'redoing');
         });
       } else if (this.$route.query.type === 'reason') {
         if (this.isNotFirstReason) {
           arr = this.doing_questions.filter(item => {
-            return (item.status === 'wrong' || item.status === 'redoing') && item.is_redo && item.homework_answers.length > 1;
+            // return (item.status === 'wrong' || item.status === 'redoing') && item.is_redo && item.homework_answers.length > 1;
+            return item.status === 'wrong' && item.is_redo;
           });
         } else {
           arr = this.doing_questions.filter(item => {
-            return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo && item.homework_answers.length <= 1;
+            // return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo && item.homework_answers.length <= 1;
+            return item.status === 'redoing' && !item.is_redo;
           });
         }
       }

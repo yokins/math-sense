@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:05
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-10-12 15:37:22
+ * @LastEditTime: 2019-10-14 17:06:37
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -69,7 +69,7 @@ export default {
   },
   mounted() {
     this.initData()
-    this.onLoad(true)
+    // this.onLoad(true)
     
   },
   methods: {
@@ -138,6 +138,7 @@ export default {
     },
     onConfirm(value) {
       this.setCurrentMistakeSelect(value)
+      this.onLoad()
       this.active_fitler = value
       this.show = false
     },
@@ -167,7 +168,6 @@ export default {
     active_fitler() {
       this.page = 1
       this.list = []
-      this.onLoad()
     }
   }
 }

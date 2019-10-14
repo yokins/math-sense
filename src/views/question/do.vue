@@ -165,7 +165,7 @@
             <!-- <vue-mathjax v-for="(item, index) in question.question_answers" :key="index" :formula="item.content"></vue-mathjax> -->
             <div class="answers" v-for="(item, index) in question.question_answers[0].question_answer_contents" :key="index">
               <div class="katex-answer" v-katex="item.content"></div>
-              <div style="font-size: 13px;display:flex;align-items:flex-end;padding-bottom: 5px;" v-if="question.question_answers[0].question_answer_contents.length - 1 !== index">、</div>
+              <div style="font-size: 13px;display:flex;align-items:flex-end;" v-if="question.question_answers[0].question_answer_contents.length - 1 !== index">、</div>
             </div>
           </div>
         </div>
@@ -1255,16 +1255,16 @@ export default {
     font-size: 14px !important;
   }
 
-  .katex-answer {
-    font-size: 14px !important;
-  }
   .answers {
     display: flex;
     align-items: center;
   }
+  .katex-answer {
+    font-size: 14px !important;
+  }
   .question-answer {
     display: flex;
-    align-items: center;
+    // align-items: center;
     padding: 10px 10px 0;
     > div {
       display: flex;

@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:33
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-10-12 10:08:21
+ * @LastEditTime: 2019-10-16 14:48:32
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -297,6 +297,7 @@ export default {
     width: calc(100vw - 50px);
     position: fixed;
     bottom: 20px;
+    z-index: 100;
   }
 
   .index {

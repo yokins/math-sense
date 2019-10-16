@@ -163,9 +163,16 @@
           <span>正确答案</span>
           <div class="question-answer" v-if="question.question_answers && question.question_answers[0]">
             <!-- <vue-mathjax v-for="(item, index) in question.question_answers" :key="index" :formula="item.content"></vue-mathjax> -->
-            <div class="answers" v-for="(item, index) in question.question_answers[0].question_answer_contents" :key="index">
+            <div
+              class="answers"
+              v-for="(item, index) in question.question_answers[0].question_answer_contents"
+              :key="index"
+            >
               <div class="katex-answer" v-katex="item.content"></div>
-              <div style="font-size: 13px;display:flex;align-items:flex-end;" v-if="question.question_answers[0].question_answer_contents.length - 1 !== index">、</div>
+              <div
+                style="font-size: 13px;display:flex;align-items:flex-end;"
+                v-if="question.question_answers[0].question_answer_contents.length - 1 !== index"
+              >、</div>
             </div>
           </div>
         </div>
@@ -307,7 +314,7 @@ export default {
       if (this.$route.query.type === 'redo') {
         arr = this.doing_questions.filter(item => {
           // return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo;
-          return (item.status === 'wrong' || item.status === 'redoing');
+          return item.status === 'wrong' || item.status === 'redoing';
         });
       } else if (this.$route.query.type === 'reason') {
         if (this.isNotFirstReason) {
@@ -650,15 +657,39 @@ export default {
       let next = this.doing_questions.filter((item, index) => {
         if (this.isNotFirstReason) {
           if (currentIndex === this.doing_questions.length - 1) {
-            return (item.status === 'wrong' || item.status === 'redoing') && item.is_redo && item.homework_answers.length > 1 && item.homework_answers[1].student_summaries.length < 1 && index < currentIndex;
+            return (
+              (item.status === 'wrong' || item.status === 'redoing') &&
+              item.is_redo &&
+              item.homework_answers.length > 1 &&
+              item.homework_answers[1].student_summaries.length < 1 &&
+              index < currentIndex
+            );
           } else {
-            return (item.status === 'wrong' || item.status === 'redoing') && item.is_redo && item.homework_answers.length > 1 && item.homework_answers[1].student_summaries.length < 1 && index > currentIndex;
+            return (
+              (item.status === 'wrong' || item.status === 'redoing') &&
+              item.is_redo &&
+              item.homework_answers.length > 1 &&
+              item.homework_answers[1].student_summaries.length < 1 &&
+              index > currentIndex
+            );
           }
         } else {
           if (currentIndex === this.doing_questions.length - 1) {
-            return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo && item.homework_answers.length <= 1 && item.homework_answers[0].student_summaries.length < 1 && index < currentIndex;
+            return (
+              (item.status === 'wrong' || item.status === 'redoing') &&
+              !item.is_redo &&
+              item.homework_answers.length <= 1 &&
+              item.homework_answers[0].student_summaries.length < 1 &&
+              index < currentIndex
+            );
           } else {
-            return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo && item.homework_answers.length <= 1 && item.homework_answers[0].student_summaries.length < 1  && index > currentIndex;
+            return (
+              (item.status === 'wrong' || item.status === 'redoing') &&
+              !item.is_redo &&
+              item.homework_answers.length <= 1 &&
+              item.homework_answers[0].student_summaries.length < 1 &&
+              index > currentIndex
+            );
           }
         }
       });
@@ -841,7 +872,7 @@ export default {
         .then(() => {
           this.$api.get_homework_info(this.$route.params.homework_id).then(res => {
             this.set_doing_question(res.homework_question_ids);
-            console.log(this.doing_questions)
+            console.log(this.doing_questions);
             const next = this.nextReasonQuestion();
             if (!next) {
               if (this.isNotFirstReason) {
@@ -1039,11 +1070,25 @@ export default {
   }
 
   .block {
+    margin: 0 10px;
     flex: 1;
     // padding: 10px;
     display: block;
     overflow: hidden;
     overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+      -webkit-appearance: none;
+      width: 7px;
+      background: rgba(255, 255, 255, 0.5);
+    }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      width: 7px;
+      height: 7px;
+      background-color: #fff;
+      // -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+    }
   }
 
   .panel {

@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:33
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-10-16 14:48:32
+ * @LastEditTime: 2019-10-16 15:40:21
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -49,8 +49,9 @@
     <!-- <div class="list">
       <div v-for="(item, index) in homework_question_ids" :key="index" :class="['item', item.status]">{{ index + 1 }}</div>
     </div>-->
-
-    <van-button class="submit" size="small" block round type="warning" :disabled="cantRedo" @click="goRedo">订正题目</van-button>
+    <div class="bottom-panel">
+      <van-button class="submit" size="small" block round type="warning" :disabled="cantRedo" @click="goRedo">订正题目</van-button>
+    </div>
   </div>
 </template>
 
@@ -292,12 +293,20 @@ export default {
     }
   }
 
-  .submit {
-    margin: 0 25px;
-    width: calc(100vw - 50px);
+  .bottom-panel {
     position: fixed;
-    bottom: 20px;
-    z-index: 100;
+    bottom: 0;
+    height: 50px;
+    margin: 0 15px;
+    width: calc(100% - 30px);
+    background: #fff;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+
+    .submit {
+      width: 100%;
+    }
   }
 
   .index {

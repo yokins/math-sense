@@ -88,7 +88,9 @@
       >{{ questionIndex(item.id) + 1 }}</div>
     </div>
 
-    <button class="submit" v-if="!isShow" :disabled="can_not_submit" @click="submit">完成练习</button>
+    <div class="bottom-panel">
+      <button class="submit" v-if="!isShow" :disabled="can_not_submit" @click="submit">完成练习</button>
+    </div>
   </div>
 </template>
 
@@ -368,20 +370,28 @@ export default {
     }
   }
 
-  .submit {
+  .bottom-panel {
     position: fixed;
-    bottom: 15px;
+    bottom: 0;
+    height: 50px;
     margin: 0 15px;
     width: calc(100% - 30px);
-    background: #3296fa;
-    border-radius: 45px;
-    padding: 10px;
-    font-size: 11px;
-    color: #fff;
-    border: 0;
+    background: #fff;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    .submit {
+      width: 100%;
+      background: #3296fa;
+      border-radius: 45px;
+      padding: 10px;
+      font-size: 11px;
+      color: #fff;
+      border: 0;
 
-    &:disabled {
-      background: rgba(179, 179, 179, 1);
+      &:disabled {
+        background: rgba(179, 179, 179, 1);
+      }
     }
   }
 

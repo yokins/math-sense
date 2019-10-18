@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:05
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-10 15:46:28
+ * @LastEditTime: 2019-10-14 17:06:37
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -23,7 +23,7 @@
 
     <van-list class="list" v-model="load_loading" :finished="load_finished" finished-text="没有更多了" @load="onLoad">
       <div class="task-item" v-for="(item, index) in list" :key="index" @click="to_question(item)">
-        <div class="line">{{ item.title }}</div>
+        <div class="line line-title">{{ item.title }}</div>
         <div class="line">
           <span class="time">{{ item.created_at }}</span>
           <span class="category">知识点: {{ show_kwonledges(item.question) }}</span>
@@ -69,7 +69,7 @@ export default {
   },
   mounted() {
     this.initData()
-    this.onLoad(true)
+    // this.onLoad(true)
     
   },
   methods: {
@@ -82,7 +82,7 @@ export default {
     onLoad(way) {
       const _this = this
       setTimeout(() => {
-        let payload = { page: _this.page }
+        let payload = { page: _this.page, per_page: 25 }
         if (_this.active_fitler.key !== 0) {
           payload.knowledge_id = _this.active_fitler.key
         }
@@ -138,6 +138,7 @@ export default {
     },
     onConfirm(value) {
       this.setCurrentMistakeSelect(value)
+      this.onLoad()
       this.active_fitler = value
       this.show = false
     },
@@ -167,7 +168,6 @@ export default {
     active_fitler() {
       this.page = 1
       this.list = []
-      this.onLoad()
     }
   }
 }
@@ -192,6 +192,12 @@ export default {
     background: #fff;
     margin-top: 15px;
     padding: 15px;
+
+    .line-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     .line {
       color: #474e60;
       font-size: 13px;

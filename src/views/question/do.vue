@@ -1,6 +1,14 @@
 <template>
   <div class="page question-do" id="question-do">
-    <van-popup class="close-popup" v-model="show_close" round>
+    <van-popup v-if="onReason" class="close-popup" v-model="show_close" round>
+      <div class="title">是否退出总结原因</div>
+      <div class="content">退出后当前题目不保留总结原因记录</div>
+      <div class="btns">
+        <van-button round type="default" plain size="small" @click="$router.replace({ name: 'home' })">确认退出</van-button>
+        <van-button round type="info" size="small" @click="show_close = false">继续总结</van-button>
+      </div>
+    </van-popup>
+    <van-popup v-else class="close-popup" v-model="show_close" round>
       <div class="title">是否退出答题</div>
       <div class="content">退出后当前题目不保留做题记录</div>
       <div class="btns">
@@ -21,10 +29,14 @@
       <div :class="['tab', showTab('record') ? 'active' : '']" @click="onClickTab('record')">首次答题</div>
       <div
         :class="['tab', showTab('redo_record') ? 'active' : '']"
-        v-if="onReason"
+        v-if="onReason && homework_answers.length > 1"
         @click="onClickTab('redo_record')"
       >订正答题</div>
-      <div :class="['tab', showTab('form') ? 'active' : '']" v-else @click="onClickTab('form')">订正答题</div>
+      <div
+        :class="['tab', showTab('form') ? 'active' : '']"
+        v-if="!onReason && homework_answers.length > 0"
+        @click="onClickTab('form')"
+      >订正答题</div>
       <div :class="['tab', showTab('reason') ? 'active' : '']" v-if="onReason" @click="onClickTab('reason')">错题总结</div>
     </div>
     <!-- tabs区域 -->
@@ -64,7 +76,7 @@
         <div class="content" v-if="answer_1">
           <span class="tip">您的解题步骤</span>
           <img
-            v-if="answer_1.attachments[0]"
+            v-if="answer_1.attachments[0] && answer_1.attachments[0].url"
             :src="answer_1.attachments[0].url"
             class="step-img"
             @click="clickStepImg(answer_1.attachments[0].url)"
@@ -90,6 +102,24 @@
           <van-icon size="15" v-else name="checked" color="#3296fa"></van-icon>
         </div>
       </div>
+
+      <div class="panel panel-reason" v-if="first_student_summaries.length > 0 && showTab('record')">
+        <div class="content">
+          <span>你总结的错误原因</span>
+          <div class="checkboxs">
+            <div
+              v-for="(item, index) in first_student_summaries"
+              :key="index"
+              :class="['tag', 'selected']"
+            >{{item.tag.content}}</div>
+          </div>
+          <div
+            class="checkboxs"
+            style="font-size: 14px;"
+            v-if="first_student_summaries_content"
+          >{{ first_student_summaries_content }}</div>
+        </div>
+      </div>
       <!-- 首次 -->
 
       <!-- 订正 -->
@@ -97,7 +127,7 @@
         <div class="content" v-if="answer_2">
           <span class="tip">您的解题步骤</span>
           <img
-            v-if="answer_2.attachments[0]"
+            v-if="answer_2.attachments[0] && answer_2.attachments[0].url"
             :src="answer_2.attachments[0].url"
             class="step-img"
             @click="clickStepImg(answer_2.attachments[0].url)"
@@ -126,16 +156,23 @@
       <!-- 订正 -->
 
       <!-- 原因 -->
-      <div class="panel panel-answer" v-show="showTab('reason')">
+      <div class="panel panel-answer" v-show="showTab('reason') && homework_answers.length > 1">
         <div class="content">
           <span>正确解析</span>
           <div class="question-analyze" v-if="question.question_analyze" v-html="question.question_analyze.html"></div>
           <span>正确答案</span>
           <div class="question-answer" v-if="question.question_answers && question.question_answers[0]">
             <!-- <vue-mathjax v-for="(item, index) in question.question_answers" :key="index" :formula="item.content"></vue-mathjax> -->
-            <div v-for="(item, index) in question.question_answers[0].question_answer_contents" :key="index">
+            <div
+              class="answers"
+              v-for="(item, index) in question.question_answers[0].question_answer_contents"
+              :key="index"
+            >
               <div class="katex-answer" v-katex="item.content"></div>
-              <span v-if="question.question_answers[0].question_answer_contents.length - 1 !== index">、</span>
+              <div
+                style="font-size: 13px;display:flex;align-items:flex-end;"
+                v-if="question.question_answers[0].question_answer_contents.length - 1 !== index"
+              >、</div>
             </div>
           </div>
         </div>
@@ -192,15 +229,16 @@
 </template>
 
 <script>
-import 'pepjs'
-import katex from 'katex'
-import 'myscript/dist/myscript.min.css'
-import 'katex/dist/katex.min.css'
-import * as MyScriptJS from 'myscript/dist/myscript.esm'
-import { mapState, mapActions } from 'vuex'
-import { ImagePreview } from 'vant'
-import upload from '../../configs/upload'
-import { VueMathjax } from 'vue-mathjax'
+import 'pepjs';
+import katex from 'katex';
+import 'myscript/dist/myscript.min.css';
+import 'katex/dist/katex.min.css';
+import * as MyScriptJS from 'myscript/dist/myscript.esm';
+import { mapState, mapActions } from 'vuex';
+import { ImagePreview } from 'vant';
+import upload from '../../configs/upload';
+import { VueMathjax } from 'vue-mathjax';
+import axios from 'axios';
 
 export default {
   // components: {
@@ -219,13 +257,14 @@ export default {
       reason: [],
       other: '',
       tags: [],
-      selected_tags: []
-    }
+      selected_tags: [],
+      user_count: ''
+    };
   },
 
   created() {
-    this.onTypeInit()
-    this.init(this.$route.params.question_id)
+    this.onTypeInit();
+    this.init(this.$route.params.question_id);
   },
 
   mounted() {
@@ -245,32 +284,52 @@ export default {
     // })
 
     if (this.$route.query.type !== 'reason') {
-      this.initMyscript()
+      this.initMyscript();
     } else {
-      this.initTags()
+      this.initTags();
     }
+  },
+
+  beforeDestroy() {
+    clearInterval(this.user_count);
   },
 
   computed: {
     ...mapState(['doing_questions']),
+    /**
+     * @description:
+     * @param {type}
+     * @return:
+     */
+    isNotFirstReason() {
+      return this.homework_answers.length > 1;
+    },
     /**
      * @description: 获取所有当前要操作的题目
      * @param {type}
      * @return:
      */
     currentQuestions() {
-      let arr = this.doing_questions
+      let arr = this.doing_questions;
       if (this.$route.query.type === 'redo') {
         arr = this.doing_questions.filter(item => {
-          return item.status === 'wrong' && !item.is_redo
-        })
+          // return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo;
+          return item.status === 'wrong' || item.status === 'redoing';
+        });
       } else if (this.$route.query.type === 'reason') {
-        arr = this.doing_questions.filter(item => {
-          return item.status === 'wrong' && item.is_redo && item.student_summaries.length <= 0
-        })
+        if (this.isNotFirstReason) {
+          arr = this.doing_questions.filter(item => {
+            // return (item.status === 'wrong' || item.status === 'redoing') && item.is_redo && item.homework_answers.length > 1;
+            return item.status === 'wrong' && item.is_redo;
+          });
+        } else {
+          arr = this.doing_questions.filter(item => {
+            // return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo && item.homework_answers.length <= 1;
+            return item.status === 'redoing' && !item.is_redo;
+          });
+        }
       }
-      console.log(arr)
-      return arr
+      return arr;
     },
     /**
      * @description: 当前题目的序号
@@ -279,9 +338,9 @@ export default {
      */
     currentQuestionIndex() {
       const index = this.currentQuestions.findIndex(item => {
-        return item.id === parseInt(this.$route.params.question_id)
-      })
-      return index + 1
+        return item.id === parseInt(this.$route.params.question_id);
+      });
+      return index + 1;
     },
     /**
      * @description: 当前进度
@@ -290,7 +349,7 @@ export default {
      */
     // todo: 需要处理百分比，分成三个部分（重做 、提交原因）
     percent() {
-      return (this.currentQuestionIndex / this.currentQuestions.length) * 100
+      return (this.currentQuestionIndex / this.currentQuestions.length) * 100;
     },
     /**
      * @description: 禁止提交
@@ -298,9 +357,8 @@ export default {
      * @return:
      */
     submitDisabled() {
-      // return !this.drawed || !(!this.drawed && this.step) || !this.result
-
-      return !((this.drawed || (!this.drawed && this.step)) && this.result)
+      // return !((this.drawed || (!this.drawed && this.step)) && this.result)
+      return !this.result;
     },
     /**
      * @description: 禁止提交原因
@@ -310,12 +368,12 @@ export default {
     reasonDisabled() {
       if (this.selected_tags.length > 0) {
         if (this.selected_tags.includes(this.tags[this.tags.length - 1].id) && this.other === '') {
-          return true
+          return true;
         } else {
-          return false
+          return false;
         }
       } else {
-        return true
+        return true;
       }
     },
     /**
@@ -324,7 +382,7 @@ export default {
      * @return:
      */
     showTabs() {
-      return Boolean(this.$route.query.type)
+      return Boolean(this.$route.query.type);
     },
     /**
      * @description: 判断是否是填写原因
@@ -332,7 +390,7 @@ export default {
      * @return:
      */
     onReason() {
-      return this.$route.query.type === 'reason'
+      return this.$route.query.type === 'reason';
     },
     /**
      * @description: 首次答题的答案
@@ -341,9 +399,9 @@ export default {
      */
     answer_1() {
       if (this.homework_answers) {
-        return this.homework_answers[0]
+        return this.homework_answers[0];
       } else {
-        return null
+        return null;
       }
     },
     /**
@@ -353,10 +411,35 @@ export default {
      */
     answer_2() {
       if (this.homework_answers) {
-        return this.homework_answers[1]
+        return this.homework_answers[1];
       } else {
-        return null
+        return null;
       }
+    },
+    /**
+     * @description: 显示第一次提交的原因
+     * @param {type}
+     * @return:
+     */
+    first_student_summaries() {
+      if (this.homework_answers.length > 0 && this.homework_answers[0].student_summaries.length > 0) {
+        return this.homework_answers[0].student_summaries;
+      } else {
+        return [];
+      }
+    },
+    /**
+     * @description: 第一次提交的content
+     * @param {type}
+     * @return:
+     */
+    first_student_summaries_content() {
+      return this.first_student_summaries.reduce((content, item) => {
+        if (item.content) {
+          content = item.content;
+        }
+        return content;
+      }, '');
     }
   },
 
@@ -364,13 +447,13 @@ export default {
     ...mapActions(['set_doing_question']),
     /**
      * @description: 页面高度
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     toresize() {
-      const panel = document.getElementById('block-panel')
-      panel.scrollTop = panel.scrollHeight
-      console.log(panel.scrollTop)
+      const panel = document.getElementById('block-panel');
+      panel.scrollTop = panel.scrollHeight;
+      console.log(panel.scrollTop);
     },
     /**
      * @description: 初始化错误原因
@@ -379,8 +462,8 @@ export default {
      */
     initTags() {
       this.$api.question_tags().then(res => {
-        this.tags = res.tags
-      })
+        this.tags = res.tags;
+      });
     },
     /**
      * @description: 获取题目信息
@@ -389,22 +472,33 @@ export default {
      */
     init(id) {
       this.$api.get_question({ id: id, homework_id: this.$route.params.homework_id }).then(res => {
-        this.question = res.homework_question.question
-        this.homework_answers = res.homework_question.homework_answers
-        this.result = ''
-        this.step = ''
-        this.other = ''
-        this.selected_tags = []
-      })
+        this.question = res.homework_question.question;
+        this.homework_answers = res.homework_question.homework_answers || [];
+        this.result = '';
+        this.step = '';
+        this.other = '';
+        this.selected_tags = [];
+      });
+    },
+    /**
+     * @description: 获取手写板的appkey跟mackey
+     * @param {type}
+     * @return:
+     */
+    initAppKeyAndMacKey() {
+      return axios.get(process.env.VUE_APP_UPLOAD_URL + 'my_script_keys');
     },
     /**
      * @description: 手写板初始化，另外附加监听值
      * @param {type}
      * @return:
      */
-    initMyscript() {
-      const _this = this
-      const editorElement = this.$refs.editor
+    async initMyscript() {
+      const keys = await this.initAppKeyAndMacKey().then(res => {
+        return res.data.data;
+      });
+      const _this = this;
+      const editorElement = this.$refs.editor;
       MyScriptJS.register(editorElement, {
         recognitionParams: {
           type: 'MATH',
@@ -413,8 +507,8 @@ export default {
           server: {
             scheme: 'https',
             host: 'cloud.myscript.com',
-            applicationKey: 'fe31426f-6cd1-41ec-a4f4-68df089001bd',
-            hmacKey: '94a95c87-dbec-4d6e-8691-22e1a756cf71'
+            applicationKey: keys.app_key,
+            hmacKey: keys.mac_key
           },
           v4: {
             alwaysConnected: false,
@@ -429,18 +523,21 @@ export default {
             }
           }
         }
-      })
+      });
       window.addEventListener('resize', function() {
-        editorElement.editor.resize()
-      })
+        editorElement.editor.resize();
+      });
       editorElement.addEventListener('exported', function(editor) {
-        const exports = editor.detail.exports
+        const exports = editor.detail.exports;
         if (exports && exports['application/x-latex']) {
-          _this.result = exports['application/x-latex']
+          _this.result = exports['application/x-latex'];
         } else {
-          _this.result = ''
+          _this.result = '';
         }
-      })
+      });
+      this.user_count = setInterval(function() {
+        axios.post(process.env.VUE_APP_UPLOAD_URL + 'my_script_keys', keys);
+      }, 300000);
     },
     /**
      * @description: 根据tab处理数据初始化
@@ -450,16 +547,16 @@ export default {
     onTypeInit() {
       switch (this.$route.query.type) {
         case 'redo':
-          this.active_tab = 'form'
-          this.show_tabs = true
-          break
+          this.active_tab = 'form';
+          this.show_tabs = true;
+          break;
         case 'reason':
-          this.active_tab = 'reason'
-          this.show_tabs = true
-          break
+          this.active_tab = 'reason';
+          this.show_tabs = true;
+          break;
         default:
-          this.active_tab = 'form'
-          break
+          this.active_tab = 'form';
+          break;
       }
     },
     /**
@@ -468,7 +565,7 @@ export default {
      * @return:
      */
     showTab(tab_name) {
-      return this.active_tab === tab_name
+      return this.active_tab === tab_name;
     },
     /**
      * @description: 点击切换tab
@@ -477,7 +574,7 @@ export default {
      */
     onClickTab(tab_name) {
       if (tab_name !== this.active_tab) {
-        this.active_tab = tab_name
+        this.active_tab = tab_name;
       }
     },
     /**
@@ -486,7 +583,7 @@ export default {
      * @return:
      */
     cleanResult() {
-      this.$refs.editor.editor.clear()
+      this.$refs.editor.editor.clear();
     },
     /**
      * @description: 清空步骤
@@ -495,9 +592,9 @@ export default {
      */
     cleanStep() {
       if (this.step) {
-        this.step = ''
+        this.step = '';
       } else {
-        this.$refs.draw.clean()
+        this.$refs.draw.clean();
       }
     },
     /**
@@ -506,7 +603,7 @@ export default {
      * @return:
      */
     close() {
-      this.show_close = true
+      this.show_close = true;
       // this.$router.replace({ name: 'home' })
     },
     /**
@@ -517,14 +614,14 @@ export default {
     nextQuestion() {
       // 找出当前id的index
       let currentIndex = this.doing_questions.findIndex(item => {
-        return item.id === parseInt(this.$route.params.question_id)
-      })
+        return item.id === parseInt(this.$route.params.question_id);
+      });
 
       let next = this.doing_questions.filter((item, index) => {
-        return item.status === 'init' && index > currentIndex
-      })
+        return item.status === 'init' && index > currentIndex;
+      });
 
-      return next.length > 0 ? next[0] : null
+      return next.length > 0 ? next[0] : null;
     },
     /**
      * @description: 下一个重做的题目的id
@@ -533,13 +630,17 @@ export default {
      */
     nextRedoQuestion() {
       let currentIndex = this.doing_questions.findIndex(item => {
-        return item.id === parseInt(this.$route.params.question_id)
-      })
+        return item.id === parseInt(this.$route.params.question_id);
+      });
       let next = this.doing_questions.filter((item, index) => {
-        return item.status === 'wrong' && !item.is_redo && index > currentIndex
-      })
+        if (currentIndex === this.doing_questions.length - 1) {
+          return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo && index < currentIndex;
+        } else {
+          return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo && index > currentIndex;
+        }
+      });
 
-      return next.length > 0 ? next[0] : null
+      return next.length > 0 ? next[0] : null;
     },
     /**
      * @description: 填写下一个题目的原因
@@ -548,13 +649,50 @@ export default {
      */
     nextReasonQuestion() {
       let currentIndex = this.doing_questions.findIndex(item => {
-        return item.id === parseInt(this.$route.params.question_id)
-      })
-      let next = this.doing_questions.filter((item, index) => {
-        return item.status === 'wrong' && item.is_redo && item.student_summaries.length <= 0 && index > currentIndex
-      })
+        return item.id === parseInt(this.$route.params.question_id);
+      });
 
-      return next.length > 0 ? next[0] : null
+      let next = this.doing_questions.filter((item, index) => {
+        if (this.isNotFirstReason) {
+          if (currentIndex === this.doing_questions.length - 1) {
+            return (
+              (item.status === 'wrong' || item.status === 'redoing') &&
+              item.is_redo &&
+              item.homework_answers.length > 1 &&
+              item.homework_answers[1].student_summaries.length < 1 &&
+              index < currentIndex
+            );
+          } else {
+            return (
+              (item.status === 'wrong' || item.status === 'redoing') &&
+              item.is_redo &&
+              item.homework_answers.length > 1 &&
+              item.homework_answers[1].student_summaries.length < 1 &&
+              index > currentIndex
+            );
+          }
+        } else {
+          if (currentIndex === this.doing_questions.length - 1) {
+            return (
+              (item.status === 'wrong' || item.status === 'redoing') &&
+              !item.is_redo &&
+              item.homework_answers.length <= 1 &&
+              item.homework_answers[0].student_summaries.length < 1 &&
+              index < currentIndex
+            );
+          } else {
+            return (
+              (item.status === 'wrong' || item.status === 'redoing') &&
+              !item.is_redo &&
+              item.homework_answers.length <= 1 &&
+              item.homework_answers[0].student_summaries.length < 1 &&
+              index > currentIndex
+            );
+          }
+        }
+      });
+
+      return next.length > 0 ? next[0] : null;
     },
     /**
      * @description: 提交内容
@@ -562,18 +700,18 @@ export default {
      * @return:
      */
     async submitAnswer() {
-      let url = ''
+      let url = '';
 
       if (this.drawed) {
         const base64 = await this.$refs.draw.exportImg().then(res => {
-          return res
-        })
-        const timestrap = new Date().getTime()
+          return res;
+        });
+        const timestrap = new Date().getTime();
         url = await upload({ name: timestrap + '.png', base64: base64 }).then(res => {
-          return res
-        })
+          return res;
+        });
       } else if (this.step) {
-        url = this.step
+        url = this.step;
       }
 
       let params = {
@@ -588,9 +726,9 @@ export default {
             name: new Date().getTime() + '.png'
           }
         ]
-      }
+      };
 
-      const _this = this
+      const _this = this;
       this.$api
         .answer_question({
           id: _this.$route.params.question_id,
@@ -600,47 +738,85 @@ export default {
         .then(res => {
           const next = _this.$route.query.type
             ? _this.nextRedoQuestion(_this.$route.params.question_id)
-            : _this.nextQuestion(_this.$route.params.question_id)
-
-          if (!next) {
-            // 更新题目信息
-            this.$api.get_homework_info(this.$route.params.homework_id).then(res => {
-              this.set_doing_question(res.homework_question_ids)
-              const questions = res.homework_question_ids
+            : _this.nextQuestion(_this.$route.params.question_id);
+          // 更新题目信息
+          this.$api.get_homework_info(this.$route.params.homework_id).then(res => {
+            this.set_doing_question(res.homework_question_ids);
+            const questions = res.homework_question_ids;
+            if (!next) {
               const hadNeedRedoAndNotRedo = questions.some(item => {
-                return item.status === 'wrong' && !item.is_redo
-              })
+                return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo;
+              });
               if (hadNeedRedoAndNotRedo) {
                 _this.$router.replace({
                   name: 'homework_judge',
                   params: { homework_id: _this.$route.params.homework_id }
-                })
+                });
               } else {
                 _this.$router.replace({
                   name: 'homework_result',
                   params: { homework_id: _this.$route.params.homework_id }
-                })
+                });
               }
-            })
-          } else {
-            _this.cleanResult()
-            _this.cleanStep()
-            if (this.$route.query.type) {
-              _this.$router.replace({
-                name: 'homework_question_do',
-                params: { homework_id: _this.$route.params.homework_id, question_id: next.id },
-                query: { type: 'redo' }
-              })
             } else {
-              _this.$router.replace({
-                name: 'homework_question_do',
-                params: { homework_id: _this.$route.params.homework_id, question_id: next.id }
-              })
-            }
+              _this.cleanResult();
+              _this.cleanStep();
+              if (this.$route.query.type) {
+                _this.$router.replace({
+                  name: 'homework_question_do',
+                  params: { homework_id: _this.$route.params.homework_id, question_id: next.id },
+                  query: { type: 'redo' }
+                });
+              } else {
+                _this.$router.replace({
+                  name: 'homework_question_do',
+                  params: { homework_id: _this.$route.params.homework_id, question_id: next.id }
+                });
+              }
 
-            this.init(next.id)
-          }
-        })
+              this.init(next.id);
+            }
+          });
+
+          // if (!next) {
+          //   // 更新题目信息
+          //   this.$api.get_homework_info(this.$route.params.homework_id).then(res => {
+          //     this.set_doing_question(res.homework_question_ids);
+          //     const questions = res.homework_question_ids;
+          //     const hadNeedRedoAndNotRedo = questions.some(item => {
+          //       return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo;
+          //     });
+          //     if (hadNeedRedoAndNotRedo) {
+          //       _this.$router.replace({
+          //         name: 'homework_judge',
+          //         params: { homework_id: _this.$route.params.homework_id }
+          //       });
+          //     } else {
+          //       _this.$router.replace({
+          //         name: 'homework_result',
+          //         params: { homework_id: _this.$route.params.homework_id }
+          //       });
+          //     }
+          //   });
+          // } else {
+          //   _this.cleanResult();
+          //   _this.cleanStep();
+          //   if (this.$route.query.type) {
+          //     _this.$router.replace({
+          //       name: 'homework_question_do',
+          //       params: { homework_id: _this.$route.params.homework_id, question_id: next.id },
+          //       query: { type: 'redo' }
+          //     });
+          //   } else {
+          //     _this.$router.replace({
+          //       name: 'homework_question_do',
+          //       params: { homework_id: _this.$route.params.homework_id, question_id: next.id }
+          //     });
+          //   }
+
+          //   this.init(next.id);
+          // }
+        });
     },
     /**
      * @description: 更新canvas是不是已经绘画过
@@ -648,7 +824,7 @@ export default {
      * @return:
      */
     updateDrawed(result) {
-      this.drawed = result
+      this.drawed = result;
     },
     /**
      * @description: 预览图片
@@ -656,8 +832,8 @@ export default {
      * @return:
      */
     clickStepImg(url) {
-      console.log([url ? url : this.step])
-      ImagePreview([url ? url : this.step])
+      console.log([url ? url : this.step]);
+      ImagePreview([url ? url : this.step]);
     },
     /**
      * @description: 点击选中
@@ -666,13 +842,13 @@ export default {
      */
     clickTag(result) {
       if (this.selected_tags.includes(result)) {
-        const index = this.selected_tags.indexOf(result)
-        this.selected_tags.splice(index, 1)
+        const index = this.selected_tags.indexOf(result);
+        this.selected_tags.splice(index, 1);
       } else {
-        this.selected_tags.push(result)
+        this.selected_tags.push(result);
       }
       if (!this.selected_tags.includes(this.tags[this.tags.length - 1].id)) {
-        this.other = ''
+        this.other = '';
       }
     },
     /**
@@ -681,31 +857,43 @@ export default {
      * @return:
      */
     submitReason() {
-      let tags = []
+      let tags = [];
       this.selected_tags.forEach((item, index) => {
-        tags.push({ id: item, content: item === this.tags[this.tags.length - 1].id ? this.other : '' })
-      })
+        tags.push({ id: item, content: item === this.tags[this.tags.length - 1].id ? this.other : '' });
+      });
+      const homework_answer_id = this.homework_answers[this.isNotFirstReason ? 1 : 0].id;
       this.$api
         .summary_question({
           id: this.$route.params.question_id,
-          params: { id: this.$route.params.question_id, tags: tags }
+          params: { id: this.$route.params.question_id, tags: tags, homework_answer_id: homework_answer_id }
         })
         .then(() => {
-          const next = this.nextReasonQuestion()
-          if (!next) {
-            this.$router.replace({
-              name: 'homework_result',
-              params: { homework_id: this.$route.params.homework_id }
-            })
-          } else {
-            this.$router.replace({
-              name: 'homework_question_do',
-              params: { homework_id: this.$route.params.homework_id, question_id: next.id },
-              query: { type: 'reason' }
-            })
-            this.init(next.id)
-          }
-        })
+          this.$api.get_homework_info(this.$route.params.homework_id).then(res => {
+            this.set_doing_question(res.homework_question_ids);
+            console.log(this.doing_questions);
+            const next = this.nextReasonQuestion();
+            if (!next) {
+              if (this.isNotFirstReason) {
+                this.$router.replace({
+                  name: 'homework_result',
+                  params: { homework_id: this.$route.params.homework_id }
+                });
+              } else {
+                this.$router.replace({
+                  name: 'homework_judge',
+                  params: { homework_id: this.$route.params.homework_id }
+                });
+              }
+            } else {
+              this.$router.replace({
+                name: 'homework_question_do',
+                params: { homework_id: this.$route.params.homework_id, question_id: next.id },
+                query: { type: 'reason' }
+              });
+              this.init(next.id);
+            }
+          });
+        });
     },
     /**
      * @description: 图片拍照、上传
@@ -713,7 +901,7 @@ export default {
      * @return:
      */
     uploadImg() {
-      const _this = this
+      const _this = this;
       navigator.camera.getPicture(
         url => {
           window.resolveLocalFileSystemURL(
@@ -721,37 +909,37 @@ export default {
             entry => {
               entry.file(
                 function(file) {
-                  let reader = new FileReader()
+                  let reader = new FileReader();
                   reader.onloadend = function() {
                     _this.$toast.loading({
                       mask: true,
                       message: '上传中...'
-                    })
+                    });
                     upload({
                       base64: this.result,
                       name: file.name
                     }).then(res => {
-                      _this.cleanStep()
-                      _this.step = res
-                      _this.$toast.clear()
-                    })
-                  }
-                  reader.readAsArrayBuffer(file)
+                      _this.cleanStep();
+                      _this.step = res;
+                      _this.$toast.clear();
+                    });
+                  };
+                  reader.readAsArrayBuffer(file);
                 },
                 function(error) {
-                  this.$toast.fail('图片读取失败，请重试！')
-                  console.log('FileEntry.file error: ' + error.code)
+                  this.$toast.fail('图片读取失败，请重试！');
+                  console.log('FileEntry.file error: ' + error.code);
                 }
-              )
+              );
             },
             err => {
-              console.log(err)
-              alert(err)
+              console.log(err);
+              alert(err);
             }
-          )
+          );
         },
         error => {
-          console.log('摄像头打开失败，请重试！')
+          console.log('摄像头打开失败，请重试！');
           // this.$toast.fail('摄像头打开失败，请重试！')
         },
         {
@@ -761,7 +949,7 @@ export default {
           saveToPhotoAlbum: true, // 设备拍照后的图像是否保存的图片库中
           EncodingType: Camera.EncodingType.PNG
         }
-      )
+      );
     },
     /**
      * @description: 锁住block区域
@@ -769,8 +957,8 @@ export default {
      * @return:
      */
     lockBlock() {
-      const a = document.getElementById('block-panel')
-      a.style.overflowY = 'hidden'
+      const a = document.getElementById('block-panel');
+      a.style.overflowY = 'hidden';
     },
     /**
      * @description: 解锁block区域
@@ -778,28 +966,11 @@ export default {
      * @return:
      */
     unlockBlock() {
-      const a = document.getElementById('block-panel')
-      a.style.overflowY = 'auto'
+      const a = document.getElementById('block-panel');
+      a.style.overflowY = 'auto';
     }
   }
-
-  // watch: {
-  //   /**
-  //    * @description: 监控答案，然后显示
-  //    * @param {type}
-  //    * @return:
-  //    */
-  //   result(val) {
-  //     const resultElement = this.$refs.result
-  //     console.log(val)
-  //     if (val) {
-  //       katex.render(val.trim(), resultElement)
-  //     } else {
-  //       resultElement.innerHTML = ''
-  //     }
-  //   }
-  // }
-}
+};
 </script>
 
 
@@ -897,11 +1068,25 @@ export default {
   }
 
   .block {
+    // margin: 0 10px;
     flex: 1;
-    // padding: 10px;
+    padding: 10px;
     display: block;
     overflow: hidden;
     overflow-y: scroll;
+
+    // &::-webkit-scrollbar {
+    //   -webkit-appearance: none;
+    //   width: 7px;
+    //   background: rgba(255, 255, 255, 0.5);
+    // }
+    // &::-webkit-scrollbar-thumb {
+    //   border-radius: 5px;
+    //   width: 7px;
+    //   height: 7px;
+    //   background-color: #fff;
+    //   // -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+    // }
   }
 
   .panel {
@@ -985,7 +1170,7 @@ export default {
       // margin-bottom: 50px;
       margin-bottom: 10px;
       .content {
-        height: 80px;
+        height: 100px;
         width: 100%;
 
         &.display {
@@ -1116,12 +1301,16 @@ export default {
     font-size: 14px !important;
   }
 
+  .answers {
+    display: flex;
+    align-items: center;
+  }
   .katex-answer {
     font-size: 14px !important;
   }
-
   .question-answer {
     display: flex;
+    // align-items: center;
     padding: 10px 10px 0;
     > div {
       display: flex;

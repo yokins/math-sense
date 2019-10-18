@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-16 14:46:47
- * @LastEditTime: 2019-08-19 14:54:26
+ * @LastEditTime: 2019-10-15 09:35:03
  * @LastEditors: 施永坚（yokins）
  -->
 <template>
@@ -10,7 +10,7 @@
     <div class="form">
       <div class="title">
         登录
-        <span>gin</span>
+        <span>login</span>
       </div>
       <span class="summary">欢迎来到世外数感，记录你的成长过程~</span>
       <van-cell-group>

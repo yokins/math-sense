@@ -2,7 +2,7 @@
  * @Author: yokins·shi(施永坚)
  * @Description: 改革春风吹满地，搬起砖来不吃力
  * @Date: 2019-08-16 13:58:40
- * @LastEditTime: 2019-09-10 15:42:40
+ * @LastEditTime: 2019-10-12 10:10:22
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -39,7 +39,7 @@ export default new Vuex.Store({
 
       // 检查是否有订正的题目并且返回第一个id
       const redoQuestion = questions.filter(item => {
-        return item.status === 'wrong' && !item.is_redo
+        return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo
       })[0]
       if (redoQuestion) {
         return { status: 'redo', id: redoQuestion.id }
@@ -47,7 +47,7 @@ export default new Vuex.Store({
 
       // 检查是否有需要填写原因的题目并且返回第一个id
       const hadDoQuestions = questions.some(item => {
-        return item.status === 'wrong' || item.status === 'init'
+        return (item.status === 'wrong' || item.status === 'redoing') || item.status === 'init'
       })
       if (!hadDoQuestions) {
         return { status: 'judge' }

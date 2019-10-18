@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:47:43
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-09-18 18:06:37
+ * @LastEditTime: 2019-10-14 16:18:26
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 
@@ -20,7 +20,7 @@
       <div class="title">练习马上开始</div>
       <div class="title last">深呼吸调整好自己的最佳状态</div>
 
-      <div class="tip">如需打印题目，可点击下方转发按钮发送至微信</div>
+      <div class="tip">如需打印题目，可点击下方分享按钮发送至微信</div>
       <div class="tip">注意查看答案识别是否正确</div>
       <div class="tip">有些题目需要填写多个答案，不要忘了哦~</div>
     </div>
@@ -40,7 +40,7 @@
 
         <!-- <a href="weixin://" class="action-callweixin">
           <van-button round block size="small" type="warning">打开微信</van-button>
-        </a> -->
+        </a>-->
 
         <van-button round block size="small" type="warning" @click="shareOption">分享</van-button>
       </van-col>
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex';
 export default {
   data() {
     return {
@@ -60,10 +60,10 @@ export default {
       homework_id: this.$route.params.homework_id,
       homework_question_count: 0,
       knowledge_count: 0
-    }
+    };
   },
   created() {
-    this.init()
+    this.init();
   },
   computed: {
     ...mapState(['doing_questions'])
@@ -77,34 +77,85 @@ export default {
      */
     async init() {
       await this.$api.get_homework_info(this.homework_id).then(res => {
-        this.homework_question_count = res.homework_question_count
-        this.knowledge_count = res.knowledge_count
-        this.set_doing_question(res.homework_question_ids)
-        this.batch_id = res.batch_id
-        this.checkToResultOrJudge()
-      })
+        this.homework_question_count = res.homework_question_count;
+        this.knowledge_count = res.knowledge_count;
+        this.set_doing_question(res.homework_question_ids);
+        this.batch_id = res.batch_id;
+        this.checkToResultOrJudge();
+      });
     },
     /**
      * @description: 检查是否需要直接跳转到结果页，或者结算页
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     checkToResultOrJudge() {
       // 未做题目
       const hadInitQuestion = this.doing_questions.some(item => {
-        return item.status === 'init'
-      })
+        return item.status === 'init';
+      });
+      // 第一次需要总结原因
+      const hadFirstReason = this.doing_questions.some(item => {
+        return item.status === 'redoing' && item.is_redo;
+      });
       // 需要重做但是没做
       const hadRedoAndNotDoQuestion = this.doing_questions.some(item => {
-        return item.status === 'wrong' && !item.is_redo
-      })
+        return item.status === 'redoing' && !item.is_redo;
+      });
 
       if (hadInitQuestion) {
-        return false
+        return false;
+      } else if (hadFirstReason) {
+        const toast = this.$toast.loading({
+          duration: 0, // 持续展示 toast
+          forbidClick: true, // 禁用背景点击
+          loadingType: 'spinner',
+          message: '正在加载...'
+        });
+        let second = 3;
+        const timer = setInterval(() => {
+          second--;
+          if (second) {
+            this.$router.replace({ name: 'homework_judge', params: { homework_id: this.homework_id } });
+          } else {
+            clearInterval(timer);
+            this.$toast.clear();
+          }
+        }, 1000);
       } else if (hadRedoAndNotDoQuestion) {
-        this.$router.replace({ name: 'homework_judge', params: { homework_id: this.homework_id } })
+        const toast = this.$toast.loading({
+          duration: 0, // 持续展示 toast
+          forbidClick: true, // 禁用背景点击
+          loadingType: 'spinner',
+          message: '正在加载...'
+        });
+        let second = 3;
+        const timer = setInterval(() => {
+          second--;
+          if (second) {
+            this.$router.replace({ name: 'homework_judge', params: { homework_id: this.homework_id } });
+          } else {
+            clearInterval(timer);
+            this.$toast.clear();
+          }
+        }, 1000);
       } else {
-        this.$router.replace({ name: 'homework_result', params: { homework_id: this.homework_id } })
+        const toast = this.$toast.loading({
+          duration: 0, // 持续展示 toast
+          forbidClick: true, // 禁用背景点击
+          loadingType: 'spinner',
+          message: '正在加载...'
+        });
+        let second = 3;
+        const timer = setInterval(() => {
+          second--;
+          if (second) {
+            this.$router.replace({ name: 'homework_result', params: { homework_id: this.homework_id } });
+          } else {
+            clearInterval(timer);
+            this.$toast.clear();
+          }
+        }, 1000);
       }
     },
     /**
@@ -113,8 +164,8 @@ export default {
      * @return:
      */
     onCopy() {
-      cordova.plugins.clipboard.copy('你好')
-      this.$toast('文件地址已复制，请至浏览器下载！')
+      cordova.plugins.clipboard.copy('你好');
+      this.$toast('文件地址已复制，请至浏览器下载！');
     },
     /**
      * @description: 开始练习
@@ -124,16 +175,16 @@ export default {
     next() {
       // 未做题目
       const hadInitQuestion = this.doing_questions.some(item => {
-        return item.status === 'init'
-      })
+        return item.status === 'init';
+      });
       // 需要重做但是没做
       const hadRedoAndNotDoQuestion = this.doing_questions.some(item => {
-        return item.status === 'wrong' && !item.is_redo
-      })
+        return (item.status === 'wrong' || item.status === 'redoing') && !item.is_redo;
+      });
       if (hadInitQuestion || hadRedoAndNotDoQuestion) {
-        this.$router.replace({ name: 'homework_loading', params: { homework_id: this.homework_id } })
+        this.$router.replace({ name: 'homework_loading', params: { homework_id: this.homework_id } });
       } else {
-        this.$router.replace({ name: 'homework_result', params: { homework_id: this.homework_id } })
+        this.$router.replace({ name: 'homework_result', params: { homework_id: this.homework_id } });
       }
     },
     /**
@@ -142,32 +193,32 @@ export default {
      * @return:
      */
     close() {
-      this.$router.replace({ name: 'home' })
+      this.$router.replace({ name: 'home' });
     },
     /**
      * @description: 分享
-     * @param {type} 
-     * @return: 
+     * @param {type}
+     * @return:
      */
     shareOption() {
       var options = {
-        message: '练习下载链接', // 分享的内容
-        url: process.env.VUE_APP_UPLOAD_URL + this.batch_id
-//         url: `http://sg-test.wfl-ischool.cn/#/training/index?id=${this.batch_id}`,//外链
-      }
+        message: '练习下载链接', // 分享的内容
+        url: process.env.VUE_APP_FILE + this.batch_id
+        //         url: `http://sg-test.wfl-ischool.cn/#/training/index?id=${this.batch_id}`,//外链
+      };
 
       var onSuccess = function(result) {
         // alert(JSON.stringify(result))
-      }
+      };
 
       var onError = function(error) {
         // alert(JSON.stringify(error))
-      }
+      };
 
-      window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError)
+      window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

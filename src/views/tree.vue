@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-07-31 13:12:48
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-08-27 16:31:22
+ * @LastEditTime: 2019-10-12 15:41:20
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -47,7 +47,7 @@ export default {
     onLoad(way) {
       const _this = this
       setTimeout(() => {
-        let payload = { page: _this.page }
+        let payload = { page: _this.page, per_page: 25 }
         _this.$api.tree(payload).then(res => {
           if (way || _this.page === 1) {
             _this.list = res.homeworks
@@ -120,6 +120,10 @@ export default {
           font-size: 16px;
           margin-bottom: 10px;
           font-weight: bold;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          width: 80vw;
         }
 
         .result {

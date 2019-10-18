@@ -66,11 +66,11 @@
     <div class="wrong-item" v-for="(item, index) in wrongQuestions" :key="index" @click="toReason(item)">
       <div class="index">{{ questionIndex(item.id) + 1 }}</div>
       <div class="text" v-if="isShow">
-        <span class="reason-span">{{ showReason(item.student_summaries) }}</span>
+        <span class="reason-span">{{ showReason(item.homework_answers[1].student_summaries) }}</span>
         <van-icon style="margin-right: 10px;" name="arrow"></van-icon>
       </div>
       <div class="text" v-else>
-        {{ item.student_summaries.length > 0 ? showReason(item.student_summaries) : '请总结错误原因' }}
+        {{ item.homework_answers[1].student_summaries.length > 0 ? showReason(item.homework_answers[1].student_summaries) : '请总结错误原因' }}
         <van-icon style="margin-right: 10px;" name="arrow"></van-icon>
       </div>
     </div>
@@ -88,7 +88,9 @@
       >{{ questionIndex(item.id) + 1 }}</div>
     </div>
 
-    <button class="submit" v-if="!isShow" :disabled="can_not_submit" @click="submit">完成练习</button>
+    <div class="bottom-panel">
+      <button class="submit" v-if="!isShow" :disabled="can_not_submit" @click="submit">完成练习</button>
+    </div>
   </div>
 </template>
 
@@ -120,7 +122,7 @@ export default {
      */
     wrongQuestions() {
       return this.homework_question_ids.filter(item => {
-        return item.status === 'wrong' && item.is_redo
+        return (item.status === 'wrong' || item.status === 'redoing') && item.is_redo
       })
     },
     /**
@@ -130,7 +132,7 @@ export default {
      */
     can_not_submit() {
       return this.wrongQuestions.some(item => {
-        return item.student_summaries.length < 1 && item.status
+        return item.homework_answers[1].student_summaries.length < 1 && item.status
       })
     },
     /**
@@ -195,14 +197,14 @@ export default {
      * @return:
      */
     toReason(item) {
-      if (this.isShow || item.status !== 'wrong' || (item.student_summaries.length > 0 && item.status === 'wrong')) {
+      if (this.isShow || item.status !== 'wrong' || (item.homework_answers[1].student_summaries.length > 0 && (item.status === 'wrong' || item.status === 'redoing'))) {
         this.$router.push({
           name: 'homework_question_show',
           params: { homework_id: this.$route.params.homework_id, question_id: item.id },
           query: { type: 'back' }
         })
       } else {
-        if (item.student_summaries.length <= 0 && item.status === 'wrong') {
+        if (item.homework_answers[1].student_summaries.length <= 0 && (item.status === 'wrong' || item.status === 'redoing')) {
           this.$router.replace({
             name: 'homework_question_do',
             params: { homework_id: this.$route.params.homework_id, question_id: item.id },
@@ -368,20 +370,28 @@ export default {
     }
   }
 
-  .submit {
+  .bottom-panel {
     position: fixed;
-    bottom: 15px;
+    bottom: 0;
+    height: 50px;
     margin: 0 15px;
     width: calc(100% - 30px);
-    background: #3296fa;
-    border-radius: 45px;
-    padding: 10px;
-    font-size: 11px;
-    color: #fff;
-    border: 0;
+    background: #fff;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    .submit {
+      width: 100%;
+      background: #3296fa;
+      border-radius: 45px;
+      padding: 10px;
+      font-size: 11px;
+      color: #fff;
+      border: 0;
 
-    &:disabled {
-      background: rgba(179, 179, 179, 1);
+      &:disabled {
+        background: rgba(179, 179, 179, 1);
+      }
     }
   }
 

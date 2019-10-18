@@ -1150,7 +1150,7 @@ export default {
       margin-bottom: 10px;
       .content {
         width: 100%;
-        height: 280px;
+        height: 240px;
 
         .step-img {
           margin: 40px 10px 0;

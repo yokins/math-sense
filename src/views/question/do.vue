@@ -43,7 +43,8 @@
 
     <div class="block" id="block-panel">
       <!-- 做题 -->
-      <div class="panel step" @touchstart="lockBlock" @touchend="unlockBlock" v-show="showTab('form')">
+      <!-- @touchstart="lockBlock" @touchend="unlockBlock" -->
+      <div class="panel step" v-show="showTab('form')">
         <div class="content">
           <span class="tip">在这里写步骤</span>
           <img class="upload" src="../../assets/images/camera.png" @click="uploadImg" />
@@ -51,9 +52,10 @@
           <img v-if="step" :src="step" class="step-img" @click="clickStepImg(step)" />
           <draw-panel v-else class="draw-panel" ref="draw" @updateDrawed="updateDrawed"></draw-panel>
         </div>
-      </div>
+      </div>  
 
-      <div class="panel answer" @touchstart="lockBlock" @touchend="unlockBlock" v-show="showTab('form')">
+      <!-- @touchstart="lockBlock" @touchend="unlockBlock" -->
+      <div class="panel answer" v-show="showTab('form')">
         <div class="content">
           <span class="tip">在这里写答案</span>
           <span class="clean" @click="cleanResult">清空</span>
@@ -202,29 +204,29 @@
         </div>
       </div>
       <!-- 原因 -->
-
-      <van-button
-        v-if="$route.query.type !== 'reason' && showTab('form')"
-        class="submit"
-        block
-        round
-        size="small"
-        type="info"
-        @click="submitAnswer"
-        :disabled="submitDisabled"
-      >提交答案</van-button>
-
-      <van-button
-        v-if="$route.query.type === 'reason' && showTab('reason')"
-        class="submit"
-        block
-        round
-        size="small"
-        type="info"
-        @click="submitReason"
-        :disabled="reasonDisabled"
-      >提交错误总结</van-button>
     </div>
+
+    <van-button
+      v-if="$route.query.type !== 'reason' && showTab('form')"
+      class="submit"
+      block
+      round
+      size="small"
+      type="info"
+      @click="submitAnswer"
+      :disabled="submitDisabled"
+    >提交答案</van-button>
+
+    <van-button
+      v-if="$route.query.type === 'reason' && showTab('reason')"
+      class="submit"
+      block
+      round
+      size="small"
+      type="info"
+      @click="submitReason"
+      :disabled="reasonDisabled"
+    >提交错误总结</van-button>
   </div>
 </template>
 
@@ -1070,9 +1072,9 @@ export default {
   }
 
   .block {
-    margin: 0 10px;
+    margin: 0 5px 10px;
     flex: 1;
-    // padding: 10px;
+    // padding: 5px;
     display: block;
     overflow: hidden;
     overflow-y: scroll;
@@ -1080,9 +1082,11 @@ export default {
     &::-webkit-scrollbar {
       -webkit-appearance: none;
       width: 7px;
-      background: rgba(255, 255, 255, 0.5);
+      background: #e8e8e8;
+      position: relative;
     }
     &::-webkit-scrollbar-thumb {
+      position: absolute;
       border-radius: 5px;
       width: 7px;
       height: 7px;
@@ -1170,9 +1174,9 @@ export default {
 
     &.answer {
       // margin-bottom: 50px;
-      margin-bottom: 10px;
+      // margin-bottom: 10px;
       .content {
-        height: 80px;
+        height: 120px;
         width: 100%;
 
         &.display {

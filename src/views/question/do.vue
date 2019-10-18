@@ -1070,25 +1070,25 @@ export default {
   }
 
   .block {
-    margin: 0 10px;
+    // margin: 0 10px;
     flex: 1;
-    // padding: 10px;
+    padding: 10px;
     display: block;
     overflow: hidden;
     overflow-y: scroll;
 
-    &::-webkit-scrollbar {
-      -webkit-appearance: none;
-      width: 7px;
-      background: rgba(255, 255, 255, 0.5);
-    }
-    &::-webkit-scrollbar-thumb {
-      border-radius: 5px;
-      width: 7px;
-      height: 7px;
-      background-color: #fff;
-      // -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
-    }
+    // &::-webkit-scrollbar {
+    //   -webkit-appearance: none;
+    //   width: 7px;
+    //   background: rgba(255, 255, 255, 0.5);
+    // }
+    // &::-webkit-scrollbar-thumb {
+    //   border-radius: 5px;
+    //   width: 7px;
+    //   height: 7px;
+    //   background-color: #fff;
+    //   // -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+    // }
   }
 
   .panel {
@@ -1172,7 +1172,7 @@ export default {
       // margin-bottom: 50px;
       margin-bottom: 10px;
       .content {
-        height: 80px;
+        height: 100px;
         width: 100%;
 
         &.display {

@@ -41,9 +41,8 @@
     </div>
     <!-- tabs区域 -->
 
-    <div :class="['block', showTab('form') || showTab('reason') ? 'padding-submit' : '']" id="block-panel">
+    <div class="block" id="block-panel">
       <!-- 做题 -->
-      <!-- @touchstart="lockBlock" @touchend="unlockBlock"  -->
       <div class="panel step" @touchstart="lockBlock" @touchend="unlockBlock" v-show="showTab('form')">
         <div class="content">
           <span class="tip">在这里写步骤</span>
@@ -53,7 +52,7 @@
           <draw-panel v-else class="draw-panel" ref="draw" @updateDrawed="updateDrawed"></draw-panel>
         </div>
       </div>
-      <!-- @touchstart="lockBlock" @touchend="unlockBlock"  -->
+
       <div class="panel answer" @touchstart="lockBlock" @touchend="unlockBlock" v-show="showTab('form')">
         <div class="content">
           <span class="tip">在这里写答案</span>
@@ -203,8 +202,7 @@
         </div>
       </div>
       <!-- 原因 -->
-    </div>
-    <div class="submit-block" v-if="showTab('form') || showTab('reason')">
+
       <van-button
         v-if="$route.query.type !== 'reason' && showTab('form')"
         class="submit"
@@ -961,7 +959,6 @@ export default {
     lockBlock() {
       const a = document.getElementById('block-panel');
       a.style.overflowY = 'hidden';
-      a.style.paddingRight = '0.18667rem';
     },
     /**
      * @description: 解锁block区域
@@ -970,8 +967,7 @@ export default {
      */
     unlockBlock() {
       const a = document.getElementById('block-panel');
-      a.style.paddingRight = 0 + 'px';
-      a.style.overflowY = 'scroll';
+      a.style.overflowY = 'auto';
     }
   }
 };
@@ -980,7 +976,6 @@ export default {
 
 <style lang="scss">
 .question-do {
-  position: fixed;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
@@ -1073,46 +1068,25 @@ export default {
   }
 
   .block {
+    // margin: 0 10px;
     flex: 1;
-    padding: 10px 10px 0;
+    padding: 10px;
     display: block;
     overflow: hidden;
     overflow-y: scroll;
 
-    &.padding-submit {
-      margin-bottom: 40px;
-    }
-
-    &::-webkit-scrollbar {
-      -webkit-appearance: none;
-      border-radius: 7px;
-      width: 7px;
-      background: #c1c3cb;
-    }
-    &::-webkit-scrollbar-thumb {
-      border-radius: 7px;
-      width: 7px;
-      height: 7px;
-      background-color: #fff;
-      // -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
-    }
-  }
-
-  .submit-block {
-    z-index: 999;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 40px;
-    background: #f4f5f7;
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    justify-content: center;
-    .submit {
-      width: calc(100% - 20px);
-    }
+    // &::-webkit-scrollbar {
+    //   -webkit-appearance: none;
+    //   width: 7px;
+    //   background: rgba(255, 255, 255, 0.5);
+    // }
+    // &::-webkit-scrollbar-thumb {
+    //   border-radius: 5px;
+    //   width: 7px;
+    //   height: 7px;
+    //   background-color: #fff;
+    //   // -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+    // }
   }
 
   .panel {
@@ -1167,7 +1141,6 @@ export default {
     }
 
     &.step {
-      z-index: 10;
       margin-bottom: 10px;
       .content {
         width: 100%;
@@ -1194,7 +1167,6 @@ export default {
     }
 
     &.answer {
-      z-index: 10;
       // margin-bottom: 50px;
       margin-bottom: 10px;
       .content {
@@ -1300,6 +1272,16 @@ export default {
     }
   }
 
+  .submit {
+    width: calc(100% - 20px);
+    margin: 0 10px 10px;
+    // margin: 10px;
+    // position: absolute;
+    // bottom: 10px;
+    // left: 10px;
+    // right: 10px;
+  }
+
   #editor {
     height: 100%;
     width: calc(100% - 40px);
@@ -1333,13 +1315,6 @@ export default {
     > div {
       display: flex;
     }
-  }
-}
-
-.question-do {
-  .block {
-    margin: 0 10px;
-    padding: 0;
   }
 }
 </style>

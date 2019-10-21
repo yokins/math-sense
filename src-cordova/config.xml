@@ -9,10 +9,8 @@
     <author email="dev@cordova.apache.org" href="http://cordova.io">
         Apache Cordova Team
     </author>
-    <!-- this hook will point your config.xml to the DevServer on Serve -->
-    <hook type="after_prepare" src="../node_modules/vue-cli-plugin-cordova/serve-config-hook.js" />
+    <hook src="../node_modules/vue-cli-plugin-cordova/serve-config-hook.js" type="after_prepare" />
     <content src="index.html" />
-    <plugin name="cordova-plugin-whitelist" spec="1" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -25,13 +23,12 @@
     <allow-intent href="*" />
     <platform name="android">
         <allow-intent href="market:*" />
-        <icon src="res/icons/android/mipmap-ldpi/ic_launcher.png" density="ldpi" />
-        <icon src="res/icons/android/mipmap-mdpi/ic_launcher.png" density="mdpi" />
-        <icon src="res/icons/android/mipmap-hdpi/ic_launcher.png" density="hdpi" />
-        <icon src="res/icons/android/mipmap-xhdpi/ic_launcher.png" density="xhdpi" />
-        <icon src="res/icons/android/mipmap-xxhdpi/ic_launcher.png" density="xxhdpi" />
-        <icon src="res/icons/android/mipmap-xxxhdpi/ic_launcher.png" density="xxxhdpi" />
-
+        <icon density="ldpi" src="res/icons/android/mipmap-ldpi/ic_launcher.png" />
+        <icon density="mdpi" src="res/icons/android/mipmap-mdpi/ic_launcher.png" />
+        <icon density="hdpi" src="res/icons/android/mipmap-hdpi/ic_launcher.png" />
+        <icon density="xhdpi" src="res/icons/android/mipmap-xhdpi/ic_launcher.png" />
+        <icon density="xxhdpi" src="res/icons/android/mipmap-xxhdpi/ic_launcher.png" />
+        <icon density="xxxhdpi" src="res/icons/android/mipmap-xxxhdpi/ic_launcher.png" />
         <splash density="land-hdpi" src="res/splashes/android/drawable-land-hdpi/screen.png" />
         <splash density="land-ldpi" src="res/splashes/android/drawable-land-ldpi/screen.png" />
         <splash density="land-mdpi" src="res/splashes/android/drawable-land-mdpi/screen.png" />
@@ -48,89 +45,77 @@
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
-        <!-- iOS 8.0+ -->
-        <!-- iPhone 6 Plus  -->
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-60@3x.png" width="180" height="180" />
-        <!-- iOS 7.0+ -->
-        <!-- iPhone / iPod Touch  -->
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-60@2x.png" width="60" height="60" />
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-60@2x.png" width="120" height="120" />
-        <!-- iPad -->
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-76.png" width="76" height="76" />
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-76@2x.png" width="152" height="152" />
-        <!-- Spotlight Icon -->
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-40.png" width="40" height="40" />
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-40@2x.png" width="80" height="80" />
-        <!-- iOS 6.1 -->
-        <!-- iPhone / iPod Touch -->
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-57.png" width="57" height="57" />
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-57@2x.png" width="114" height="114" />
-        <!-- iPad -->
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-72.png" width="72" height="72" />
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-72@2x.png" width="144" height="144" />
-        <!-- iPhone Spotlight and Settings Icon -->
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-29.png" width="29" height="29" />
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-29@2x.png" width="58" height="58" />
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-29@3x.png" width="87" height="87" />
-        <!-- iPad Spotlight and Settings Icon -->
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-50.png" width="50" height="50" />
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-50@2x.png" width="100" height="100" />
-        <!-- iPad Pro -->
-        <icon src="res/icons/ios/AppIcon.appiconset/icon-83.5@2x.png" width="167" height="167" />
-
-        <splash src="res/splashes/ios/LaunchImage.launchimage/Default~iphone.png" width="320" height="480"/>
-        <splash src="res/splashes/ios/LaunchImage.launchimage/Default@2x~iphone.png" width="640" height="960"/>
-        <splash src="res/splashes/ios/LaunchImage.launchimage/Default-Portrait~ipad.png" width="768" height="1024"/>
-        <splash src="res/splashes/ios/LaunchImage.launchimage/Default-Portrait@2x~ipad.png" width="1536" height="2048"/>
-        <splash src="res/splashes/ios/LaunchImage.launchimage/Default-Landscape~ipad.png" width="1024" height="768"/>
-        <splash src="res/splashes/ios/LaunchImage.launchimage/Default-Landscape@2x~ipad.png" width="2048" height="1536"/>
-        <splash src="res/splashes/ios/LaunchImage.launchimage/Default-568h@2x~iphone.png" width="640" height="1136"/>
-        <splash src="res/splashes/ios/LaunchImage.launchimage/Default-667h.png" width="750" height="1334"/>
-        <splash src="res/splashes/ios/LaunchImage.launchimage/Default-736h.png" width="1242" height="2208"/>
-        <splash src="res/splashes/ios/LaunchImage.launchimage/Default-Landscape-736h.png" width="2208" height="1242"/>
-        <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
+        <icon height="180" src="res/icons/ios/AppIcon.appiconset/icon-60@3x.png" width="180" />
+        <icon height="60" src="res/icons/ios/AppIcon.appiconset/icon-60@2x.png" width="60" />
+        <icon height="120" src="res/icons/ios/AppIcon.appiconset/icon-60@2x.png" width="120" />
+        <icon height="76" src="res/icons/ios/AppIcon.appiconset/icon-76.png" width="76" />
+        <icon height="152" src="res/icons/ios/AppIcon.appiconset/icon-76@2x.png" width="152" />
+        <icon height="40" src="res/icons/ios/AppIcon.appiconset/icon-40.png" width="40" />
+        <icon height="80" src="res/icons/ios/AppIcon.appiconset/icon-40@2x.png" width="80" />
+        <icon height="57" src="res/icons/ios/AppIcon.appiconset/icon-57.png" width="57" />
+        <icon height="114" src="res/icons/ios/AppIcon.appiconset/icon-57@2x.png" width="114" />
+        <icon height="72" src="res/icons/ios/AppIcon.appiconset/icon-72.png" width="72" />
+        <icon height="144" src="res/icons/ios/AppIcon.appiconset/icon-72@2x.png" width="144" />
+        <icon height="29" src="res/icons/ios/AppIcon.appiconset/icon-29.png" width="29" />
+        <icon height="58" src="res/icons/ios/AppIcon.appiconset/icon-29@2x.png" width="58" />
+        <icon height="87" src="res/icons/ios/AppIcon.appiconset/icon-29@3x.png" width="87" />
+        <icon height="50" src="res/icons/ios/AppIcon.appiconset/icon-50.png" width="50" />
+        <icon height="100" src="res/icons/ios/AppIcon.appiconset/icon-50@2x.png" width="100" />
+        <icon height="167" src="res/icons/ios/AppIcon.appiconset/icon-83.5@2x.png" width="167" />
+        <splash height="480" src="res/splashes/ios/LaunchImage.launchimage/Default~iphone.png" width="320" />
+        <splash height="960" src="res/splashes/ios/LaunchImage.launchimage/Default@2x~iphone.png" width="640" />
+        <splash height="1024" src="res/splashes/ios/LaunchImage.launchimage/Default-Portrait~ipad.png" width="768" />
+        <splash height="2048" src="res/splashes/ios/LaunchImage.launchimage/Default-Portrait@2x~ipad.png" width="1536" />
+        <splash height="768" src="res/splashes/ios/LaunchImage.launchimage/Default-Landscape~ipad.png" width="1024" />
+        <splash height="1536" src="res/splashes/ios/LaunchImage.launchimage/Default-Landscape@2x~ipad.png" width="2048" />
+        <splash height="1136" src="res/splashes/ios/LaunchImage.launchimage/Default-568h@2x~iphone.png" width="640" />
+        <splash height="1334" src="res/splashes/ios/LaunchImage.launchimage/Default-667h.png" width="750" />
+        <splash height="2208" src="res/splashes/ios/LaunchImage.launchimage/Default-736h.png" width="1242" />
+        <splash height="1242" src="res/splashes/ios/LaunchImage.launchimage/Default-Landscape-736h.png" width="2208" />
+        <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
             <string>需要授权相机权限</string>
         </edit-config>
-        <edit-config target="NSMicrophoneUsageDescription" file="*-Info.plist" mode="merge">
+        <edit-config file="*-Info.plist" mode="merge" target="NSMicrophoneUsageDescription">
             <string>需要授权麦克风权限</string>
         </edit-config>
-        <edit-config target="NSPhotoLibraryUsageDescription" file="*-Info.plist" mode="merge">
+        <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryUsageDescription">
             <string>需要授权读取图片权限</string>
         </edit-config>
-        <edit-config target="NSPhotoLibraryAddUsageDescription" file="*-Info.plist" mode="merge">
+        <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryAddUsageDescription">
             <string>需要授权保存图片权限</string>
         </edit-config>
     </platform>
     <preference name="WebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="Orientation" value="portrait" />
-    <!-- 自动隐藏启动页面 -->
     <preference name="AutoHideSplashScreen" value="true" />
-    <!-- 显示启动页面的时间长度 -->
     <preference name="SplashScreenDelay" value="2000" />
-    <!-- 是否显示淡入淡出效果FadeSplashScreen(默认为：true) -->
-    <preference name="FadeSplashScreen" value="true"/>
-    <!-- 淡入淡出效果的执行时间长度FadeSplashScreenDuration(默认为：500) -->
-    <preference name="FadeSplashScreenDuration" value="750"/>
-    <!-- 启动页面是否允许旋转（默认为：true） -->
-    <preference name="ShowSplashScreenSpinner" value="false"/>
+    <preference name="FadeSplashScreen" value="true" />
+    <preference name="FadeSplashScreenDuration" value="750" />
+    <preference name="ShowSplashScreenSpinner" value="false" />
     <preference name="KeyboardShrinksView" value="true" />
     <preference name="DisableScrollingWhenKeyboardShrinksView" value="true" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
-    <!-- <preference name="AndroidPersistentFileLocation" value="Internal" /> -->
     <preference name="iosPersistentFileLocation" value="Compatibility" />
     <preference name="iosExtraFilesystems" value="library,library-nosync,documents,documents-nosync,cache,bundle,root" />
     <preference name="AndroidExtraFilesystems" value="files,files-external,documents,sdcard,cache,cache-external,assets,root" />
     <preference name="StatusBarOverlaysWebView" value="false" />
     <preference name="StatusBarBackgroundColor" value="#3296FA" />
-
-    <!-- for iOS -->
     <feature name="SocialSharing">
         <param name="ios-package" value="SocialSharing" />
     </feature>
-
-    <!-- for Android (you will find one in res/xml) -->
     <feature name="SocialSharing">
         <param name="android-package" value="nl.xservices.plugins.SocialSharing" />
     </feature>
+    <plugin name="cordova-plugin-whitelist" spec="1" />
+    <plugin name="cordova-clipboard" spec="~1.3.0" />
+    <plugin name="cordova-plugin-camera" spec="~4.1.0" />
+    <plugin name="cordova-plugin-device" spec="~2.0.3" />
+    <plugin name="cordova-plugin-file" spec="~6.0.2" />
+    <plugin name="cordova-plugin-media-capture" spec="~3.0.3" />
+    <plugin name="cordova-plugin-screen-orientation" spec="~3.0.2" />
+    <plugin name="cordova-plugin-splashscreen" spec="~5.0.3" />
+    <plugin name="cordova-plugin-statusbar" spec="~2.4.3" />
+    <plugin name="cordova-plugin-x-socialsharing" spec="~5.4.7" />
+    <plugin name="cordova-plugin-leyu" spec="~0.0.1" />
 </widget>

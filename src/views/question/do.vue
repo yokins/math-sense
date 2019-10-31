@@ -48,9 +48,12 @@
         <div class="content">
           <span class="tip">在这里写步骤</span>
           <img class="upload" src="../../assets/images/camera.png" @click="uploadImg" />
+          <span :class="['pen', onEraser ? '' : 'active']" @click="usePen">画笔</span>
+          <span :class="['eraser', onEraser ? 'active' : '']" @click="useEraser">橡皮檫</span>
           <span class="clean" @click="cleanStep">清空</span>
           <img v-if="step" :src="step" class="step-img" @click="clickStepImg(step)" />
-          <draw-panel v-else class="draw-panel" ref="draw" @updateDrawed="updateDrawed"></draw-panel>
+          <!-- <draw-panel v-else class="draw-panel" ref="draw" @updateDrawed="updateDrawed"></draw-panel> -->
+          <draw-board v-else class="draw-panel" ref="draw"></draw-board>
         </div>
       </div>
       <!-- @touchstart="lockBlock" @touchend="unlockBlock"  -->
@@ -260,7 +263,8 @@ export default {
       other: '',
       tags: [],
       selected_tags: [],
-      user_count: ''
+      user_count: '',
+      onEraser: false  // 判断是否是画笔
     };
   },
 
@@ -598,6 +602,24 @@ export default {
       } else {
         this.$refs.draw.clean();
       }
+    },
+    /**
+     * @description: 使用画笔
+     * @param {type}
+     * @return:
+     */
+    usePen() {
+      this.onEraser = false
+      this.$refs.draw.useEraser(false);
+    },
+    /**
+     * @description: 使用橡皮檫
+     * @param {type}
+     * @return:
+     */
+    useEraser() {
+      this.onEraser = true
+      this.$refs.draw.useEraser(true);
     },
     /**
      * @description: 退出练习
@@ -1146,13 +1168,28 @@ export default {
         z-index: 1000;
       }
 
-      .clean {
+      .clean,
+      .eraser,
+      .pen {
         font-size: 13px;
         color: #767789;
         position: absolute;
         bottom: 10px;
         right: 10px;
         z-index: 1000;
+
+        &.eraser {
+          right: 50px;
+        }
+        &.pen {
+          right: 100px;
+        }
+
+        &.pen, &.eraser {
+          &.active {
+            color: #3296fa;
+          }
+        }
       }
     }
 
@@ -1171,7 +1208,7 @@ export default {
       margin-bottom: 10px;
       .content {
         width: 100%;
-        height: 280px;
+        height: 300px;
 
         .step-img {
           margin: 40px 10px 0;

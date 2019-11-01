@@ -3,7 +3,7 @@
  * @Author: 施永坚（yokins）
  * @Date: 2019-08-16 14:46:35
  * @LastEditors: 施永坚（yokins）
- * @LastEditTime: 2019-10-11 16:40:09
+ * @LastEditTime: 2019-11-01 17:02:25
  * @Incantation: Buddha Bless Do Not Bugs
  -->
 <template>
@@ -31,32 +31,119 @@
       </div>
 
       <van-pull-refresh style="flex: 1;" v-model="isLoading" @refresh="initData">
-        <div v-if="list.length <= 0 && !isLoading"  class="placeholder">
-          没有练习哦~
-        </div>
+        <div v-if="list.length <= 0 && !isLoading" class="placeholder">没有练习哦~</div>
         <homework-item v-for="(item, index) in list" :key="index" :homework="item"></homework-item>
       </van-pull-refresh>
     </div>
+
+    <van-popup round v-model="show" :close-on-click-overlay="false">
+      <div class="version">
+        <div class="top">
+          <van-image class="p-img" width="50" height="30" :src="require('../assets/images/home-cv.png')" />
+          V{{version.name}}版本升级
+          <van-image class="r-img" width="40" height="50" :src="require('../assets/images/home-cvr.png')" />
+        </div>
+
+        <div class="content">
+          <div class="desc">{{ showVersionDesc }}</div>
+          <van-grid :border="false" :column-num="buttonNumber">
+            <van-grid-item v-if="['force', 'recommend'].includes(version.upgrade_type)">
+              <van-button block type="info" size="small" @click="toUpdate">立即更新</van-button>
+            </van-grid-item>
+            <van-grid-item v-if="['recommend', 'notice'].includes(version.upgrade_type)">
+              <van-button
+                block
+                type="default"
+                size="small"
+                @click="toCancelUpdate"
+              >{{ version.upgrade_type === 'recommend' ? '取消更新' : '我已知晓' }}</van-button>
+            </van-grid-item>
+          </van-grid>
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import axios from 'axios';
+import { mapActions, mapState } from 'vuex';
 export default {
   data() {
     return {
       list: [],
       total_wrong_count: 0,
-      isLoading: false
+      isLoading: false,
+      show: false,
+      version: ''
+    };
+  },
+
+  computed: {
+    ...mapState(['current_user', 'hadCheckUpdate']),
+    /**
+     * @description: 显示版本详情
+     * @param {type}
+     * @return:
+     */
+    showVersionDesc() {
+      if (this.version && this.version.desc) {
+        return this.version.desc.replace(/\n/gm, '<br/>');
+      } else {
+        return '';
+      }
+    },
+    /**
+     * @description: 处理显示的按钮
+     * @param {type}
+     * @return:
+     */
+    buttonNumber() {
+      if (this.version) {
+        switch (this.version.upgrade_type) {
+          case 'force':
+            return 1;
+          case 'recommend':
+            return 2;
+          case 'notice':
+            return 1;
+          default:
+            return 0;
+        }
+      } else {
+        return 0;
+      }
     }
   },
 
   created() {
-    this.initData()
+    this.checkVersion();
+    if (this.hadCheckUpdate) {
+      this.initData();
+    }
   },
 
   methods: {
-    ...mapActions(['clean_doing_question']),
+    ...mapActions(['clean_doing_question', 'updatehadCheckVersion']),
+    /**
+     * @description: 检查版本
+     * @param {type}
+     * @return:
+     */
+    async checkVersion() {
+      await axios
+        .get(process.env.VUE_APP_UPLOAD_URL + 'version', {
+          headers: {
+            TOKEN: this.current_user.token
+          }
+        })
+        .then(res => {
+          this.version = res.data;
+          if (this.checkVersionToUpdate(this.version)) {
+            this.show = true;
+          }
+        });
+    },
     /**
      * @description: 拉取首页数据
      * @param {type}
@@ -65,11 +152,11 @@ export default {
     initData() {
       setTimeout(() => {
         this.$api.home().then(res => {
-          this.list = res.homeworks
-          this.total_wrong_count = res.total_wrong_count
-          this.isLoading = false
-        })
-      }, 500)
+          this.list = res.homeworks;
+          this.total_wrong_count = res.total_wrong_count;
+          this.isLoading = false;
+        });
+      }, 500);
     },
     /**
      * @description: 清除doing_questions
@@ -77,10 +164,57 @@ export default {
      * @return:
      */
     cleanData() {
-      this.clean_doing_question()
+      this.clean_doing_question();
+    },
+    /**
+     * @description: 跳转到浏览器下载
+     * @param {type}
+     * @return:
+     */
+    toUpdate() {
+      this.updatehadCheckVersion(true);
+      cordova.InAppBrowser.open(this.version.url, '_system', 'location=yes');
+      // window.location.href = this.version.url
+      // cordova.InAppBrowser.open('http://www.baidu.com', '_blank', 'location=no,toolbar=yes,toolbarposition=top,closebuttoncaption=关闭');
+    },
+    /**
+     * @description: 取消更新
+     * @param {type}
+     * @return:
+     */
+    toCancelUpdate() {
+      this.updatehadCheckVersion(true);
+      this.show = false;
+    },
+    /**
+     * @description: 拿到version数据后检查是否要弹出更新框
+     * @param {type}
+     * @return:
+     */
+    checkVersionToUpdate(newVersion) {
+      console.log(process.env.VUE_APP_VERSION);
+      console.log(process.env.VUE_APP_TYPES);
+      if (newVersion.types !== process.env.VUE_APP_TYPES) {
+        return true;
+      } else {
+        let update = false;
+        const newVs = newVersion.name.split('.');
+        const oldVs = process.env.VUE_APP_VERSION.split('.');
+        for (let index = 0; index < 3; index++) {
+          const newV = newVs[index];
+          const oldV = oldVs[index];
+          console.log(parseInt(newV), parseInt(oldV));
+          if (parseInt(newV) > parseInt(oldV)) {
+            update = true;
+            break;
+          }
+        }
+        console.log(update);
+        return update;
+      }
     }
   }
-}
+};
 </script>
 
 <style lang="scss">
@@ -176,6 +310,61 @@ export default {
       span {
         font-size: 11px;
         color: #767789;
+      }
+    }
+  }
+
+  .van-popup--center {
+    border-radius: 15px !important;
+    overflow: inherit;
+  }
+
+  .version {
+    border-radius: 15px;
+    height: 300px;
+    width: 250px;
+    display: flex;
+    flex-flow: column nowrap;
+
+    .top {
+      border-top-left-radius: 15px !important;
+      border-top-right-radius: 15px !important;
+      width: 100%;
+      height: 40px;
+      background: #3596fa;
+      font-size: 14px;
+      color: #fff;
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+
+      .p-img {
+        position: absolute;
+        bottom: 0;
+        left: 20px;
+      }
+
+      .r-img {
+        position: absolute;
+        top: -10px;
+        right: 20px;
+      }
+    }
+    .content {
+      padding: 15px;
+      flex: 1;
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: space-between;
+
+      .desc {
+        font-size: 14px;
+        flex: 1;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding-bottom: 15px;
       }
     }
   }

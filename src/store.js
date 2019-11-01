@@ -2,7 +2,7 @@
  * @Author: yokins·shi(施永坚)
  * @Description: 改革春风吹满地，搬起砖来不吃力
  * @Date: 2019-08-16 13:58:40
- * @LastEditTime: 2019-10-12 10:10:22
+ * @LastEditTime: 2019-11-01 16:08:13
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -17,7 +17,8 @@ export default new Vuex.Store({
   state: {
     current_user: util.storage.get('math-sense-current-user'),
     doing_questions: util.storage.get('math-sense-current-doing-questions'),
-    currentMistakeSelect: { key: 0, text: '全部' }
+    currentMistakeSelect: { key: 0, text: '全部' },
+    hadCheckUpdate: false
   },
 
   getters: {
@@ -107,6 +108,14 @@ export default new Vuex.Store({
      */
     cleanCurrentMistakeSelect({ commit }) {
       commit(types.SET_STATE, { key: 'currentMistakeSelect', value: { key: 0, text: '全部' } })
+    },
+    /**
+     * @description: 更新是否检查过版本
+     * @param {type} 
+     * @return: 
+     */
+    updatehadCheckVersion({commit}, payload) {
+      commit(types.SET_STATE, { key: 'hadCheckUpdate', value: payload });
     }
   },
 

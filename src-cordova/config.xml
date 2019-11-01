@@ -1,7 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.yokins.ms.app" version="1.0.0" 
-    xmlns="http://www.w3.org/ns/widgets" 
-    xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.yokins.ms.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>非常数感</name>
     <description>
         A sample Apache Cordova application that responds to the deviceready event.
@@ -107,6 +105,7 @@
     <feature name="SocialSharing">
         <param name="android-package" value="nl.xservices.plugins.SocialSharing" />
     </feature>
+    <preference name="MixedContentMode" value="0" />
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="cordova-clipboard" spec="~1.3.0" />
     <plugin name="cordova-plugin-camera" spec="~4.1.0" />
@@ -118,4 +117,5 @@
     <plugin name="cordova-plugin-statusbar" spec="~2.4.3" />
     <plugin name="cordova-plugin-x-socialsharing" spec="~5.4.7" />
     <plugin name="cordova-plugin-leyu" spec="~0.0.1" />
+    <plugin name="cordova-plugin-inappbrowser" spec="~3.1.0" />
 </widget>
